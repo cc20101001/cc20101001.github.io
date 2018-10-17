@@ -1,0 +1,915 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python,内存映射,迭代器,文件操作," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="python内存映射模块mmap在python里面有个很神奇的模块mmap，专门用来做内存映射，内存映射有如下特点： 1.用进程虚拟地址空间的某个区域与磁盘上某个文件的部分或全部内容建立映射，不需要一次性把文件都load到内存，节约了内存空间，非常适合大型文件相关操作 2.对文件的修改操作省去了io且无需对文件进行缓冲处理 3.可用于复杂的业务场景，不同进程间用内存映射做数据交换（又会引入数据同步">
+<meta name="keywords" content="python,内存映射,迭代器,文件操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python文件操作相关（内存）">
+<meta property="og:url" content="https://hubinwei.me/2017/09/25/python文件操作相关（内存）/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="python内存映射模块mmap在python里面有个很神奇的模块mmap，专门用来做内存映射，内存映射有如下特点： 1.用进程虚拟地址空间的某个区域与磁盘上某个文件的部分或全部内容建立映射，不需要一次性把文件都load到内存，节约了内存空间，非常适合大型文件相关操作 2.对文件的修改操作省去了io且无需对文件进行缓冲处理 3.可用于复杂的业务场景，不同进程间用内存映射做数据交换（又会引入数据同步">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-03-07T06:08:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python文件操作相关（内存）">
+<meta name="twitter:description" content="python内存映射模块mmap在python里面有个很神奇的模块mmap，专门用来做内存映射，内存映射有如下特点： 1.用进程虚拟地址空间的某个区域与磁盘上某个文件的部分或全部内容建立映射，不需要一次性把文件都load到内存，节约了内存空间，非常适合大型文件相关操作 2.对文件的修改操作省去了io且无需对文件进行缓冲处理 3.可用于复杂的业务场景，不同进程间用内存映射做数据交换（又会引入数据同步">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/09/25/python文件操作相关（内存）/"/>
+
+
+
+
+
+  <title> python文件操作相关（内存） | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/09/25/python文件操作相关（内存）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                python文件操作相关（内存）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-25T19:19:19+08:00">
+                2017-09-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/点点滴滴/" itemprop="url" rel="index">
+                    <span itemprop="name">点点滴滴</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/25/python文件操作相关（内存）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/09/25/python文件操作相关（内存）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="python内存映射模块mmap"><a href="#python内存映射模块mmap" class="headerlink" title="python内存映射模块mmap"></a>python内存映射模块mmap</h1><p>在python里面有个很神奇的模块mmap，专门用来做内存映射，内存映射有如下特点：</p>
+<p>1.用进程虚拟地址空间的某个区域与磁盘上某个文件的部分或全部内容建立映射，不需要一次性把文件都load到内存，节约了内存空间，非常适合大型文件相关操作</p>
+<p>2.对文件的修改操作省去了io且无需对文件进行缓冲处理</p>
+<p>3.可用于复杂的业务场景，不同进程间用内存映射做数据交换（又会引入数据同步问题）</p>
+<p>4.在处理大型文件和频繁io场景有明显加速效果</p>
+<h2 id="先建一个固定大小的文件"><a href="#先建一个固定大小的文件" class="headerlink" title="先建一个固定大小的文件"></a>先建一个固定大小的文件</h2><p>我先创建一个大小为1000000字节的文件，名称为data，方便后面用来做内存映射（内存映射中我们对文件的操作通常都是用wb模式）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">__author__ = <span class="string">"hbw"</span></span><br><span class="line"></span><br><span class="line">size = <span class="number">1000000</span></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'data'</span>, <span class="string">'wb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    f.seek(size<span class="number">-1</span>)</span><br><span class="line">    f.write(<span class="string">b'\x00'</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h2><p>直接上内存映射的代码了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">__author__ = <span class="string">"hbw"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> mmap</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这是一段通用代码，拿到内存映射之后的mmap对象</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">memory_map</span><span class="params">(filename, access=mmap.ACCESS_WRITE)</span>:</span></span><br><span class="line">    size = os.path.getsize(filename)</span><br><span class="line">    print(size)</span><br><span class="line">    fd = os.open(filename, os.O_RDWR)</span><br><span class="line">    <span class="keyword">return</span> mmap.mmap(fd, size, access=access)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这个是python2里面的写法，在python3里面mmap对象还支持类似file的with操作</span></span><br><span class="line">m = memory_map(<span class="string">'data'</span>)</span><br><span class="line">print(len(m))</span><br><span class="line">print(m[<span class="number">0</span>:<span class="number">10</span>])</span><br><span class="line"><span class="comment"># 往特定的内存区域写入子节</span></span><br><span class="line">m[<span class="number">0</span>:<span class="number">11</span>] = <span class="string">b'Hello World'</span></span><br><span class="line">print(m[<span class="number">0</span>:<span class="number">10</span>])</span><br><span class="line">m.close()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 用二进制方式读取文件数据</span></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'data'</span>, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    data = f.read(<span class="number">11</span>)</span><br><span class="line">    print(data, type(data))</span><br></pre></td></tr></table></figure>
+<p>输出结果如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1000000</span><br><span class="line">1000000</span><br><span class="line"></span><br><span class="line">Hello Worl</span><br><span class="line">(&apos;Hello World&apos;, &lt;type &apos;str&apos;&gt;)</span><br></pre></td></tr></table></figure>
+<p>1.该文件并没有被load到内存中，而是用了一段虚拟内存，文件被访问的部分才会加载到内存，未被访问的部分依然在磁盘上</p>
+<p>2.如果多个程序映射了同一个文件，那么对一个文件做修改，在其它程序中也会有相应（需要考虑操作同步问题）</p>
+<h1 id="固定大小文件内容读取-迭代器"><a href="#固定大小文件内容读取-迭代器" class="headerlink" title="固定大小文件内容读取-迭代器"></a>固定大小文件内容读取-迭代器</h1><p>现在有一个需求，需要写一个迭代器来每次读取同样大小的文件内容到内存</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> partial</span><br><span class="line"></span><br><span class="line">RECORD_SIZE = <span class="number">310</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'data'</span>, <span class="string">'rb'</span>) <span class="keyword">as</span> f:</span><br><span class="line">    records = iter(partial(f.read, RECORD_SIZE), <span class="string">b''</span>)</span><br><span class="line">    <span class="keyword">for</span> r <span class="keyword">in</span> records:</span><br><span class="line">        <span class="keyword">print</span> len(r)</span><br></pre></td></tr></table></figure>
+<p>我在这里定义了一个偏函数，每次读取310字节大小内容，还用到了一个iter比较少用的特性，传入了一个函数对象（这个函数可以多次调用）和一个b’’空二进制的结束标识符，作为迭代器结束，这样生成的records就是一个我们需要的迭代器了，</p>
+<p>对iter这个特性了解觉得不够，我再上一段自己写的代码加深印象</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pp = [<span class="string">"f"</span>, <span class="string">"r"</span>, <span class="string">"re"</span>, <span class="string">"r"</span>, <span class="string">"e"</span>, <span class="string">"w"</span>, <span class="string">"r"</span>, <span class="string">"q"</span>, <span class="string">"r"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_num</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">if</span> pp:</span><br><span class="line">        c = pp.pop()</span><br><span class="line">        <span class="keyword">print</span> pp</span><br><span class="line">        <span class="keyword">return</span> c</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">records = iter(get_num, <span class="keyword">None</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> records:</span><br><span class="line">    <span class="keyword">print</span> i</span><br></pre></td></tr></table></figure>
+<p>当get_num函数返回值为None的时候作为这个迭代器的结束</p>
+<p>有没有想过，这个和内存映射有啥关系？</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>1.学会使用mmap模块，了解他的特点</p>
+<p>2.深入理解iter特性，学会传入callable对象</p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/09/25/python文件操作相关（内存）/">python文件操作相关（内存）</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/09/25/python文件操作相关（内存）/" title="python文件操作相关（内存）">https://hubinwei.me/2017/09/25/python文件操作相关（内存）/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/内存映射/" rel="tag"># 内存映射</a>
+          
+            <a href="/tags/迭代器/" rel="tag"># 迭代器</a>
+          
+            <a href="/tags/文件操作/" rel="tag"># 文件操作</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/25/docs/15356101142080/" rel="next" title="python文件操作相关（内存）">
+                <i class="fa fa-chevron-left"></i> python文件操作相关（内存）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/26/docs/15356101139199/" rel="prev" title="python模块分析之multiprocessing">
+                python模块分析之multiprocessing <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#python内存映射模块mmap"><span class="nav-number">1.</span> <span class="nav-text">python内存映射模块mmap</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#先建一个固定大小的文件"><span class="nav-number">1.1.</span> <span class="nav-text">先建一个固定大小的文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存映射"><span class="nav-number">1.2.</span> <span class="nav-text">内存映射</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#固定大小文件内容读取-迭代器"><span class="nav-number">2.</span> <span class="nav-text">固定大小文件内容读取-迭代器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/09/25/python文件操作相关（内存）/';
+
+      var disqus_title = "python文件操作相关（内存）";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

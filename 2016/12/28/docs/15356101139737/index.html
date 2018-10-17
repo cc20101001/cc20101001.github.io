@@ -1,0 +1,1026 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="git,版本控制,协作开发,git命令,git攻略," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言 我们经常提到git，github，说到git协议，到底都是一些什么呢？其中git是一种用作版本控制的工具，通俗地说就是用来管理代码的工具，github是一个网站，用来存放代码的，而git协议则是git工具私有的协议，用作传输代码。这里来撸一撸git相关的原理和命令。  git支持的协议汇总和比较我们目前使用的git支持的主要协议有SSH、GIT、HTTP、HTTPS、FTP、FTPS、RSY">
+<meta name="keywords" content="git,版本控制,协作开发,git命令,git攻略">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 使用攻略">
+<meta property="og:url" content="https://hubinwei.me/2016/12/28/docs/15356101139737/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言 我们经常提到git，github，说到git协议，到底都是一些什么呢？其中git是一种用作版本控制的工具，通俗地说就是用来管理代码的工具，github是一个网站，用来存放代码的，而git协议则是git工具私有的协议，用作传输代码。这里来撸一撸git相关的原理和命令。  git支持的协议汇总和比较我们目前使用的git支持的主要协议有SSH、GIT、HTTP、HTTPS、FTP、FTPS、RSY">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201708036568git.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017031325025screenshot_18.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017031357944screenshot_19.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017031384492screenshot_17.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017031796568screenshot_20.png">
+<meta property="og:updated_time" content="2018-08-30T06:21:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git 使用攻略">
+<meta name="twitter:description" content="前言 我们经常提到git，github，说到git协议，到底都是一些什么呢？其中git是一种用作版本控制的工具，通俗地说就是用来管理代码的工具，github是一个网站，用来存放代码的，而git协议则是git工具私有的协议，用作传输代码。这里来撸一撸git相关的原理和命令。  git支持的协议汇总和比较我们目前使用的git支持的主要协议有SSH、GIT、HTTP、HTTPS、FTP、FTPS、RSY">
+<meta name="twitter:image" content="http://odh5je629.bkt.clouddn.com/201708036568git.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2016/12/28/docs/15356101139737/"/>
+
+
+
+
+
+  <title> Git 使用攻略 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2016/12/28/docs/15356101139737/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Git 使用攻略
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-28T11:35:52+08:00">
+                2016-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/git/" itemprop="url" rel="index">
+                    <span itemprop="name">git</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/28/docs/15356101139737/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/28/docs/15356101139737/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
+<p>我们经常提到git，github，说到git协议，到底都是一些什么呢？其中git是一种用作版本控制的工具，通俗地说就是用来管理代码的工具，github是一个网站，用来存放代码的，而git协议则是git工具私有的协议，用作传输代码。这里来撸一撸git相关的原理和命令。</p>
+</blockquote>
+<h1 id="git支持的协议汇总和比较"><a href="#git支持的协议汇总和比较" class="headerlink" title="git支持的协议汇总和比较"></a>git支持的协议汇总和比较</h1><p>我们目前使用的git支持的主要协议有SSH、GIT、HTTP、HTTPS、FTP、FTPS、RSYNC及本地协议，其中本文注意围绕ssh协议进行总结，因为ssh协议是目前应用起来最简单，也最广泛的协议。<br>协议规范如下:</p>
+<table>
+<thead>
+<tr>
+<th>协议名称</th>
+<th>语法格式</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SSH协议（1）</td>
+<td>ssh://[user@]example.com[:port]/path/to/repo.git/</td>
+<td>可在URL中设置用户名和端口。 默认端口22。</td>
+</tr>
+<tr>
+<td>SSH协议（2）</td>
+<td>[user@]example.com:path/to/repo.git/</td>
+<td>更为精简的SCP格式表示法，更简洁。但是非默认端口需要通过其他方式（如地址别名方式）设定。</td>
+</tr>
+<tr>
+<td>GIT协议</td>
+<td>git://example.com[:port]/path/to/repo.git/</td>
+<td>最常用的只读协议。</td>
+</tr>
+<tr>
+<td>HTTP[S]协议</td>
+<td>http[s]://example.com[:port]/path/to/repo.git/</td>
+<td>兼有智能协议和哑协议。</td>
+</tr>
+<tr>
+<td>FTP[S]协议</td>
+<td>ftp[s]://example.com[:port]/path/to/repo.git/</td>
+<td>哑协议。</td>
+</tr>
+<tr>
+<td>RSYNC协议</td>
+<td>rsync://example.com/path/to/repo.git/</td>
+<td>哑协议。</td>
+</tr>
+<tr>
+<td>本地协议（1）</td>
+<td>file:///path/to/     </td>
+</tr>
+<tr>
+<td>本地协议（2）</td>
+<td>/path/to/repo</td>
+<td>和file://格式的本地协议类似。但有细微差别。 例如克隆时不支持浅克隆，且采用直接的硬连接实现克隆。</td>
+</tr>
+</tbody>
+</table>
+<p>具体各种协议的优势和差别可以参考链接:<br><a href="https://git-scm.com/book/zh/v2/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">https://git-scm.com/book/zh/v2/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-%E5%8D%8F%E8%AE%AE</a></p>
+<h1 id="git的ssh登录相关"><a href="#git的ssh登录相关" class="headerlink" title="git的ssh登录相关"></a>git的ssh登录相关</h1><h2 id="git查看本地key情况"><a href="#git查看本地key情况" class="headerlink" title="git查看本地key情况"></a>git查看本地key情况</h2><p><code>cd  ~/.ssh</code> 然后 <code>ls</code> 可以查看是否有密钥文件</p>
+<p>如果你的非对称加密算法用的是rsa，那么你的git默认目录下会有两个文件</p>
+<p>id_rsa 和 id_rsa.pub</p>
+<p>其中id_rsa是你的密钥,id_rsa.pub是你的公钥，你需要把公钥传到github上，然后自己保留密钥，和</p>
+<p>github进行通信的时候获取的数据会在github用公钥来进行加密，然后在本地用密钥来进行解密。</p>
+<p>如果以上文件不存在，那就需要自己先生成公钥和密钥，做好相应配置</p>
+<h2 id="git修改本地key密码"><a href="#git修改本地key密码" class="headerlink" title="git修改本地key密码"></a>git修改本地key密码</h2><p><code>ssh-keygen -p</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Enter file in which the key is (/root/.ssh/id_rsa): /root/.ssh/id_rsa</span><br><span class="line">Enter old passphrase: </span><br><span class="line">Key has comment &apos;/root/.ssh/id_rsa&apos;</span><br><span class="line">Enter new passphrase (empty for no passphrase): </span><br><span class="line">Enter same passphrase again: </span><br><span class="line">Your identification has been saved with the new passphrase.</span><br></pre></td></tr></table></figure>
+<h2 id="git生成公钥，密钥"><a href="#git生成公钥，密钥" class="headerlink" title="git生成公钥，密钥"></a>git生成公钥，密钥</h2><p>生成公钥 并保存在~/.ssh／id_rsa.pub</p>
+<p>ssh-keygen -t rsa -b 4096 -C “<a href="mailto:hbw123@qq.com" target="_blank" rel="noopener">hbw123@qq.com</a>“  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">代码参数含义： </span><br><span class="line">-t指定密钥类型，默认是rsa，可以省略。 </span><br><span class="line">-C设置注释文字，比如邮箱。 </span><br><span class="line">-f指定密钥文件存储文件名。</span><br></pre></td></tr></table></figure>
+<p>就会生成id_rsa和id_rsa.pub两个密钥文件</p>
+<p>复制.pub文件中的公钥字符串并保存在服务端</p>
+<p>验证git密钥是否配置成功</p>
+<p><code>ssh git@github.com</code></p>
+<p>如果成功则会有如下提示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PTY allocation request failed on channel 0</span><br><span class="line">Hi cc20101001! You&apos;ve successfully authenticated, but GitHub does not provide shell access.</span><br><span class="line">Connection to github.com closed.</span><br></pre></td></tr></table></figure>
+<p>git 配置 公钥密钥只是为了push代码前做身份验证</p>
+<h1 id="git命令图"><a href="#git命令图" class="headerlink" title="git命令图"></a>git命令图</h1><p><img src="http://odh5je629.bkt.clouddn.com/201708036568git.png" alt="201708036568git.png"></p>
+<h1 id="新建代码库"><a href="#新建代码库" class="headerlink" title="新建代码库"></a>新建代码库</h1><h2 id="创建裸版本源"><a href="#创建裸版本源" class="headerlink" title="创建裸版本源"></a>创建裸版本源</h2><p><code>git init --bare ./</code> 在当前目录创建一个本地git源</p>
+<h2 id="项目克隆"><a href="#项目克隆" class="headerlink" title="项目克隆"></a>项目克隆</h2><p>git的克隆现在用的比较多的有两种，一种是ssh克隆，一种是https克隆，如下:</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/2017031325025screenshot_18.png" alt="2017031325025screenshot_18.png"><br><img src="http://odh5je629.bkt.clouddn.com/2017031357944screenshot_19.png" alt="2017031357944screenshot_19.png"></p>
+<p>推荐使用ssh，速度快，功能强大。</p>
+<p>更多git协议可以看之前的 git支持的协议汇总</p>
+<h1 id="分支命令"><a href="#分支命令" class="headerlink" title="分支命令"></a>分支命令</h1><h2 id="查看本地分支"><a href="#查看本地分支" class="headerlink" title="查看本地分支"></a>查看本地分支</h2><p><code>git branch</code> 查看git的某个分支(只包含本地分支)</p>
+<h2 id="查看所有分支"><a href="#查看所有分支" class="headerlink" title="查看所有分支"></a>查看所有分支</h2><p><code>git branch -a</code> 查看所有分支(本地分支和远程分支)</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/2017031384492screenshot_17.png" alt="2017031384492screenshot_17.png"></p>
+<p>其中remotes/origin开头的都是远程分支，如果你想把远程分支克隆到本地，请使用下面的命令</p>
+<h2 id="git切换分支"><a href="#git切换分支" class="headerlink" title="git切换分支"></a>git切换分支</h2><p><code>git checkout your_branch_name</code> git 切换到你的其它分支，切换分支前需要确保你本地的分支已经commit了，git一次性只允许你对一条分支进行操作</p>
+<h1 id="git保存提交代码"><a href="#git保存提交代码" class="headerlink" title="git保存提交代码"></a>git保存提交代码</h1><h2 id="git手工命令提交代码"><a href="#git手工命令提交代码" class="headerlink" title="git手工命令提交代码"></a>git手工命令提交代码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># step.1 添加修改文件到git</span><br><span class="line">git add source_file</span><br><span class="line"></span><br><span class="line"># step.2 commit前在review一下，确定提交了正确的文件</span><br><span class="line">git diff --stat --cached</span><br><span class="line"></span><br><span class="line"># step.3 提交前review代码</span><br><span class="line">git diff --cached</span><br><span class="line"></span><br><span class="line"># step.4 commit修改过的文件</span><br><span class="line">git commit -m &quot;log info&quot;</span><br><span class="line"></span><br><span class="line"># step.5 上传修改纪录到master</span><br><span class="line">git pull</span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+<h1 id="数据同步"><a href="#数据同步" class="headerlink" title="数据同步"></a>数据同步</h1><h2 id="fetch拉取远端分支x到本地，为x"><a href="#fetch拉取远端分支x到本地，为x" class="headerlink" title="fetch拉取远端分支x到本地，为x"></a>fetch拉取远端分支x到本地，为x</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin 远程分支名x:本地分支名x</span><br></pre></td></tr></table></figure>
+<h2 id="强制拉取远端master到本地，覆盖本地分支"><a href="#强制拉取远端master到本地，覆盖本地分支" class="headerlink" title="强制拉取远端master到本地，覆盖本地分支"></a>强制拉取远端master到本地，覆盖本地分支</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard origin/master</span><br><span class="line">git pull</span><br><span class="line"></span><br><span class="line">or</span><br><span class="line"> 	</span><br><span class="line">git reset --hard</span><br><span class="line">git pull</span><br></pre></td></tr></table></figure>
+<h1 id="查看信息"><a href="#查看信息" class="headerlink" title="查看信息"></a>查看信息</h1><h2 id="显示有变更的文件"><a href="#显示有变更的文件" class="headerlink" title="显示有变更的文件"></a>显示有变更的文件</h2><p>$ git status</p>
+<h2 id="显示当前分支的版本历史"><a href="#显示当前分支的版本历史" class="headerlink" title="显示当前分支的版本历史"></a>显示当前分支的版本历史</h2><p>$ git log</p>
+<h2 id="显示commit历史，以及每次commit发生变更的文件"><a href="#显示commit历史，以及每次commit发生变更的文件" class="headerlink" title="显示commit历史，以及每次commit发生变更的文件"></a>显示commit历史，以及每次commit发生变更的文件</h2><p>$ git log –stat</p>
+<h2 id="搜索提交历史，根据关键词"><a href="#搜索提交历史，根据关键词" class="headerlink" title="搜索提交历史，根据关键词"></a>搜索提交历史，根据关键词</h2><p>$ git log -S [keyword]</p>
+<h2 id="显示某个commit之后的所有变动，每个commit占据一行"><a href="#显示某个commit之后的所有变动，每个commit占据一行" class="headerlink" title="显示某个commit之后的所有变动，每个commit占据一行"></a>显示某个commit之后的所有变动，每个commit占据一行</h2><p>$ git log [tag] HEAD –pretty=format:%s</p>
+<h2 id="显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件"><a href="#显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件" class="headerlink" title="显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件"></a>显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件</h2><p>$ git log [tag] HEAD –grep feature</p>
+<h2 id="显示某个文件的版本历史，包括文件改名"><a href="#显示某个文件的版本历史，包括文件改名" class="headerlink" title="显示某个文件的版本历史，包括文件改名"></a>显示某个文件的版本历史，包括文件改名</h2><p>$ git log –follow [file]<br>$ git whatchanged [file]</p>
+<h2 id="显示指定文件相关的每一次diff"><a href="#显示指定文件相关的每一次diff" class="headerlink" title="显示指定文件相关的每一次diff"></a>显示指定文件相关的每一次diff</h2><p>$ git log -p [file]</p>
+<h2 id="显示过去5次提交"><a href="#显示过去5次提交" class="headerlink" title="显示过去5次提交"></a>显示过去5次提交</h2><p>$ git log -5 –pretty –oneline</p>
+<h2 id="显示所有提交过的用户，按提交次数排序"><a href="#显示所有提交过的用户，按提交次数排序" class="headerlink" title="显示所有提交过的用户，按提交次数排序"></a>显示所有提交过的用户，按提交次数排序</h2><p>$ git shortlog -sn</p>
+<h2 id="显示指定文件是什么人在什么时间修改过"><a href="#显示指定文件是什么人在什么时间修改过" class="headerlink" title="显示指定文件是什么人在什么时间修改过"></a>显示指定文件是什么人在什么时间修改过</h2><p>$ git blame [file]</p>
+<h2 id="显示暂存区和工作区的差异"><a href="#显示暂存区和工作区的差异" class="headerlink" title="显示暂存区和工作区的差异"></a>显示暂存区和工作区的差异</h2><p>$ git diff</p>
+<h2 id="显示暂存区和上一个commit的差异"><a href="#显示暂存区和上一个commit的差异" class="headerlink" title="显示暂存区和上一个commit的差异"></a>显示暂存区和上一个commit的差异</h2><p>$ git diff –cached [file]</p>
+<h2 id="显示工作区与当前分支最新commit之间的差异"><a href="#显示工作区与当前分支最新commit之间的差异" class="headerlink" title="显示工作区与当前分支最新commit之间的差异"></a>显示工作区与当前分支最新commit之间的差异</h2><p>$ git diff HEAD</p>
+<h2 id="显示两次提交之间的差异"><a href="#显示两次提交之间的差异" class="headerlink" title="显示两次提交之间的差异"></a>显示两次提交之间的差异</h2><p>$ git diff [first-branch]…[second-branch]</p>
+<h2 id="显示今天你写了多少行代码"><a href="#显示今天你写了多少行代码" class="headerlink" title="显示今天你写了多少行代码"></a>显示今天你写了多少行代码</h2><p>$ git diff –shortstat “@{0 day ago}”</p>
+<h2 id="显示某次提交的元数据和内容变化"><a href="#显示某次提交的元数据和内容变化" class="headerlink" title="显示某次提交的元数据和内容变化"></a>显示某次提交的元数据和内容变化</h2><p>$ git show [commit]</p>
+<h2 id="显示某次提交发生变化的文件"><a href="#显示某次提交发生变化的文件" class="headerlink" title="显示某次提交发生变化的文件"></a>显示某次提交发生变化的文件</h2><p>$ git show –name-only [commit]</p>
+<h2 id="显示某次提交时，某个文件的内容"><a href="#显示某次提交时，某个文件的内容" class="headerlink" title="显示某次提交时，某个文件的内容"></a>显示某次提交时，某个文件的内容</h2><p>$ git show [commit]:[filename]</p>
+<h2 id="显示当前分支的最近几次提交"><a href="#显示当前分支的最近几次提交" class="headerlink" title="显示当前分支的最近几次提交"></a>显示当前分支的最近几次提交</h2><p>$ git reflog</p>
+<h1 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h1><h2 id="查看git全局配置信息"><a href="#查看git全局配置信息" class="headerlink" title="查看git全局配置信息"></a>查看git全局配置信息</h2><p><code>git config -l</code></p>
+<p>如果需要对这些信息进行修改，可以用git config –global 再加git操作指令来进行操作</p>
+<h2 id="修改git配置文件（可以修改源啊啥的）"><a href="#修改git配置文件（可以修改源啊啥的）" class="headerlink" title="修改git配置文件（可以修改源啊啥的）"></a>修改git配置文件（可以修改源啊啥的）</h2><p>相当于编辑git工程下的 <code>.git/config</code> 文件</p>
+<p><code>git config -e</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> 1 [core]                                                                      </span><br><span class="line"> 2     repositoryformatversion = 0</span><br><span class="line"> 3     filemode = true</span><br><span class="line"> 4     bare = false</span><br><span class="line"> 5     logallrefupdates = true</span><br><span class="line"> 6     ignorecase = true</span><br><span class="line"> 7     precomposeunicode = true</span><br><span class="line"> 8 [remote &quot;origin&quot;]</span><br><span class="line"> 9     url = https://cc201010011@bitbucket.org/pythonqw/pythonep.git</span><br><span class="line">10     fetch = +refs/heads/*:refs/remotes/origin/*</span><br><span class="line">11 [branch &quot;master&quot;]</span><br><span class="line">12     remote = origin</span><br><span class="line">13     merge = refs/heads/master</span><br></pre></td></tr></table></figure>
+<p>其中 <code>url = https://cc201010011@bitbucket.org/pythonqw/pythonep.git</code> 就是这个git的源属性，我们可以通过修改url来达到修改源的目的</p>
+<h2 id="设置提交代码时的用户信息"><a href="#设置提交代码时的用户信息" class="headerlink" title="设置提交代码时的用户信息"></a>设置提交代码时的用户信息</h2><p>git config [–global] user.name “[name]”<br>git config [–global] user.email “[email address]”</p>
+<h2 id="git设置代理"><a href="#git设置代理" class="headerlink" title="git设置代理"></a>git设置代理</h2><blockquote>
+<p>今天github被Q了，导致没法访问，没法clone代码，好消息是git的http和https协议支持代理功能，坏消息是ssh协议不支持代理，啊，凑合着用吧，http，https代理设置如下：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 设置git的http和https代理</span><br><span class="line">git config --global http.proxy http://127.0.0.1:1087</span><br><span class="line"></span><br><span class="line">git config --global https.proxy https://127.0.0.1:1087</span><br><span class="line"></span><br><span class="line"># 取消git的http和https代理</span><br><span class="line">git config --global --unset http.proxy</span><br><span class="line"></span><br><span class="line">git config --global --unset https.proxy</span><br><span class="line"></span><br><span class="line">npm config delete proxy</span><br></pre></td></tr></table></figure>
+<h2 id="git缓存大小设置"><a href="#git缓存大小设置" class="headerlink" title="git缓存大小设置"></a>git缓存大小设置</h2><p>这里更改git缓存大小为500MB</p>
+<p><code>git config http.postBuffer 524288000</code></p>
+<h1 id="冲突与合并"><a href="#冲突与合并" class="headerlink" title="冲突与合并"></a>冲突与合并</h1><h2 id="mac下的git合并工具diffmerge"><a href="#mac下的git合并工具diffmerge" class="headerlink" title="mac下的git合并工具diffmerge"></a>mac下的git合并工具diffmerge</h2><p>场景是mac环境下的sourcetree配置diffmerge</p>
+<p>1.按照sourcetree<br>2.按照diffmerge<br>3.在sourcetree选择diffmerge做为冲突解决工具</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/2017031796568screenshot_20.png" alt="2017031796568screenshot_20.png"></p>
+<h2 id="git解决冲突"><a href="#git解决冲突" class="headerlink" title="git解决冲突"></a>git解决冲突</h2><p><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> 标记冲突开始，后面跟的是当前分支中的内容</p>
+<p>HEAD指向当前分支末梢的提交</p>
+<p><code>=======</code> 之后，<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>之前是要merge过来的另一条分支上的代码</p>
+<p><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> 之后的dev是该分支的名字</p>
+<p>对于简单的合并，手工编辑，然后去掉这些标记，最后像往常的提交一样先add再commit即可</p>
+<p>冲突样例:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span><br><span class="line"></span><br><span class="line">test in master</span><br><span class="line"></span><br><span class="line">=======</span><br><span class="line"></span><br><span class="line">test in dev</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; dev</span><br></pre></td></tr></table></figure>
+<h1 id="常用组合命令"><a href="#常用组合命令" class="headerlink" title="常用组合命令"></a>常用组合命令</h1><h2 id="git新分支强制覆盖master分支"><a href="#git新分支强制覆盖master分支" class="headerlink" title="git新分支强制覆盖master分支"></a>git新分支强制覆盖master分支</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#备份本地原来的master分支</span><br><span class="line">git branch -m master old-master</span><br><span class="line">#把新的分支变为master分支</span><br><span class="line">git branch -m new-master master</span><br><span class="line">#把新的master分支强制推送到远端服务器</span><br><span class="line">git push -f origin master</span><br></pre></td></tr></table></figure>
+<h1 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h1><p>1.git ssh克隆项目为什么经常会碰到需要输出用户名密码登录?</p>
+<p>因为本地的密钥外加了一个密码，我的理解是二重加密，如果需要更改这个密码请查看 git修改本地key密码</p>
+<p>2.git公钥密钥加密的应用场景是如何实现的,什么时候加密，什么时候解密？客户端update需要加密吗？</p>
+<p>git的加密算法，主要是用来做ssh登陆验证的，和传输代码加密没有啥关系，只是为了你push代码前验证下你的身份</p>
+<p>服务器先获取一组随机数A，把用公钥进行非对称算法加密得到B，然后通过网络将B传输给用户，用户获取到B之后，会用相对于的密钥进行解密，这样就得到了C,然后把C传给git服务器，git服务器比较这两者如果是一样，就不需要用户做身份验证了</p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2016/12/28/docs/15356101139737/">Git 使用攻略</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2016/12/28/docs/15356101139737/" title="Git 使用攻略">https://hubinwei.me/2016/12/28/docs/15356101139737/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/git/" rel="tag"># git</a>
+          
+            <a href="/tags/版本控制/" rel="tag"># 版本控制</a>
+          
+            <a href="/tags/协作开发/" rel="tag"># 协作开发</a>
+          
+            <a href="/tags/git命令/" rel="tag"># git命令</a>
+          
+            <a href="/tags/git攻略/" rel="tag"># git攻略</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/28/Mweb-markdown编辑器详解/" rel="next" title="Mweb markdown编辑器详解">
+                <i class="fa fa-chevron-left"></i> Mweb markdown编辑器详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/28/Git-使用攻略/" rel="prev" title="Git 使用攻略">
+                Git 使用攻略 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git支持的协议汇总和比较"><span class="nav-number">2.</span> <span class="nav-text">git支持的协议汇总和比较</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git的ssh登录相关"><span class="nav-number">3.</span> <span class="nav-text">git的ssh登录相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git查看本地key情况"><span class="nav-number">3.1.</span> <span class="nav-text">git查看本地key情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git修改本地key密码"><span class="nav-number">3.2.</span> <span class="nav-text">git修改本地key密码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git生成公钥，密钥"><span class="nav-number">3.3.</span> <span class="nav-text">git生成公钥，密钥</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git命令图"><span class="nav-number">4.</span> <span class="nav-text">git命令图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#新建代码库"><span class="nav-number">5.</span> <span class="nav-text">新建代码库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建裸版本源"><span class="nav-number">5.1.</span> <span class="nav-text">创建裸版本源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目克隆"><span class="nav-number">5.2.</span> <span class="nav-text">项目克隆</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分支命令"><span class="nav-number">6.</span> <span class="nav-text">分支命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看本地分支"><span class="nav-number">6.1.</span> <span class="nav-text">查看本地分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看所有分支"><span class="nav-number">6.2.</span> <span class="nav-text">查看所有分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git切换分支"><span class="nav-number">6.3.</span> <span class="nav-text">git切换分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git保存提交代码"><span class="nav-number">7.</span> <span class="nav-text">git保存提交代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git手工命令提交代码"><span class="nav-number">7.1.</span> <span class="nav-text">git手工命令提交代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据同步"><span class="nav-number">8.</span> <span class="nav-text">数据同步</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#fetch拉取远端分支x到本地，为x"><span class="nav-number">8.1.</span> <span class="nav-text">fetch拉取远端分支x到本地，为x</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#强制拉取远端master到本地，覆盖本地分支"><span class="nav-number">8.2.</span> <span class="nav-text">强制拉取远端master到本地，覆盖本地分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看信息"><span class="nav-number">9.</span> <span class="nav-text">查看信息</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#显示有变更的文件"><span class="nav-number">9.1.</span> <span class="nav-text">显示有变更的文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示当前分支的版本历史"><span class="nav-number">9.2.</span> <span class="nav-text">显示当前分支的版本历史</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示commit历史，以及每次commit发生变更的文件"><span class="nav-number">9.3.</span> <span class="nav-text">显示commit历史，以及每次commit发生变更的文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索提交历史，根据关键词"><span class="nav-number">9.4.</span> <span class="nav-text">搜索提交历史，根据关键词</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示某个commit之后的所有变动，每个commit占据一行"><span class="nav-number">9.5.</span> <span class="nav-text">显示某个commit之后的所有变动，每个commit占据一行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件"><span class="nav-number">9.6.</span> <span class="nav-text">显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示某个文件的版本历史，包括文件改名"><span class="nav-number">9.7.</span> <span class="nav-text">显示某个文件的版本历史，包括文件改名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示指定文件相关的每一次diff"><span class="nav-number">9.8.</span> <span class="nav-text">显示指定文件相关的每一次diff</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示过去5次提交"><span class="nav-number">9.9.</span> <span class="nav-text">显示过去5次提交</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示所有提交过的用户，按提交次数排序"><span class="nav-number">9.10.</span> <span class="nav-text">显示所有提交过的用户，按提交次数排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示指定文件是什么人在什么时间修改过"><span class="nav-number">9.11.</span> <span class="nav-text">显示指定文件是什么人在什么时间修改过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示暂存区和工作区的差异"><span class="nav-number">9.12.</span> <span class="nav-text">显示暂存区和工作区的差异</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示暂存区和上一个commit的差异"><span class="nav-number">9.13.</span> <span class="nav-text">显示暂存区和上一个commit的差异</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示工作区与当前分支最新commit之间的差异"><span class="nav-number">9.14.</span> <span class="nav-text">显示工作区与当前分支最新commit之间的差异</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示两次提交之间的差异"><span class="nav-number">9.15.</span> <span class="nav-text">显示两次提交之间的差异</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示今天你写了多少行代码"><span class="nav-number">9.16.</span> <span class="nav-text">显示今天你写了多少行代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示某次提交的元数据和内容变化"><span class="nav-number">9.17.</span> <span class="nav-text">显示某次提交的元数据和内容变化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示某次提交发生变化的文件"><span class="nav-number">9.18.</span> <span class="nav-text">显示某次提交发生变化的文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示某次提交时，某个文件的内容"><span class="nav-number">9.19.</span> <span class="nav-text">显示某次提交时，某个文件的内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示当前分支的最近几次提交"><span class="nav-number">9.20.</span> <span class="nav-text">显示当前分支的最近几次提交</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git配置"><span class="nav-number">10.</span> <span class="nav-text">git配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看git全局配置信息"><span class="nav-number">10.1.</span> <span class="nav-text">查看git全局配置信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改git配置文件（可以修改源啊啥的）"><span class="nav-number">10.2.</span> <span class="nav-text">修改git配置文件（可以修改源啊啥的）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置提交代码时的用户信息"><span class="nav-number">10.3.</span> <span class="nav-text">设置提交代码时的用户信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git设置代理"><span class="nav-number">10.4.</span> <span class="nav-text">git设置代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git缓存大小设置"><span class="nav-number">10.5.</span> <span class="nav-text">git缓存大小设置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#冲突与合并"><span class="nav-number">11.</span> <span class="nav-text">冲突与合并</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mac下的git合并工具diffmerge"><span class="nav-number">11.1.</span> <span class="nav-text">mac下的git合并工具diffmerge</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git解决冲突"><span class="nav-number">11.2.</span> <span class="nav-text">git解决冲突</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用组合命令"><span class="nav-number">12.</span> <span class="nav-text">常用组合命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#git新分支强制覆盖master分支"><span class="nav-number">12.1.</span> <span class="nav-text">git新分支强制覆盖master分支</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见问题"><span class="nav-number">13.</span> <span class="nav-text">常见问题</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2016/12/28/docs/15356101139737/';
+
+      var disqus_title = "Git 使用攻略";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

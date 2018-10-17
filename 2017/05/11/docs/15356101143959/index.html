@@ -1,0 +1,951 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="前端,css,css预处理器,sass," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言前端技术发展太快，之前的CSS语法显得很拖沓，臃肿，不方便管理，于是一部分人想对SASS语法进行升级和改进，于是CSS预处理器应运而生。CSS预处理器是一种新的编程语言，编译后生成正常的CSS文件。为CSS增加一些编程的特性，无需考虑浏览器的兼容问题，让CSS更加简洁，适应性更强，可读性更佳，更易于代码的维护等诸多好处，让我们开始撸一撸SCSS吧。 什么SCSS我们通常说的SCSS就是一种CS">
+<meta name="keywords" content="前端,css,css预处理器,sass">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SCSS，SASS学习笔记">
+<meta property="og:url" content="https://hubinwei.me/2017/05/11/docs/15356101143959/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言前端技术发展太快，之前的CSS语法显得很拖沓，臃肿，不方便管理，于是一部分人想对SASS语法进行升级和改进，于是CSS预处理器应运而生。CSS预处理器是一种新的编程语言，编译后生成正常的CSS文件。为CSS增加一些编程的特性，无需考虑浏览器的兼容问题，让CSS更加简洁，适应性更强，可读性更佳，更易于代码的维护等诸多好处，让我们开始撸一撸SCSS吧。 什么SCSS我们通常说的SCSS就是一种CS">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-30T06:21:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SCSS，SASS学习笔记">
+<meta name="twitter:description" content="前言前端技术发展太快，之前的CSS语法显得很拖沓，臃肿，不方便管理，于是一部分人想对SASS语法进行升级和改进，于是CSS预处理器应运而生。CSS预处理器是一种新的编程语言，编译后生成正常的CSS文件。为CSS增加一些编程的特性，无需考虑浏览器的兼容问题，让CSS更加简洁，适应性更强，可读性更佳，更易于代码的维护等诸多好处，让我们开始撸一撸SCSS吧。 什么SCSS我们通常说的SCSS就是一种CS">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/05/11/docs/15356101143959/"/>
+
+
+
+
+
+  <title> SCSS，SASS学习笔记 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/05/11/docs/15356101143959/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                SCSS，SASS学习笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-11T15:31:53+08:00">
+                2017-05-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/前端/css/" itemprop="url" rel="index">
+                    <span itemprop="name">css</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/11/docs/15356101143959/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/11/docs/15356101143959/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前端技术发展太快，之前的CSS语法显得很拖沓，臃肿，不方便管理，于是一部分人想对SASS语法进行升级和改进，于是CSS预处理器应运而生。CSS预处理器是一种新的编程语言，编译后生成正常的CSS文件。为CSS增加一些编程的特性，无需考虑浏览器的兼容问题，让CSS更加简洁，适应性更强，可读性更佳，更易于代码的维护等诸多好处，让我们开始撸一撸SCSS吧。</p>
+<h1 id="什么SCSS"><a href="#什么SCSS" class="headerlink" title="什么SCSS"></a>什么SCSS</h1><p>我们通常说的SCSS就是一种CSS预处理器（可以理解为一套CSS高级语法），同类产品还有SASS、LESS等，这里我们重点介绍SCSS，他和原CSS语法最像</p>
+<h1 id="SCSS，SASS是什么关系"><a href="#SCSS，SASS是什么关系" class="headerlink" title="SCSS，SASS是什么关系"></a>SCSS，SASS是什么关系</h1><p>SCSS，SASS都是工具SASS支持的CSS预处理器，（这个工具使用ruby语言编写需要用gem安装）</p>
+<p>区别:</p>
+<p>文件扩展名不同：“.sass”和“.scss”</p>
+<p>SASS是以严格缩进式语法规则来书写的，不带大括号和分号；而SCSS的语法和CSS书写语法类似</p>
+<h1 id="SASS的安装"><a href="#SASS的安装" class="headerlink" title="SASS的安装"></a>SASS的安装</h1><p>MAC用户安装非常方便 <code>gem install sass</code></p>
+<h1 id="SASS基本命令（css编译生成）"><a href="#SASS基本命令（css编译生成）" class="headerlink" title="SASS基本命令（css编译生成）"></a>SASS基本命令（css编译生成）</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#输出test.scss文件编译后的css样式到屏幕</span><br><span class="line">sass test.scss</span><br><span class="line"></span><br><span class="line">#输出test.scss文件编译后的css样式到test.css文件</span><br><span class="line">sass test.scss test.css</span><br><span class="line"></span><br><span class="line">#SASS提供四个编译风格的选项：</span><br><span class="line">nested：嵌套缩进的css代码，它是默认值。</span><br><span class="line">expanded：没有缩进的、扩展的css代码。</span><br><span class="line">compact：简洁格式的css代码</span><br><span class="line">compressed：压缩后的css代码</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">sass --style compressed test.scss test.css</span><br><span class="line"></span><br><span class="line">#原文件监听，一旦原文件发生变化，立刻编译文件</span><br><span class="line">sass --watch test.scss:test.css</span><br><span class="line"></span><br><span class="line">#目录监听，一旦目录中有文件发生变化，立刻编译文件</span><br><span class="line">sass --watch app/scss:public/stylesheets</span><br></pre></td></tr></table></figure>
+<h1 id="SASS基本语法介绍"><a href="#SASS基本语法介绍" class="headerlink" title="SASS基本语法介绍"></a>SASS基本语法介绍</h1><h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>在SASS中，我们可以定义变量，变量都以$开头，用：来负值</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$blue</span>:<span class="number">#1875e7</span>;　</span><br><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>:<span class="variable">$blue</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果变量调用的时候需要镶嵌在字符串之中，就必须将变量写在#{}之中。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$side</span>:left;</span><br><span class="line"><span class="selector-class">.rounded</span> &#123;</span><br><span class="line">    <span class="attribute">border</span>-#&#123;<span class="variable">$side</span>&#125;-radius: <span class="number">5px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="数学计算"><a href="#数学计算" class="headerlink" title="数学计算"></a>数学计算</h2><p>SASS允许在代码中使用算式：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">margin</span>: (<span class="number">14px</span>/<span class="number">2</span>);</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">50px</span> + <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">right</span>: <span class="variable">$var</span> * <span class="number">10%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="支持CSS语法嵌套"><a href="#支持CSS语法嵌套" class="headerlink" title="支持CSS语法嵌套"></a>支持CSS语法嵌套</h2><p>原CSS样式</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> <span class="selector-tag">h1</span> &#123;</span><br><span class="line">    <span class="attribute">color </span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SCSS样式，变为树状结构，更方便后期的维护</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">    <span class="selector-tag">h1</span> &#123;</span><br><span class="line">        <span class="attribute">color</span> : red;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不仅支持标签样式嵌套，并且还支持属性值的嵌套，如：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">p</span> &#123;</span><br><span class="line">    <span class="comment">//注意，border后面有:符号，表示为属性</span></span><br><span class="line">    <span class="attribute">border</span>: &#123;</span><br><span class="line">        color: red;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在嵌套的代码块内，可以使用&amp;引用父元素。比如a:hover伪类，可以写成：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">a</span> &#123;</span><br><span class="line">    &amp;:hover &#123; <span class="attribute">color</span>: <span class="number">#ffb3ff</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><p>SCSS支持两种注释方式</p>
+<p>多行注释: <code>/* comment */</code></p>
+<p>单行注释: <code>// comment</code></p>
+<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><p>SCSS支持选择器的继承，一个选择器可以继承另一个选择器，语法关键词 <code>@extend</code></p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.class1</span> &#123;</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#ddd</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//class2要继承class1，就要使用@extend命令：</span></span><br><span class="line"></span><br><span class="line"><span class="selector-class">.class2</span> &#123;</span><br><span class="line">    @<span class="keyword">extend</span> .class1;</span><br><span class="line">    <span class="attribute">font-size</span>:<span class="number">120%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Mixin（代码块定义，并支持参数传递和SASS语法）"><a href="#Mixin（代码块定义，并支持参数传递和SASS语法）" class="headerlink" title="@Mixin（代码块定义，并支持参数传递和SASS语法）"></a>@Mixin（代码块定义，并支持参数传递和SASS语法）</h2><p>使用@mixin命令，定义一个代码块。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">mixin</span> left &#123;</span><br><span class="line">    <span class="attribute">float</span>: left;</span><br><span class="line">    <span class="attribute">margin-left</span>: <span class="number">10px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用@include命令，调用这个mixin。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">    @<span class="keyword">include</span> left;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>mixin的强大之处，在于可以指定参数和缺省值。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">mixin</span> left(<span class="variable">$value</span>: 10px) &#123;</span><br><span class="line">    <span class="attribute">float</span>: left;</span><br><span class="line">    <span class="attribute">margin-right</span>: <span class="variable">$value</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用的时候，根据需要加入参数：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">    @<span class="keyword">include</span> left(<span class="number">20px</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面是一个mixin的实例，用来生成浏览器前缀。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">mixin</span> rounded(<span class="variable">$vert</span>, <span class="variable">$horz</span>, <span class="variable">$radius</span>: 10px) &#123;</span><br><span class="line">    <span class="attribute">border</span>-#&#123;<span class="variable">$vert</span>&#125;-#&#123;<span class="variable">$horz</span>&#125;-radius: <span class="variable">$radius</span>;</span><br><span class="line">    -moz-<span class="attribute">border-radius</span>-#&#123;<span class="variable">$vert</span>&#125;#&#123;<span class="variable">$horz</span>&#125;: <span class="variable">$radius</span>;</span><br><span class="line">    -webkit-<span class="attribute">border</span>-#&#123;<span class="variable">$vert</span>&#125;-#&#123;<span class="variable">$horz</span>&#125;-radius: <span class="variable">$radius</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用的时候，可以像下面这样调用：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#navbar</span> <span class="selector-tag">li</span> &#123; @<span class="keyword">include</span> rounded(top, left); &#125;</span><br><span class="line"><span class="selector-id">#footer</span> &#123; @<span class="keyword">include</span> rounded(top, left, 5px); &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="颜色函数"><a href="#颜色函数" class="headerlink" title="颜色函数"></a>颜色函数</h2><p>SCSS提供了一些内置的颜色函数，以便生成系列颜色。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lighten(#cc3, 10%) // #d6d65c</span><br><span class="line">darken(#cc3, 10%) // #a3a329</span><br><span class="line">grayscale(#cc3) // #808080</span><br><span class="line">complement(#cc3) // #33c</span><br></pre></td></tr></table></figure>
+<h2 id="外部样式文件导入"><a href="#外部样式文件导入" class="headerlink" title="外部样式文件导入"></a>外部样式文件导入</h2><p>@import命令，用来插入外部文件。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">import</span> <span class="string">"path/filename.scss"</span>;</span><br></pre></td></tr></table></figure>
+<p>如果插入的是.css文件，则等同于css的import命令。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">import</span> <span class="string">"foo.css"</span>;</span><br></pre></td></tr></table></figure>
+<h1 id="SASS高级语法介绍"><a href="#SASS高级语法介绍" class="headerlink" title="SASS高级语法介绍"></a>SASS高级语法介绍</h1><h2 id="条件判断语句"><a href="#条件判断语句" class="headerlink" title="条件判断语句"></a>条件判断语句</h2><p>SCSS也支持@if语句，用来做条件判断</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">p</span> &#123;</span><br><span class="line">    @<span class="keyword">if</span> 1 + 1 == 2 &#123; <span class="attribute">border</span>: <span class="number">1px</span> solid; &#125;</span><br><span class="line">    @<span class="keyword">if</span> 5 &lt; 3 &#123; <span class="attribute">border</span>: <span class="number">2px</span> dotted; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还支持@else语句</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">if</span> lightness(<span class="variable">$color</span>) &gt; 30% &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#000</span>;</span><br><span class="line">&#125; @<span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#fff</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="循环语句"><a href="#循环语句" class="headerlink" title="循环语句"></a>循环语句</h2><p>SASS支持循环语句@for</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">for</span> <span class="variable">$i</span> from 1 to 10 &#123;</span><br><span class="line">    <span class="selector-class">.border-</span>#&#123;<span class="variable">$i</span>&#125; &#123;</span><br><span class="line">        <span class="attribute">border</span>: #&#123;<span class="variable">$i</span>&#125;px solid blue;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>SASS还支持循环语句@while</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//先定义一个变量i，值为6</span></span><br><span class="line"><span class="variable">$i</span>: <span class="number">6</span>;</span><br><span class="line"><span class="comment">//然后循环变量i，每次循环结尾的时候负值i -= 2</span></span><br><span class="line">@<span class="keyword">while</span> <span class="variable">$i</span> &gt; 0 &#123;</span><br><span class="line">    <span class="selector-class">.item-</span>#&#123;<span class="variable">$i</span>&#125; &#123; <span class="attribute">width</span>: <span class="number">2em</span> * <span class="variable">$i</span>; &#125;</span><br><span class="line">    <span class="variable">$i</span>: <span class="variable">$i</span> - <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="each命令"><a href="#each命令" class="headerlink" title="each命令"></a>each命令</h2><p>each命令，作用与for类似，来循环变量某个列表，每次便利取出来的值放到 <code>$member</code> 变量里面：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@each $member in a, b, c, d &#123;</span><br><span class="line">    .#&#123;$member&#125; &#123;</span><br><span class="line">        background-image: url(&quot;/image/#&#123;$member&#125;.jpg&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="自定义函数"><a href="#自定义函数" class="headerlink" title="自定义函数"></a>自定义函数</h2><p>SASS允许用户编写自己的函数，定义函数使用@function关键字，感觉和代码块便携关键字@Mixin有点像，但是又不一样</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@function double($n) &#123;</span><br><span class="line">    @return $n * 2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#sidebar &#123;</span><br><span class="line">    width: double(5px);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a href="http://www.ruanyifeng.com/blog/2012/06/sass.html" target="_blank" rel="noopener">SASS资料</a></p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/05/11/docs/15356101143959/">SCSS，SASS学习笔记</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/05/11/docs/15356101143959/" title="SCSS，SASS学习笔记">https://hubinwei.me/2017/05/11/docs/15356101143959/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/前端/" rel="tag"># 前端</a>
+          
+            <a href="/tags/css/" rel="tag"># css</a>
+          
+            <a href="/tags/css预处理器/" rel="tag"># css预处理器</a>
+          
+            <a href="/tags/sass/" rel="tag"># sass</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/10/JS模块系统学习：AMD，CMD，CommondJS/" rel="next" title="JS模块系统学习：AMD，CMD，CommondJS">
+                <i class="fa fa-chevron-left"></i> JS模块系统学习：AMD，CMD，CommondJS
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/11/SCSS，SASS学习笔记/" rel="prev" title="SCSS，SASS学习笔记">
+                SCSS，SASS学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么SCSS"><span class="nav-number">2.</span> <span class="nav-text">什么SCSS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SCSS，SASS是什么关系"><span class="nav-number">3.</span> <span class="nav-text">SCSS，SASS是什么关系</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SASS的安装"><span class="nav-number">4.</span> <span class="nav-text">SASS的安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SASS基本命令（css编译生成）"><span class="nav-number">5.</span> <span class="nav-text">SASS基本命令（css编译生成）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SASS基本语法介绍"><span class="nav-number">6.</span> <span class="nav-text">SASS基本语法介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#变量"><span class="nav-number">6.1.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数学计算"><span class="nav-number">6.2.</span> <span class="nav-text">数学计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支持CSS语法嵌套"><span class="nav-number">6.3.</span> <span class="nav-text">支持CSS语法嵌套</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注释"><span class="nav-number">6.4.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#继承"><span class="nav-number">6.5.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mixin（代码块定义，并支持参数传递和SASS语法）"><span class="nav-number">6.6.</span> <span class="nav-text">@Mixin（代码块定义，并支持参数传递和SASS语法）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#颜色函数"><span class="nav-number">6.7.</span> <span class="nav-text">颜色函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#外部样式文件导入"><span class="nav-number">6.8.</span> <span class="nav-text">外部样式文件导入</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SASS高级语法介绍"><span class="nav-number">7.</span> <span class="nav-text">SASS高级语法介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#条件判断语句"><span class="nav-number">7.1.</span> <span class="nav-text">条件判断语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#循环语句"><span class="nav-number">7.2.</span> <span class="nav-text">循环语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#each命令"><span class="nav-number">7.3.</span> <span class="nav-text">each命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义函数"><span class="nav-number">7.4.</span> <span class="nav-text">自定义函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考链接"><span class="nav-number">8.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/05/11/docs/15356101143959/';
+
+      var disqus_title = "SCSS，SASS学习笔记";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

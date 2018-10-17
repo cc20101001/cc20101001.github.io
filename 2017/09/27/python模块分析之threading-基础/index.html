@@ -1,0 +1,957 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python,python常用技巧,python库分析,threading,线程," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言python 的 threading 模块是 python 非常核心的一个模块。它是在 thread 模块基础上进行的封装，里面有许多值得挖掘的点，如多线程编程，线程池，守护线程，线程间阻塞，多进程等相关问题，这里我将对相关知识简单的归纳总结一下 python线程基本介绍python里面的线程有如下几个特点 1.在CPYTHON中，由于全局解释锁（GIL）的原因，Python 的线程被限制为同">
+<meta name="keywords" content="python,python常用技巧,python库分析,threading,线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python模块分析之threading-基础">
+<meta property="og:url" content="https://hubinwei.me/2017/09/27/python模块分析之threading-基础/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言python 的 threading 模块是 python 非常核心的一个模块。它是在 thread 模块基础上进行的封装，里面有许多值得挖掘的点，如多线程编程，线程池，守护线程，线程间阻塞，多进程等相关问题，这里我将对相关知识简单的归纳总结一下 python线程基本介绍python里面的线程有如下几个特点 1.在CPYTHON中，由于全局解释锁（GIL）的原因，Python 的线程被限制为同">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-10T02:12:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python模块分析之threading-基础">
+<meta name="twitter:description" content="前言python 的 threading 模块是 python 非常核心的一个模块。它是在 thread 模块基础上进行的封装，里面有许多值得挖掘的点，如多线程编程，线程池，守护线程，线程间阻塞，多进程等相关问题，这里我将对相关知识简单的归纳总结一下 python线程基本介绍python里面的线程有如下几个特点 1.在CPYTHON中，由于全局解释锁（GIL）的原因，Python 的线程被限制为同">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/09/27/python模块分析之threading-基础/"/>
+
+
+
+
+
+  <title> python模块分析之threading-基础 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/09/27/python模块分析之threading-基础/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                python模块分析之threading-基础
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-27T10:23:08+08:00">
+                2017-09-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/python库分析/" itemprop="url" rel="index">
+                    <span itemprop="name">python库分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/27/python模块分析之threading-基础/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/09/27/python模块分析之threading-基础/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>python 的 threading 模块是 python 非常核心的一个模块。它是在 thread 模块基础上进行的封装，里面有许多值得挖掘的点，如多线程编程，线程池，守护线程，线程间阻塞，多进程等相关问题，这里我将对相关知识简单的归纳总结一下</p>
+<h1 id="python线程基本介绍"><a href="#python线程基本介绍" class="headerlink" title="python线程基本介绍"></a>python线程基本介绍</h1><p>python里面的线程有如下几个特点</p>
+<p>1.在CPYTHON中，由于全局解释锁（GIL）的原因，Python 的线程被限制为同一时刻只允许一个线程执行。所以，Python 的线程更适用于处理 I/O 密集型操作和其他需要并发执行的阻塞操作（比如等待从数据库获取数据等等）</p>
+<p>2.Python 中的线程是系统级线程（比如说一个 POSIX 线程或者一个 Windows 线程），这些线程由操作系统来管理。线程一旦 <code>start()</code>，将独立执行直到目标函数返回。过程中你可以查询一个线程对象的状态，看它是否还在执行</p>
+<p>3.线程划分为用户线程和守护线程 (daemon设置为true)，守护线程级别非常低，虚拟机如果只有守护线程，将会自动退出</p>
+<h1 id="threading初探-最简单的demo"><a href="#threading初探-最简单的demo" class="headerlink" title="threading初探-最简单的demo"></a>threading初探-最简单的demo</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">__author__ = <span class="string">"hbw"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">countdown</span><span class="params">(n)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> n &gt; <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"n: &#123;&#125;"</span>.format(n)</span><br><span class="line">        n -= <span class="number">1</span></span><br><span class="line">        time.sleep(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">my_thread = Thread(target=countdown, args=(<span class="number">5</span>,))</span><br><span class="line">my_thread.start()</span><br><span class="line"><span class="keyword">if</span> my_thread.is_alive():</span><br><span class="line">    print(<span class="string">'Still running'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    print(<span class="string">'Completed'</span>)</span><br><span class="line">my_thread.join()</span><br><span class="line"><span class="keyword">print</span> <span class="string">"Main thread over!"</span></span><br></pre></td></tr></table></figure>
+<p>在这个例子里代码特点如下：</p>
+<p>1.初始化线程，Thread 接受两个参数，target 表示目标函数，也就是你需要在线程里面跑的函数，args 表示传递给目标函数的参数，为 tuple ，且格式为 (5, ) 里面一定有一个逗号</p>
+<p>2.启动子线程，调用 <code>start()</code> 方法就可以启动创建的子线程了，默认情况子线程和主线程是分别执行，互不影响</p>
+<p>3.阻塞主线程，如果你想子线程阻塞主线程可以调用 <code>join()</code> 方法，主线程就会阻塞在 join 处，直到子线程执行完了主线程才会继续执行</p>
+<p>4.查看线程状态，调用线程的 <code>is_alive()</code> 方法可以查看当前线程状态</p>
+<h1 id="守护线程（也可以称为后台线程，服务线程）"><a href="#守护线程（也可以称为后台线程，服务线程）" class="headerlink" title="守护线程（也可以称为后台线程，服务线程）"></a>守护线程（也可以称为后台线程，服务线程）</h1><p>先推荐一篇经典文章分析守护线程的文章 <a href="http://blog.csdn.net/frankarmstrong/article/details/8880779" target="_blank" rel="noopener">http://blog.csdn.net/frankarmstrong/article/details/8880779</a></p>
+<p>守护线程特点如下：</p>
+<ol>
+<li><p>setDaemon 将线程设置为守护进程(也可以在创建线程后设置线程对象的 daemon 属性为 True)</p>
+</li>
+<li><p>setDaemon 需要在 start 方法调用之前使用 </p>
+</li>
+<li><p>如果 python 虚拟机中都是守护线程，当前虚拟机将 exit，守护线程级别非常低 </p>
+</li>
+<li><p>主线程结束后，用户线程将会继续运行，如果没有用户线程，都是后台进程的话，那么虚拟机运行结束</p>
+</li>
+</ol>
+<h1 id="threading-协调线程的启动"><a href="#threading-协调线程的启动" class="headerlink" title="threading 协调线程的启动"></a>threading 协调线程的启动</h1><p>在我们系统中如果一个线程的启动运行依赖于另外一个线程，为了协调线程的启动，threading 模块提供了一系列方法来完成，如 Event 模块，Condition 模块等，我们接下来将对常用方法做一些分析</p>
+<h2 id="threading-Event-协调线程的启动"><a href="#threading-Event-协调线程的启动" class="headerlink" title="threading.Event 协调线程的启动"></a>threading.Event 协调线程的启动</h2><p>官方描述：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A factory function that returns a new event.</span><br><span class="line"></span><br><span class="line">Events manage a flag that can be set to true with the set() method and reset</span><br><span class="line">to false with the clear() method. The wait() method blocks until the flag is</span><br><span class="line">true.</span><br></pre></td></tr></table></figure>
+<p>核心函数:</p>
+<ol>
+<li><p>Event.set()</p>
+</li>
+<li><p>Event.wait()</p>
+</li>
+<li><p>Event.clear()</p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">__author__ = <span class="string">"hbw"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Event</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">daemon_func</span><span class="params">(ev)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        time.sleep(<span class="number">5</span>)</span><br><span class="line">        ev.set()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">event = Event()</span><br><span class="line">daemon_thread = Thread(target=daemon_func, args=(event,))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">son_func</span><span class="params">(ev)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        ev.wait()</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"get event from daemon"</span></span><br><span class="line">        ev.clear()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">son_thread = Thread(target=son_func, args=(event,))</span><br><span class="line"></span><br><span class="line">son_thread.start()</span><br><span class="line">daemon_thread.daemon = <span class="keyword">True</span></span><br><span class="line">daemon_thread.start()</span><br></pre></td></tr></table></figure>
+<p>这段代码非常简单，简单到很难在复杂场景中来复用，守护线程作为了一个定时器，每 5s 通过 Event 下发一个执行任务的令牌，然后允许子进行继续运行，子线程运行完后会清理掉 Event，然后重新等待守护线程分配任务。因为守护线程的任务优先级非常低，因此可以作为 daemon 线程在后台运行。尽管可以通过 clear() 方法来重置 Event 对象，但是很难确保安全地清理 Event 对象并对它重新赋值。很可能会发生错过事件、死锁或者其他问题（特别是，你无法保证重置 Event 对象的代码会在线程再次等待这个 event 对象之前执行）。如果一个线程需要不停地重复使用 Event 对象，最好使用 Condition 对象来代替，为啥呢？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_Event</span><span class="params">(_Verbose)</span>:</span></span><br><span class="line">    <span class="string">"""A factory function that returns a new event object. An event manages a</span></span><br><span class="line"><span class="string">       flag that can be set to true with the set() method and reset to false</span></span><br><span class="line"><span class="string">       with the clear() method. The wait() method blocks until the flag is true.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># After Tim Peters' event class (without is_posted())</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, verbose=None)</span>:</span></span><br><span class="line">        _Verbose.__init__(self, verbose)</span><br><span class="line">        self.__cond = Condition(Lock())</span><br><span class="line">        self.__flag = <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    is_set = isSet</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">set</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">"""Set the internal flag to true.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        All threads waiting for the flag to become true are awakened. Threads</span></span><br><span class="line"><span class="string">        that call wait() once the flag is true will not block at all.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        <span class="keyword">with</span> self.__cond:</span><br><span class="line">            self.__flag = <span class="keyword">True</span></span><br><span class="line">            self.__cond.notify_all()</span><br></pre></td></tr></table></figure>
+<p>因为 Event 里面是用一个全局变量 <code>self.__flag</code> 作为一个flag来协调线程的启动，实现不够友好，会一次性唤醒所有线程并且没加锁</p>
+<h2 id="threading-Condition-协调线程的启动"><a href="#threading-Condition-协调线程的启动" class="headerlink" title="threading.Condition 协调线程的启动"></a>threading.Condition 协调线程的启动</h2><p>官方描述：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Factory function that returns a new condition variable object.</span><br><span class="line"></span><br><span class="line">A condition variable allows one or more threads to wait until they are</span><br><span class="line">notified by another thread.</span><br><span class="line"></span><br><span class="line">If the lock argument is given and not None, it must be a Lock or RLock</span><br><span class="line">object, and it is used as the underlying lock. Otherwise, a new RLock object</span><br><span class="line">is created and used as the underlying lock</span><br></pre></td></tr></table></figure>
+<p>Condition 和 Event 处理方式非常类似，我们用 Condition 来代替之前 Event 那段代码，如下：</p>
+<p>核心函数：</p>
+<ol>
+<li><p>Condition.notify_all() 类似 Event 里面的 set()</p>
+</li>
+<li><p>Condition.wait() 类似 Event 里面的 wait()</p>
+</li>
+<li><p>with condition 源代码里面提供了一段上下文管理加锁的功能，明显优于 Event 里面全局变量控制的方式</p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">__author__ = <span class="string">"hbw"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Condition</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">daemon_func</span><span class="params">(condition)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        <span class="keyword">with</span> condition:</span><br><span class="line">            time.sleep(<span class="number">5</span>)</span><br><span class="line">            condition.notify_all()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">condition = Condition()</span><br><span class="line">daemon_thread = Thread(target=daemon_func, args=(condition,))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">son_func</span><span class="params">(condition)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        <span class="keyword">with</span> condition:</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"begin wait for notify"</span></span><br><span class="line">            condition.wait()</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"get event from daemon"</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">son_thread = Thread(target=son_func, args=(condition,))</span><br><span class="line"></span><br><span class="line">son_thread.start()</span><br><span class="line">daemon_thread.daemon = <span class="keyword">True</span></span><br><span class="line">daemon_thread.start()</span><br></pre></td></tr></table></figure>
+<h2 id="threading-Semaphore-协调线程的启动"><a href="#threading-Semaphore-协调线程的启动" class="headerlink" title="threading.Semaphore 协调线程的启动"></a>threading.Semaphore 协调线程的启动</h2><p>信号量在多线程场景中的应用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">__author__ = <span class="string">"hbw"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Semaphore</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">worker</span><span class="params">(n, sema)</span>:</span></span><br><span class="line">    sema.acquire()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"Thread: &#123;&#125;, n: &#123;&#125;"</span>.format(threading.current_thread().getName(), n)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sema = Semaphore(<span class="number">0</span>)</span><br><span class="line">nworkers = <span class="number">10</span></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> range(nworkers):</span><br><span class="line">    t = Thread(target=worker, args=(n, sema,))</span><br><span class="line">    t.start()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> n <span class="keyword">in</span> xrange(nworkers):</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    sema.release()</span><br><span class="line">    <span class="comment"># print "release a semaphore! &#123;&#125;".format(n)</span></span><br></pre></td></tr></table></figure>
+<p>在主线程里我每 release 一次，就会有一个子线程 acquire 到一个信号量，然后执行任务</p>
+<h1 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h1><h2 id="线程池的优点"><a href="#线程池的优点" class="headerlink" title="线程池的优点"></a>线程池的优点</h2><h2 id="python线程池代码实例"><a href="#python线程池代码实例" class="headerlink" title="python线程池代码实例"></a>python线程池代码实例</h2><h1 id="其它方法"><a href="#其它方法" class="headerlink" title="其它方法"></a>其它方法</h1><p>threading.active_count()     获取当前进程的线程数</p>
+<p>threading.current_thread().getName()    获取当前线程名称</p>
+<p>threading.enumerate()   枚举当前进程的线程对象列表</p>
+<p>threading.local()   这是一个非常有特点的对象，他存储的信息都是针对当前线程的，但是这个对象又能被所有线程同时调用，如在线程 A 中 local.name = “张三”，在线程 B 中 local.name = “李四”，在线程 B 中获取name属性，只能获取到李四，相当于这些属性都是线程的私有属性，我们实现这种功能也有其它方式，如通过一个字典，里面名称就是线程名，里面再嵌套一层字典存储线程信息，如 {“线程A”: {“属性A”： 1，”属性B”: 2}}</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>1.介绍了 python线程的基本概念和使用方法</p>
+<p>2.介绍了 python 中守护线程（daemon）使用原理</p>
+<p>3.介绍了 python threading库 Event ，Condition ，Semaphore 如何协调线程的启动和运行</p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/09/27/python模块分析之threading-基础/">python模块分析之threading-基础</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/09/27/python模块分析之threading-基础/" title="python模块分析之threading-基础">https://hubinwei.me/2017/09/27/python模块分析之threading-基础/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/python常用技巧/" rel="tag"># python常用技巧</a>
+          
+            <a href="/tags/python库分析/" rel="tag"># python库分析</a>
+          
+            <a href="/tags/threading/" rel="tag"># threading</a>
+          
+            <a href="/tags/线程/" rel="tag"># 线程</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/26/python模块分析之multiprocessing/" rel="next" title="python模块分析之multiprocessing">
+                <i class="fa fa-chevron-left"></i> python模块分析之multiprocessing
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/27/docs/15356101138044/" rel="prev" title="python模块分析之threading-基础">
+                python模块分析之threading-基础 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python线程基本介绍"><span class="nav-number">2.</span> <span class="nav-text">python线程基本介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#threading初探-最简单的demo"><span class="nav-number">3.</span> <span class="nav-text">threading初探-最简单的demo</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#守护线程（也可以称为后台线程，服务线程）"><span class="nav-number">4.</span> <span class="nav-text">守护线程（也可以称为后台线程，服务线程）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#threading-协调线程的启动"><span class="nav-number">5.</span> <span class="nav-text">threading 协调线程的启动</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#threading-Event-协调线程的启动"><span class="nav-number">5.1.</span> <span class="nav-text">threading.Event 协调线程的启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#threading-Condition-协调线程的启动"><span class="nav-number">5.2.</span> <span class="nav-text">threading.Condition 协调线程的启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#threading-Semaphore-协调线程的启动"><span class="nav-number">5.3.</span> <span class="nav-text">threading.Semaphore 协调线程的启动</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线程池"><span class="nav-number">6.</span> <span class="nav-text">线程池</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#线程池的优点"><span class="nav-number">6.1.</span> <span class="nav-text">线程池的优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python线程池代码实例"><span class="nav-number">6.2.</span> <span class="nav-text">python线程池代码实例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其它方法"><span class="nav-number">7.</span> <span class="nav-text">其它方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/09/27/python模块分析之threading-基础/';
+
+      var disqus_title = "python模块分析之threading-基础";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

@@ -1,0 +1,1150 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="tcp三次握手,udp协议分析,OSI七层模型," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="OSI七层模型要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：    层数 七层模型 五层模型 四层模型 样例     7 应用层 应用层 应用层 http，smtp协议等   6 表示层   ssl/tls   5 会话层">
+<meta name="keywords" content="tcp三次握手,udp协议分析,OSI七层模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP，UDP协议学习">
+<meta property="og:url" content="https://hubinwei.me/2016/12/28/docs/15356101139150/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="OSI七层模型要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：    层数 七层模型 五层模型 四层模型 样例     7 应用层 应用层 应用层 http，smtp协议等   6 表示层   ssl/tls   5 会话层">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170728786221228431-ec18b4f285e64dc1.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20180424152455754682060.jpg">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017072880432.pic_hd.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017072814590screenshot_105.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170728186671415592-175d325475f07bc0.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017072592613screenshot_103.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017072823090screenshot_106.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017072873238screenshot_107.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170728492371228431-3c18c75153d70036.png">
+<meta property="og:updated_time" content="2018-08-30T06:21:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TCP，UDP协议学习">
+<meta name="twitter:description" content="OSI七层模型要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：    层数 七层模型 五层模型 四层模型 样例     7 应用层 应用层 应用层 http，smtp协议等   6 表示层   ssl/tls   5 会话层">
+<meta name="twitter:image" content="http://odh5je629.bkt.clouddn.com/20170728786221228431-ec18b4f285e64dc1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2016/12/28/docs/15356101139150/"/>
+
+
+
+
+
+  <title> TCP，UDP协议学习 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2016/12/28/docs/15356101139150/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                TCP，UDP协议学习
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-12-28T16:25:21+08:00">
+                2016-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web开发通用/" itemprop="url" rel="index">
+                    <span itemprop="name">web开发通用</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/12/28/docs/15356101139150/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/12/28/docs/15356101139150/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="OSI七层模型"><a href="#OSI七层模型" class="headerlink" title="OSI七层模型"></a>OSI七层模型</h1><p>要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：</p>
+<table>
+<thead>
+<tr>
+<th>层数</th>
+<th>七层模型</th>
+<th>五层模型</th>
+<th>四层模型</th>
+<th>样例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td>应用层</td>
+<td>应用层</td>
+<td>应用层</td>
+<td>http，smtp协议等</td>
+</tr>
+<tr>
+<td>6</td>
+<td>表示层</td>
+<td></td>
+<td></td>
+<td>ssl/tls</td>
+</tr>
+<tr>
+<td>5</td>
+<td>会话层</td>
+<td></td>
+<td></td>
+<td>socket</td>
+</tr>
+<tr>
+<td>4</td>
+<td>传输层</td>
+<td>传输层</td>
+<td>传输层</td>
+<td>端口,tcp,udp,sctp,dccp</td>
+</tr>
+<tr>
+<td>3</td>
+<td>网络层</td>
+<td>网络层</td>
+<td>网络层</td>
+<td>ip,ipsec,icmp,igmp,ospf</td>
+</tr>
+<tr>
+<td>2</td>
+<td>数据链路层</td>
+<td>数据链路层</td>
+<td>链接层/实体层</td>
+<td>mac地址等</td>
+</tr>
+<tr>
+<td>1</td>
+<td>物理层</td>
+<td>物理层</td>
+<td></td>
+<td>网卡</td>
+</tr>
+</tbody>
+</table>
+<p>五层模型分别所干的活如下</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/20170728786221228431-ec18b4f285e64dc1.png" alt="20170728786221228431-ec18b4f285e64dc1.png"></p>
+<p>其实 TCP/IP 协议族并没有严格的遵守 OSI，TCP/IP 的分层并不能很好的对应到OSI模型中</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/20180424152455754682060.jpg" alt="20180424152455754682060.jpg"></p>
+<h1 id="TCP协议"><a href="#TCP协议" class="headerlink" title="TCP协议"></a>TCP协议</h1><p>TCP是一种面向连接的、可靠的、基于字节流的传输层通信协议，在OSI七层模型中对应的传输层。</p>
+<p>特点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.准确可靠</span><br><span class="line">2.连接有耗时</span><br><span class="line">3.不可广播</span><br><span class="line">4.传输数据无大小限制</span><br><span class="line">5.先发先至</span><br></pre></td></tr></table></figure>
+<p>我将从TCP报文格式，端口状态，TCP三次握手，TCP四次挥手，四个方面来进行分析</p>
+<h2 id="TCP报文分析"><a href="#TCP报文分析" class="headerlink" title="TCP报文分析"></a>TCP报文分析</h2><h3 id="报文格式分析"><a href="#报文格式分析" class="headerlink" title="报文格式分析"></a>报文格式分析</h3><p><img src="http://odh5je629.bkt.clouddn.com/2017072880432.pic_hd.png" alt="2017072880432.pic_hd.png"></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>作用 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>源端口(Source Port)</td>
+<td>源端口</td>
+</tr>
+<tr>
+<td>目的端口(Desination Port)</td>
+<td>目标端口</td>
+</tr>
+<tr>
+<td>序列号(Sequence Number)</td>
+<td>数据包的序号</td>
+</tr>
+<tr>
+<td>确认号(Acknowledgment Number)</td>
+<td>上一个接收到的TCP报文里面的序列号+1，用于告诉对方自己想要的下一个数据包的序列号是多少</td>
+</tr>
+<tr>
+<td>报头的长度(HLEN)</td>
+<td>TCP报文，请求头的总长度（包含options），非options为固定的20字节</td>
+</tr>
+<tr>
+<td>保留域(Reserved)</td>
+<td>设置为0</td>
+</tr>
+<tr>
+<td>编码位(Code Bits)</td>
+<td>用于控制段的传输（如会话的建立和终止），编码位比较复杂，主要用到的包括：URG、ACK、PSH、RST、SYN、FIN 6个位</td>
+</tr>
+<tr>
+<td>窗口大小(Windows)</td>
+<td>接收方能够继续接收的字节数，用于控制发送的速度</td>
+</tr>
+<tr>
+<td>校验码(Checksum)</td>
+<td>包括TCP报头和数据在内的校验和，用于判断数据传输是否出错</td>
+</tr>
+<tr>
+<td>紧急指针(Urgent Pointer)</td>
+<td>当前序列号到紧急位置的偏移量（这个没研究过）</td>
+</tr>
+<tr>
+<td>选项(Option)</td>
+<td>厂商根据需要自定义的内容</td>
+</tr>
+<tr>
+<td>数据(Data)</td>
+<td>传输的数据</td>
+</tr>
+</tbody>
+</table>
+<h3 id="编码位列表说明"><a href="#编码位列表说明" class="headerlink" title="编码位列表说明"></a>编码位列表说明</h3><p>主要用到的编码位列表如下：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>作用 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SYN（synchronous）</td>
+<td>请求建立TCP连接</td>
+</tr>
+<tr>
+<td>FIN</td>
+<td>断开TCP连接</td>
+</tr>
+<tr>
+<td>RESET</td>
+<td>重置TCP连接</td>
+</tr>
+<tr>
+<td>ACK</td>
+<td>确认、反馈连接情况</td>
+</tr>
+<tr>
+<td>PUSH</td>
+<td>将数据立刻送到应用层进行处理的命令</td>
+</tr>
+<tr>
+<td>URGENT</td>
+<td>判断紧急指针是否有效的命令</td>
+</tr>
+</tbody>
+</table>
+<h3 id="wireshark抓包演示"><a href="#wireshark抓包演示" class="headerlink" title="wireshark抓包演示"></a>wireshark抓包演示</h3><p>再附上一张我用wireshark抓到的TCP数据报文图</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/2017072814590screenshot_105.png" alt="2017072814590screenshot_105.png"></p>
+<p>一目了然了，请求头总长度为40字节，其中options长度为20字节，其余的总长度为固定的20字节</p>
+<h2 id="TCP端口状态说明"><a href="#TCP端口状态说明" class="headerlink" title="TCP端口状态说明"></a>TCP端口状态说明</h2><table>
+<thead>
+<tr>
+<th>状态名称</th>
+<th>作用 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CLOSED</td>
+<td>初始状态，端口关闭</td>
+</tr>
+<tr>
+<td>LISTEN</td>
+<td>服务器端的某个 socket 处于监听状态，可以接受连接</td>
+</tr>
+<tr>
+<td>SYN_SENT</td>
+<td>客户端请求连接服务端。在服务端监听后，客户端socket执行CONNECT连接时，客户端发送SYN报文（编码位为SYN），此时客户端就进入SYN_SENT 状态，等待服务端确认</td>
+</tr>
+<tr>
+<td>SYN_RCVD</td>
+<td>服务端接收到了SYN报文</td>
+</tr>
+<tr>
+<td>ESTABLISHED</td>
+<td>表示连接已经建立了</td>
+</tr>
+<tr>
+<td>FIN_WAIT_1</td>
+<td>其中一方请求终止连接，等待对方的 FIN 报文</td>
+</tr>
+<tr>
+<td>FIN_WAIT_2</td>
+<td>在 FIN_WAIT_2 之后， 当对方回应 ACK 报文之后，进入该状态</td>
+</tr>
+<tr>
+<td>TIME_WAIT</td>
+<td>表示收到了对方的 FIN 报文，并发送出了 ACK 报文，就等 2MSL 之后即可回到 CLOSED 状态</td>
+</tr>
+<tr>
+<td>CLOSING</td>
+<td>一种罕见状态，发生在发送 FIN 报文之后，本应是先收到ACK报文，却先收到对方的 FIN 报文，那么就从 FIN_WAIT_1 的状态进入 CLOSING 状态</td>
+</tr>
+<tr>
+<td>CLOSE_WAIT</td>
+<td>表示等待关闭，在 ESTABLISHED 过渡到 LAST_ACK 的一个过渡阶段，该阶段需要考虑是否还有数据发送给对方，如果没有，就可以关闭连接，发送 FIN 报文，然后进入 LAST_ACK 状态</td>
+</tr>
+<tr>
+<td>LAST_ACK</td>
+<td>被动关闭一方发送 FIN 报文之后，最后等待对方的 ACK 报文所处的状态</td>
+</tr>
+<tr>
+<td>CLOSED</td>
+<td>当收到 ACK 保温后，就可以进入 CLOSED 状态了</td>
+</tr>
+</tbody>
+</table>
+<p>这是一张经典的TCP端口转化状态图</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/20170728186671415592-175d325475f07bc0.png" alt="20170728186671415592-175d325475f07bc0.png"></p>
+<h2 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h2><p>TCP的三次握手是为了通过发包，收包确认客户端，服务端的网络状态，建立稳定的TCP连接，建立连接之后只要客户端服务端没有主动断开，连接会一直存在，故为长连接</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">第一次握手：客户端发送syn包(seq=j)到服务器，并进入SYN_SEND状态，等待服务器确认</span><br><span class="line"></span><br><span class="line">第二次握手：服务器收到来自客户端的syn包，必须确认客户的SYN（即发送一个ack的应答报文ack=j+1），同时自己也发送一个SYN包（seq=k），即SYN+ACK包，此时服务器进入SYN_RECV状态</span><br><span class="line"></span><br><span class="line">第三次握手：客户端收到服务器的SYN＋ACK包，校验ACK包的值是否是j+1，如果没问题就向服务器发送ACK确认包(ack=k+1)，此包发送完毕，客户端会进入ESTABLISHED状态，服务端校验来自客户端的ack=k+1是否有问题，如果没问题也进入ESTABLISHED状态，完成三次握手</span><br><span class="line"></span><br><span class="line">注解:SYN_SEND，SYN_RECV，ESTABLISHED都是TCP端口状态，详见:http://blog.csdn.net/zdwzzu2006/article/details/7713499</span><br><span class="line"></span><br><span class="line">syn，ack都是TCP协议里面flags字段的标识，详见: http://www.yunsec.net/a/school/wlcs/agreement/2012/0317/10262.html</span><br><span class="line"></span><br><span class="line">seq为Sequence number(relative sequence number)，为Sequence number(顺序号码)，是递增产生的</span><br><span class="line">ack为Acknowledgment number(relative ack number)，和seq为对应关系，来确tcp来往报文之间的对应关系</span><br><span class="line"></span><br><span class="line">之所以需要完成三次握手，因为客户端的syn包服务端能响应，并且服务端发送的syn包，客户端也能响应，从而确保了双方通信无误，如果第三次请求不发送会导致服务端不知道自己发送的包客户端是否能收到</span><br></pre></td></tr></table></figure>
+<p>这里有我抓的一份tcp三次握手的包，很好的验证了tcp握手过程，以及值的对应关系，注意不要把tcp报文里flag里面的ack和主体里面的ack混淆了</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/2017072592613screenshot_103.png" alt="2017072592613screenshot_103.png"></p>
+<p>翻译为白话文:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">主机A向主机B发出连接请求数据包：&quot;我们建立连接，可以吗？&quot;，这是第一次对话；</span><br><span class="line"></span><br><span class="line">主机B向主机A发送同意连接以及连接同步校验的数据包：&quot;可以，你的数据收到了，我也给你发一条，你确认下是否能收到？&quot;，这是第二次对话；</span><br><span class="line"></span><br><span class="line">主机A再发出一个数据包确认主机B的要求同步：“你的数据我也收到了，建立连接无误”，这是第三次对话。</span><br></pre></td></tr></table></figure>
+<p>发起端接收端状态变化如下:</p>
+<p>发起端: CLOSE -&gt; SYN_SEND -&gt; ESTABLISHED</p>
+<p>接收端: LISTEN -&gt; SYN_RCVD -&gt; ESTABLISHED</p>
+<h2 id="TCP四次挥手"><a href="#TCP四次挥手" class="headerlink" title="TCP四次挥手"></a>TCP四次挥手</h2><p>假设现在是客户端主动发起断开请求</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/2017072823090screenshot_106.png" alt="2017072823090screenshot_106.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">第一次挥手：客户端像服务端发送一个FIN包，seq为m，然后自己进入FIN_WAIT_1状态</span><br><span class="line"></span><br><span class="line">第二次挥手：服务端收到请求，然后返回一个ACK包，ack为m+1，然后服务端进入CLOSE_WAIT状态，客户端收到后变为FIN_WAIT_2</span><br><span class="line"></span><br><span class="line">第三次挥手：服务端发送一个FIN包给客户端，seq为n，然后自己进入LAST_ACK状态</span><br><span class="line"></span><br><span class="line">第四次挥手：客户端收到服务端发送的FIN包，返回一个ack包为n+1，然后自己进入TIME-WAIT状态，服务端收到这个ack包后进入CLOSE状态，客户端等待2MSL（根据RFC793建议，MSL为2分钟，于是等待四分钟）发现服务端没有再发送包代表连接已经断开于是自己进入CLOSE状态</span><br></pre></td></tr></table></figure>
+<p>客户端服务端状态变化如下:</p>
+<p>client: ESTABLISHED -&gt; FIN_WAIT_1 -&gt; FIN_WAIT_2 -&gt; TIME_WAIT -&gt; CLOSE</p>
+<p>server: ESTABLISHED -&gt; CLOSE_WAIT -&gt; LAST_ACK -&gt; CLOSE</p>
+<p>客户端的CLOSE是超时后自己CLOSE的</p>
+<p>服务端的CLOSE_WAIT到CLOSE有一个中间状态LAST_ACK</p>
+<h3 id="wireshark抓包演示-1"><a href="#wireshark抓包演示-1" class="headerlink" title="wireshark抓包演示"></a>wireshark抓包演示</h3><p><img src="http://odh5je629.bkt.clouddn.com/2017072873238screenshot_107.png" alt="2017072873238screenshot_107.png"></p>
+<p>发现实际服务端响应客户端FIN包的ACK和FIN其实都放到了一个包里面，感觉这里好奇怪，如果这样，客户端的FIN_WAIT_1和FIN_WAIT_2为什么不能合并为一个状态？服务端的CLOSE_WAIT和LAST_ACK也可以合并为一个状态？</p>
+<h2 id="TCP-KEEPALIVE"><a href="#TCP-KEEPALIVE" class="headerlink" title="TCP KEEPALIVE"></a>TCP KEEPALIVE</h2><p>这是TCP协议栈为了检测 socket 连接状况的保活机制，当TCP空闲一定时间后会发送心跳包给对方，如果对端回复ACK后，就认为对端是存活的，重置定时器，如果对端回复RST应答（对端崩溃或者其他原因，导致的复位），那就关闭该连接</p>
+<p>如果对端无任何回应，那就会出发超时重传，直到达到重传的次数，如果对端依然没有回复，那么就关闭该连接</p>
+<h2 id="TCP相关命令"><a href="#TCP相关命令" class="headerlink" title="TCP相关命令"></a>TCP相关命令</h2><p>查看所有端口TCP状态汇总列表</p>
+<p><code>netstat -n | awk &#39;/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}&#39;</code></p>
+<h1 id="UDP协议"><a href="#UDP协议" class="headerlink" title="UDP协议"></a>UDP协议</h1><p>UDP中文名是用户数据报协议，是一种无连接的传输层协议，提供面向事务的简单不可靠信息传送服务</p>
+<p>特点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.不稳定</span><br><span class="line">2.速度快</span><br><span class="line">3.可广播</span><br><span class="line">4.一般数据包限定64KB之内</span><br><span class="line">5.先发未必先至</span><br></pre></td></tr></table></figure>
+<p>UDP主要只分析他的报文</p>
+<h2 id="UDP报文分析"><a href="#UDP报文分析" class="headerlink" title="UDP报文分析"></a>UDP报文分析</h2><p><img src="http://odh5je629.bkt.clouddn.com/20170728492371228431-3c18c75153d70036.png" alt="20170728492371228431-3c18c75153d70036.png"></p>
+<h1 id="实际应用场景"><a href="#实际应用场景" class="headerlink" title="实际应用场景"></a>实际应用场景</h1><h2 id="TCP应用场景"><a href="#TCP应用场景" class="headerlink" title="TCP应用场景"></a>TCP应用场景</h2><p>效率要求相对低，但对准确性要求相对高的场景。因为传输中需要对数据确认、重发、排序等操作，相比之下效率没有UDP高。举几个例子：文件传输（准确高要求高、但是速度可以相对慢）、接受邮件、远程登录。</p>
+<h2 id="UDP应用场景"><a href="#UDP应用场景" class="headerlink" title="UDP应用场景"></a>UDP应用场景</h2><p>效率要求相对高，对准确性要求相对低的场景。举几个例子：QQ聊天、在线视频、网络语音电话（即时通讯，速度要求高，但是出现偶尔断续不是太大问题，并且此处完全不可以使用重发机制）、广播通信（广播、多播）</p>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>我通常是这么理解的 socket 是对 tcp/ip 协议的一层封装，ssl/tls 协议是安全传输层加密协议，是确保数据传输安全的</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.jianshu.com/p/0af43703f416" target="_blank" rel="noopener">http://www.jianshu.com/p/0af43703f416</a></p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2016/12/28/docs/15356101139150/">TCP，UDP协议学习</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2016/12/28/docs/15356101139150/" title="TCP，UDP协议学习">https://hubinwei.me/2016/12/28/docs/15356101139150/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tcp三次握手/" rel="tag"># tcp三次握手</a>
+          
+            <a href="/tags/udp协议分析/" rel="tag"># udp协议分析</a>
+          
+            <a href="/tags/OSI七层模型/" rel="tag"># OSI七层模型</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/28/TCP，UDP协议学习/" rel="next" title="TCP，UDP协议学习">
+                <i class="fa fa-chevron-left"></i> TCP，UDP协议学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/28/docs/15356101139407/" rel="prev" title="python库分析之socket编程和系统调用">
+                python库分析之socket编程和系统调用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#OSI七层模型"><span class="nav-number">1.</span> <span class="nav-text">OSI七层模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP协议"><span class="nav-number">2.</span> <span class="nav-text">TCP协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP报文分析"><span class="nav-number">2.1.</span> <span class="nav-text">TCP报文分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#报文格式分析"><span class="nav-number">2.1.1.</span> <span class="nav-text">报文格式分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编码位列表说明"><span class="nav-number">2.1.2.</span> <span class="nav-text">编码位列表说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wireshark抓包演示"><span class="nav-number">2.1.3.</span> <span class="nav-text">wireshark抓包演示</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP端口状态说明"><span class="nav-number">2.2.</span> <span class="nav-text">TCP端口状态说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP三次握手"><span class="nav-number">2.3.</span> <span class="nav-text">TCP三次握手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP四次挥手"><span class="nav-number">2.4.</span> <span class="nav-text">TCP四次挥手</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#wireshark抓包演示-1"><span class="nav-number">2.4.1.</span> <span class="nav-text">wireshark抓包演示</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-KEEPALIVE"><span class="nav-number">2.5.</span> <span class="nav-text">TCP KEEPALIVE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP相关命令"><span class="nav-number">2.6.</span> <span class="nav-text">TCP相关命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UDP协议"><span class="nav-number">3.</span> <span class="nav-text">UDP协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP报文分析"><span class="nav-number">3.1.</span> <span class="nav-text">UDP报文分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实际应用场景"><span class="nav-number">4.</span> <span class="nav-text">实际应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP应用场景"><span class="nav-number">4.1.</span> <span class="nav-text">TCP应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP应用场景"><span class="nav-number">4.2.</span> <span class="nav-text">UDP应用场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他"><span class="nav-number">5.</span> <span class="nav-text">其他</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2016/12/28/docs/15356101139150/';
+
+      var disqus_title = "TCP，UDP协议学习";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

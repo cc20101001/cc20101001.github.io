@@ -1,0 +1,893 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="网络,内网穿透,反向代理," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言公司采用公有云和私有云的部署方案，最近需要我来做一个公有云和私有云部署的对接测试，但是私有云环境那边流程太麻烦了，又是申请公网ip，又是备案，又是审批流程什么的，麻烦死了，这不，我已经卡了两天了，还不知道什么时候能下来，还不能预测后面会碰到的问题 我想做什么1.私有云环境是在内网里面，内网里面有一台机器可以访问外网 2.公有云部署的测试环境在我的虚拟机里面 3.我想把他们打通，让他们能通信，方">
+<meta name="keywords" content="网络,内网穿透,反向代理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="frp打洞公有云私有云对接初探">
+<meta property="og:url" content="https://hubinwei.me/2018/06/05/docs/15356101139935/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言公司采用公有云和私有云的部署方案，最近需要我来做一个公有云和私有云部署的对接测试，但是私有云环境那边流程太麻烦了，又是申请公网ip，又是备案，又是审批流程什么的，麻烦死了，这不，我已经卡了两天了，还不知道什么时候能下来，还不能预测后面会碰到的问题 我想做什么1.私有云环境是在内网里面，内网里面有一台机器可以访问外网 2.公有云部署的测试环境在我的虚拟机里面 3.我想把他们打通，让他们能通信，方">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-30T06:21:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="frp打洞公有云私有云对接初探">
+<meta name="twitter:description" content="前言公司采用公有云和私有云的部署方案，最近需要我来做一个公有云和私有云部署的对接测试，但是私有云环境那边流程太麻烦了，又是申请公网ip，又是备案，又是审批流程什么的，麻烦死了，这不，我已经卡了两天了，还不知道什么时候能下来，还不能预测后面会碰到的问题 我想做什么1.私有云环境是在内网里面，内网里面有一台机器可以访问外网 2.公有云部署的测试环境在我的虚拟机里面 3.我想把他们打通，让他们能通信，方">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2018/06/05/docs/15356101139935/"/>
+
+
+
+
+
+  <title> frp打洞公有云私有云对接初探 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2018/06/05/docs/15356101139935/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                frp打洞公有云私有云对接初探
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-05T08:48:09+08:00">
+                2018-06-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web开发通用/" itemprop="url" rel="index">
+                    <span itemprop="name">web开发通用</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/06/05/docs/15356101139935/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/06/05/docs/15356101139935/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>公司采用公有云和私有云的部署方案，最近需要我来做一个公有云和私有云部署的对接测试，但是私有云环境那边流程太麻烦了，又是申请公网ip，又是备案，又是审批流程什么的，麻烦死了，这不，我已经卡了两天了，还不知道什么时候能下来，还不能预测后面会碰到的问题</p>
+<h1 id="我想做什么"><a href="#我想做什么" class="headerlink" title="我想做什么"></a>我想做什么</h1><p>1.私有云环境是在内网里面，内网里面有一台机器可以访问外网</p>
+<p>2.公有云部署的测试环境在我的虚拟机里面</p>
+<p>3.我想把他们打通，让他们能通信，方便我做部署测试</p>
+<h1 id="怎么做"><a href="#怎么做" class="headerlink" title="怎么做"></a>怎么做</h1><p>第一反应当然是内网穿透，那就需要一台公网机器，这个好解决，我调查了一下内网穿透方案，传统的如花生壳，新型的 ngrok 都验证过方案是可行的，但是感觉都不怎么好用，发现一个新工具 frp 还不错，据说是一个人不满 ngrok 作者荒废项目，更新太慢自己重写的，听起来不明觉厉</p>
+<h1 id="开始做"><a href="#开始做" class="headerlink" title="开始做"></a>开始做</h1><p>问题知道了，方案也有了，剩下的就是实施了，这个相对容易，这里主要记录一下 frp 的使用特性和配置方法吧，方便下次再用回头翻</p>
+<p>首先奉上 frp 项目 github 地址 <code>https://github.com/fatedier/frp/</code>，项目介绍，frp 是一个可用于内网穿透的高性能的反向代理应用，支持 tcp, udp, http, https 协议，配置也很简单</p>
+<h2 id="公网服务器完整配置-server"><a href="#公网服务器完整配置-server" class="headerlink" title="公网服务器完整配置(server)"></a>公网服务器完整配置(server)</h2><p>要想把内网服务代理到公网，我们需要一台公网服务器，方便一些打洞时候必要数据校验和传输，启动命令非常简单 <code>./frps -c frps.ini</code>，完整配置文件及注释如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"># [common] is integral section</span><br><span class="line">[common]</span><br><span class="line"># A literal address or host name for IPv6 must be enclosed</span><br><span class="line"># in square brackets, as in &quot;[::1]:80&quot;, &quot;[ipv6-host]:http&quot; or &quot;[ipv6-host%zone]:80&quot;</span><br><span class="line">bind_addr = 0.0.0.0 # 公网服务器ip地址</span><br><span class="line">bind_port = 7000 # 公网服务器和打洞服务器，打洞数据传输端口</span><br><span class="line"></span><br><span class="line"># udp port to help make udp hole to penetrate nat</span><br><span class="line">bind_udp_port = 7001</span><br><span class="line"></span><br><span class="line"># udp port used for kcp protocol, it can be same with &apos;bind_port&apos;</span><br><span class="line"># if not set, kcp is disabled in frps</span><br><span class="line">kcp_bind_port = 7000</span><br><span class="line"></span><br><span class="line"># specify which address proxy will listen for, default value is same with bind_addr</span><br><span class="line"># proxy_bind_addr = 127.0.0.1</span><br><span class="line"></span><br><span class="line"># if you want to support virtual host, you must set the http port for listening (optional)</span><br><span class="line"># Note: http port and https port can be same with bind_port</span><br><span class="line">vhost_http_port = 80    #公网服务器对外http访问接口</span><br><span class="line">vhost_https_port = 443      #公网服务器对外https访问接口</span><br><span class="line"></span><br><span class="line"># set dashboard_addr and dashboard_port to view dashboard of frps</span><br><span class="line"># dashboard_addr&apos;s default value is same with bind_addr</span><br><span class="line"># dashboard is available only if dashboard_port is set</span><br><span class="line">dashboard_addr = 0.0.0.0</span><br><span class="line">dashboard_port = 7500</span><br><span class="line"></span><br><span class="line"># dashboard user and passwd for basic auth protect, if not set, both default value is admin</span><br><span class="line">dashboard_user = admin</span><br><span class="line">dashboard_pwd = admin</span><br><span class="line"></span><br><span class="line"># dashboard assets directory(only for debug mode)</span><br><span class="line"># assets_dir = ./static</span><br><span class="line"># console or real logFile path like ./frps.log</span><br><span class="line">log_file = ./frps.log</span><br><span class="line"></span><br><span class="line"># trace, debug, info, warn, error</span><br><span class="line">log_level = info</span><br><span class="line"></span><br><span class="line">log_max_days = 3</span><br><span class="line"></span><br><span class="line"># auth token</span><br><span class="line">token = 12345678</span><br><span class="line"></span><br><span class="line"># heartbeat configure, it&apos;s not recommended to modify the default value</span><br><span class="line"># the default value of heartbeat_timeout is 90</span><br><span class="line"># heartbeat_timeout = 90</span><br><span class="line"></span><br><span class="line"># only allow frpc to bind ports you list, if you set nothing, there won&apos;t be any limit</span><br><span class="line">allow_ports = 2000-3000,3001,3003,4000-50000</span><br><span class="line"></span><br><span class="line"># pool_count in each proxy will change to max_pool_count if they exceed the maximum value</span><br><span class="line">max_pool_count = 5</span><br><span class="line"></span><br><span class="line"># max ports can be used for each client, default value is 0 means no limit</span><br><span class="line">max_ports_per_client = 0</span><br><span class="line"></span><br><span class="line"># authentication_timeout means the timeout interval (seconds) when the frpc connects frps</span><br><span class="line"># if authentication_timeout is zero, the time is not verified, default is 900s</span><br><span class="line">authentication_timeout = 900</span><br><span class="line"></span><br><span class="line"># if subdomain_host is not empty, you can set subdomain when type is http or https in frpc&apos;s configure file</span><br><span class="line"># when subdomain is test, the host used by routing is test.frps.com</span><br><span class="line">subdomain_host = frps.com</span><br><span class="line"></span><br><span class="line"># if tcp stream multiplexing is used, default is true</span><br><span class="line">tcp_mux = true</span><br></pre></td></tr></table></figure>
+<h2 id="打洞服务器完整配置（client）"><a href="#打洞服务器完整配置（client）" class="headerlink" title="打洞服务器完整配置（client）"></a>打洞服务器完整配置（client）</h2><p>打洞服务器指的是内网中一台有外网访问权限的服务器，我们通过他来做反向代理服务器，把外网过来的请求，转发到内网中的服务器，启动命令非常简单 <code>./frpc -c frpc.ini</code>，完整配置文件及注释如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br></pre></td><td class="code"><pre><span class="line"># [common] is integral section</span><br><span class="line">[common]</span><br><span class="line"># A literal address or host name for IPv6 must be enclosed</span><br><span class="line"># in square brackets, as in &quot;[::1]:80&quot;, &quot;[ipv6-host]:http&quot; or &quot;[ipv6-host%zone]:80&quot;</span><br><span class="line">server_addr = 0.0.0.0   # 公网服务器ip</span><br><span class="line">server_port = 7000  # 公网服务器和打洞服务器，打洞数据传输端口</span><br><span class="line"></span><br><span class="line"># if you want to connect frps by http proxy or socks5 proxy, you can set http_proxy here or in global environment variables</span><br><span class="line"># it only works when protocol is tcp</span><br><span class="line"># http_proxy = http://user:passwd@192.168.1.128:8080</span><br><span class="line"># http_proxy = socks5://user:passwd@192.168.1.128:1080</span><br><span class="line"></span><br><span class="line"># console or real logFile path like ./frpc.log</span><br><span class="line">log_file = ./frpc.log</span><br><span class="line"></span><br><span class="line"># trace, debug, info, warn, error</span><br><span class="line">log_level = info</span><br><span class="line"></span><br><span class="line">log_max_days = 3</span><br><span class="line"></span><br><span class="line"># for authentication</span><br><span class="line">token = 12345678</span><br><span class="line"></span><br><span class="line"># set admin address for control frpc&apos;s action by http api such as reload</span><br><span class="line">admin_addr = 127.0.0.1</span><br><span class="line">admin_port = 7400</span><br><span class="line">admin_user = admin</span><br><span class="line">admin_passwd = admin</span><br><span class="line"></span><br><span class="line"># connections will be established in advance, default value is zero</span><br><span class="line">pool_count = 5</span><br><span class="line"></span><br><span class="line"># if tcp stream multiplexing is used, default is true, it must be same with frps</span><br><span class="line">tcp_mux = true</span><br><span class="line"></span><br><span class="line"># your proxy name will be changed to &#123;user&#125;.&#123;proxy&#125;</span><br><span class="line">user = your_name</span><br><span class="line"></span><br><span class="line"># decide if exit program when first login failed, otherwise continuous relogin to frps</span><br><span class="line"># default is true</span><br><span class="line">login_fail_exit = true</span><br><span class="line"></span><br><span class="line"># communication protocol used to connect to server</span><br><span class="line"># now it supports tcp and kcp, default is tcp</span><br><span class="line">protocol = tcp</span><br><span class="line"></span><br><span class="line"># specify a dns server, so frpc will use this instead of default one</span><br><span class="line"># dns_server = 8.8.8.8</span><br><span class="line"></span><br><span class="line"># proxy names you want to start divided by &apos;,&apos;</span><br><span class="line"># default is empty, means all proxies</span><br><span class="line"># start = ssh,dns</span><br><span class="line"></span><br><span class="line"># heartbeat configure, it&apos;s not recommended to modify the default value</span><br><span class="line"># the default value of heartbeat_interval is 10 and heartbeat_timeout is 90</span><br><span class="line"># heartbeat_interval = 30</span><br><span class="line"># heartbeat_timeout = 90</span><br><span class="line"></span><br><span class="line"># &apos;ssh&apos; is the unique proxy name</span><br><span class="line"># if user in [common] section is not empty, it will be changed to &#123;user&#125;.&#123;proxy&#125; such as &apos;your_name.ssh&apos;</span><br><span class="line">[ssh]</span><br><span class="line"># tcp | udp | http | https | stcp | xtcp, default is tcp</span><br><span class="line">type = tcp</span><br><span class="line">local_ip = 127.0.0.1    # 公网服务器6001端口数据被影射到内网 127.0.0.1 机器</span><br><span class="line">local_port = 22     #   公网服务器6001端口被影射到22端口</span><br><span class="line"># true or false, if true, messages between frps and frpc will be encrypted, default is false</span><br><span class="line">use_encryption = false</span><br><span class="line"># if true, message will be compressed</span><br><span class="line">use_compression = false</span><br><span class="line"># remote port listen by frps</span><br><span class="line">remote_port = 6001  # 在公网服务器的端口映射</span><br><span class="line"># frps will load balancing connections for proxies in same group</span><br><span class="line">group = test_group</span><br><span class="line"># group should have same group key</span><br><span class="line">group_key = 123456</span><br><span class="line"></span><br><span class="line">[ssh_random]</span><br><span class="line">type = tcp</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 22</span><br><span class="line"># if remote_port is 0, frps will assign a random port for you</span><br><span class="line">remote_port = 0</span><br><span class="line"></span><br><span class="line"># if you want to expose multiple ports, add &apos;range:&apos; prefix to the section name</span><br><span class="line"># frpc will generate multiple proxies such as &apos;tcp_port_6010&apos;, &apos;tcp_port_6011&apos; and so on.</span><br><span class="line">[range:tcp_port]    # 支持纯 tcp 数据转发</span><br><span class="line">type = tcp  # 转发的协议类型</span><br><span class="line">local_ip = 127.0.0.1    # 转发到的内网ip地址</span><br><span class="line">local_port = 6010-6020,6022,6024-6028   # 转发到的内网端口</span><br><span class="line">remote_port = 6010-6020,6022,6024-6028  # 外网监听的端口</span><br><span class="line">use_encryption = false</span><br><span class="line">use_compression = false</span><br><span class="line"></span><br><span class="line">[dns]   # 支持 dns 数据代理</span><br><span class="line">type = udp</span><br><span class="line">local_ip = 114.114.114.114</span><br><span class="line">local_port = 53</span><br><span class="line">remote_port = 6002</span><br><span class="line">use_encryption = false</span><br><span class="line">use_compression = false</span><br><span class="line"></span><br><span class="line">[range:udp_port]</span><br><span class="line">type = udp</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 6010-6020</span><br><span class="line">remote_port = 6010-6020</span><br><span class="line">use_encryption = false</span><br><span class="line">use_compression = false</span><br><span class="line"></span><br><span class="line"># Resolve your domain names to [server_addr] so you can use http://web01.yourdomain.com to browse web01 and http://web02.yourdomain.com to browse web02</span><br><span class="line">[web01] # 支持 http，https数据转发</span><br><span class="line">type = http</span><br><span class="line">local_ip = 127.0.0.1    # 被转发到 127.0.0.1 地址</span><br><span class="line">local_port = 80 # 数据被转发到 80 端口</span><br><span class="line">use_encryption = false</span><br><span class="line">use_compression = true</span><br><span class="line"># http username and password are safety certification for http protocol</span><br><span class="line"># if not set, you can access this custom_domains without certification</span><br><span class="line">http_user = admin</span><br><span class="line">http_pwd = admin</span><br><span class="line"># if domain for frps is frps.com, then you can access [web01] proxy by URL http://test.frps.com</span><br><span class="line">subdomain = web01</span><br><span class="line">custom_domains = web02.yourdomain.com   # 支持域名绑定，外网ip对应 web02.yourdomain.com 域名的请求被转发过来</span><br><span class="line"># locations is only available for http type</span><br><span class="line">locations = /,/pic</span><br><span class="line">host_header_rewrite = example.com</span><br><span class="line"># params with prefix &quot;header_&quot; will be used to update http request headers</span><br><span class="line">header_X-From-Where = frp</span><br><span class="line"></span><br><span class="line">[web02]</span><br><span class="line">type = https</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 8000</span><br><span class="line">use_encryption = false</span><br><span class="line">use_compression = false</span><br><span class="line">subdomain = web01</span><br><span class="line">custom_domains = web02.yourdomain.com</span><br><span class="line"></span><br><span class="line">[plugin_unix_domain_socket]</span><br><span class="line">type = tcp</span><br><span class="line">remote_port = 6003</span><br><span class="line"># if plugin is defined, local_ip and local_port is useless</span><br><span class="line"># plugin will handle connections got from frps</span><br><span class="line">plugin = unix_domain_socket</span><br><span class="line"># params with prefix &quot;plugin_&quot; that plugin needed</span><br><span class="line">plugin_unix_path = /var/run/docker.sock</span><br><span class="line"></span><br><span class="line">[plugin_http_proxy]</span><br><span class="line">type = tcp</span><br><span class="line">remote_port = 6004</span><br><span class="line">plugin = http_proxy</span><br><span class="line">plugin_http_user = abc</span><br><span class="line">plugin_http_passwd = abc</span><br><span class="line"></span><br><span class="line">[plugin_socks5]</span><br><span class="line">type = tcp</span><br><span class="line">remote_port = 6005</span><br><span class="line">plugin = socks5</span><br><span class="line">plugin_user = abc</span><br><span class="line">plugin_passwd = abc</span><br><span class="line"></span><br><span class="line">[plugin_static_file]</span><br><span class="line">type = tcp</span><br><span class="line">remote_port = 6006</span><br><span class="line">plugin = static_file</span><br><span class="line">plugin_local_path = /var/www/blog</span><br><span class="line">plugin_strip_prefix = static</span><br><span class="line">plugin_http_user = abc</span><br><span class="line">plugin_http_passwd = abc</span><br><span class="line"></span><br><span class="line">[secret_tcp]</span><br><span class="line"># If the type is secret tcp, remote_port is useless</span><br><span class="line"># Who want to connect local port should deploy another frpc with stcp proxy and role is visitor</span><br><span class="line">type = stcp</span><br><span class="line"># sk used for authentication for visitors</span><br><span class="line">sk = abcdefg</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 22</span><br><span class="line">use_encryption = false</span><br><span class="line">use_compression = false</span><br><span class="line"></span><br><span class="line"># user of frpc should be same in both stcp server and stcp visitor</span><br><span class="line">[secret_tcp_visitor]</span><br><span class="line"># frpc role visitor -&gt; frps -&gt; frpc role server</span><br><span class="line">role = visitor</span><br><span class="line">type = stcp</span><br><span class="line"># the server name you want to visitor</span><br><span class="line">server_name = secret_tcp</span><br><span class="line">sk = abcdefg</span><br><span class="line"># connect this address to visitor stcp server</span><br><span class="line">bind_addr = 127.0.0.1</span><br><span class="line">bind_port = 9000</span><br><span class="line">use_encryption = false</span><br><span class="line">use_compression = false</span><br><span class="line"></span><br><span class="line">[p2p_tcp]</span><br><span class="line">type = xtcp</span><br><span class="line">sk = abcdefg</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 22</span><br><span class="line">use_encryption = false</span><br><span class="line">use_compression = false</span><br><span class="line"></span><br><span class="line">[p2p_tcp_visitor]</span><br><span class="line">role = visitor</span><br><span class="line">type = xtcp</span><br><span class="line">server_name = p2p_tcp</span><br><span class="line">sk = abcdefg</span><br><span class="line">bind_addr = 127.0.0.1</span><br><span class="line">bind_port = 9001</span><br><span class="line">use_encryption = false</span><br><span class="line">use_compression = false</span><br></pre></td></tr></table></figure>
+<h1 id="其他案列"><a href="#其他案列" class="headerlink" title="其他案列"></a>其他案列</h1><p>我需要给外网同事传输一个很大的文件，用 qq 和 百度云 的实测效果都不好，于是我用 frp 做了一个 tcp 穿透，然后用一台公网服务器做代理，效果杠杠的，爽爆，速度从之前的 200kb/s， 提升到了 3 Mb/s</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>外网服务器请求被转发到内网打洞服务器，然后打洞服务器反向代理到内网服务器，如果你的公有云和私有云内网服务器都不能访问外网，还需要两边都做代理，也就是公有云，私有云，两边都需要打洞，请求走公网服务器做中转</p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2018/06/05/docs/15356101139935/">frp打洞公有云私有云对接初探</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2018/06/05/docs/15356101139935/" title="frp打洞公有云私有云对接初探">https://hubinwei.me/2018/06/05/docs/15356101139935/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/网络/" rel="tag"># 网络</a>
+          
+            <a href="/tags/内网穿透/" rel="tag"># 内网穿透</a>
+          
+            <a href="/tags/反向代理/" rel="tag"># 反向代理</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/05/frp打洞公有云私有云对接初探/" rel="next" title="frp打洞公有云私有云对接初探">
+                <i class="fa fa-chevron-left"></i> frp打洞公有云私有云对接初探
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/15/docs/15356101139355/" rel="prev" title="mysql日常运维">
+                mysql日常运维 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#我想做什么"><span class="nav-number">2.</span> <span class="nav-text">我想做什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#怎么做"><span class="nav-number">3.</span> <span class="nav-text">怎么做</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开始做"><span class="nav-number">4.</span> <span class="nav-text">开始做</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#公网服务器完整配置-server"><span class="nav-number">4.1.</span> <span class="nav-text">公网服务器完整配置(server)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#打洞服务器完整配置（client）"><span class="nav-number">4.2.</span> <span class="nav-text">打洞服务器完整配置（client）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他案列"><span class="nav-number">5.</span> <span class="nav-text">其他案列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2018/06/05/docs/15356101139935/';
+
+      var disqus_title = "frp打洞公有云私有云对接初探";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

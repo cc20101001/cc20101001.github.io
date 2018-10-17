@@ -1,0 +1,934 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python,python常用技巧,python库分析,threading,线程," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言python的锁和其他语言的锁看起来没啥区别，使用过程如下  找出临界区  加锁  执行业务代码  释放锁   threading 封装的 Lock 对象可以和 with 语法一起使用，内置了对上下文的处理，来自动获取锁（acquire）和释放锁（release），而不需要我们去操作什么，非常便捷。简单程序中，一般一个线程一次也只能获取一个锁，threading 模块也提供了层级更高的源语如">
+<meta name="keywords" content="python,python常用技巧,python库分析,threading,线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python模块分析之threading-锁">
+<meta property="og:url" content="https://hubinwei.me/2017/09/28/docs/15356101137963/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言python的锁和其他语言的锁看起来没啥区别，使用过程如下  找出临界区  加锁  执行业务代码  释放锁   threading 封装的 Lock 对象可以和 with 语法一起使用，内置了对上下文的处理，来自动获取锁（acquire）和释放锁（release），而不需要我们去操作什么，非常便捷。简单程序中，一般一个线程一次也只能获取一个锁，threading 模块也提供了层级更高的源语如">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-30T06:21:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python模块分析之threading-锁">
+<meta name="twitter:description" content="前言python的锁和其他语言的锁看起来没啥区别，使用过程如下  找出临界区  加锁  执行业务代码  释放锁   threading 封装的 Lock 对象可以和 with 语法一起使用，内置了对上下文的处理，来自动获取锁（acquire）和释放锁（release），而不需要我们去操作什么，非常便捷。简单程序中，一般一个线程一次也只能获取一个锁，threading 模块也提供了层级更高的源语如">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/09/28/docs/15356101137963/"/>
+
+
+
+
+
+  <title> python模块分析之threading-锁 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/09/28/docs/15356101137963/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                python模块分析之threading-锁
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-28T11:22:31+08:00">
+                2017-09-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/python库分析/" itemprop="url" rel="index">
+                    <span itemprop="name">python库分析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/28/docs/15356101137963/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/09/28/docs/15356101137963/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>python的锁和其他语言的锁看起来没啥区别，使用过程如下</p>
+<ol>
+<li><p>找出临界区</p>
+</li>
+<li><p>加锁</p>
+</li>
+<li><p>执行业务代码</p>
+</li>
+<li><p>释放锁</p>
+</li>
+</ol>
+<p>threading 封装的 Lock 对象可以和 with 语法一起使用，内置了对上下文的处理，来自动获取锁（acquire）和释放锁（release），而不需要我们去操作什么，非常便捷。简单程序中，一般一个线程一次也只能获取一个锁，threading 模块也提供了层级更高的源语如 RLock 和 Semaphore 对象，但简单场景中一般不会用到。</p>
+<h1 id="锁的基础示例"><a href="#锁的基础示例" class="headerlink" title="锁的基础示例"></a>锁的基础示例</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">__author__ = <span class="string">"hbw"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Lock</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">thread_1</span><span class="params">(people, lock)</span>:</span></span><br><span class="line">    lock.acquire()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"1"</span></span><br><span class="line">    people[<span class="string">"name"</span>] = <span class="string">"name_1"</span></span><br><span class="line">    <span class="keyword">print</span> people</span><br><span class="line">    lock.release()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">thread_2</span><span class="params">(people, lock)</span>:</span></span><br><span class="line">    lock.acquire()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"2"</span></span><br><span class="line">    people[<span class="string">"name"</span>] = <span class="string">"name_2"</span></span><br><span class="line">    <span class="keyword">print</span> people</span><br><span class="line">    lock.release()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">people = &#123;<span class="string">"name"</span>: <span class="string">"name"</span>&#125;</span><br><span class="line">lock_obj = Lock()</span><br><span class="line"></span><br><span class="line">thread_1 = Thread(target=thread_1, args=(people, lock_obj,))</span><br><span class="line">thread_2 = Thread(target=thread_2, args=(people, lock_obj,))</span><br><span class="line">thread_1.start()</span><br><span class="line">thread_2.start()</span><br></pre></td></tr></table></figure>
+<p>这是一个最简单的锁例子，在两个线程中都会访问 people 对象，通过加锁保证了只有一个线程中流程跑完了才会处理下一个线程中的people数据，其中 lock.acquire() 可以用 with 语句替换，自己测试</p>
+<h1 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h1><p>多线程编程环境中出现死锁的原因是因为一个线程拿到了锁但是没释放，从而阻塞了其它线程 acquire 这个锁，导致了死锁。</p>
+<p>我们再深入一点，多线程编程环境中出现死锁的原因是因为多线程编程环境里，一个线程里面拿了多个锁，多个锁又会在其它线程里面被不同顺序调用（在A线程中先调用a锁然后调用b锁，而在b线程中调用b锁然后再调用a锁，导致A线程中等待b锁而B线程中等待a锁），并且使用不合理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">__author__ = <span class="string">"hbw"</span></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Lock</span><br><span class="line"></span><br><span class="line">lock_a = Lock()</span><br><span class="line">lock_b = Lock()</span><br><span class="line">lock_c = Lock()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func_1</span><span class="params">(a, b, c)</span>:</span></span><br><span class="line">    a.acquire()</span><br><span class="line">    time.sleep(<span class="number">10</span>)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"wait for b lock"</span></span><br><span class="line">    b.acquire()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"get b lock"</span></span><br><span class="line">    b.release()</span><br><span class="line">    a.release()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func_2</span><span class="params">(a, b, c)</span>:</span></span><br><span class="line">    b.acquire()</span><br><span class="line">    time.sleep(<span class="number">10</span>)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"wait for a lock"</span></span><br><span class="line">    a.acquire()</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"get a lock"</span></span><br><span class="line">    a.release()</span><br><span class="line">    b.release()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">thread_1 = Thread(target=func_1, args=(lock_a, lock_b, lock_c,))</span><br><span class="line">thread_2 = Thread(target=func_2, args=(lock_a, lock_b, lock_c,))</span><br><span class="line"></span><br><span class="line">thread_1.start()</span><br><span class="line">thread_2.start()</span><br></pre></td></tr></table></figure>
+<p>这就是一段活生生的死锁代码，可以看出只要一个线程里面同时acquire了多个锁啥事情都可能发生（如果只是普通的互斥锁Lock，一个线程内多次获取互斥锁也会导致死锁，这个问题可以用可重入锁RLock来解决问题）</p>
+<h1 id="死锁的必要条件"><a href="#死锁的必要条件" class="headerlink" title="死锁的必要条件"></a>死锁的必要条件</h1><p>想解决死锁问题，先需要了解为什么会造成死锁，造成死锁的原因，需要满足如下四个必要条件:</p>
+<p>1)互斥条件: 在一段时间内，某资源只能被一个线程占用。如果此时还有其他线程请求该资源，则请求资源只能等待，直至占有该资源的进程用毕释放</p>
+<p>2)请求和保持条件: 线程已经保持了至少一个资源，但又提出了新的资源请求，而该资源已经被其他线程占有，此时请求线程被保持，但对自己所获得的资源又保持不放.</p>
+<p>3)不可抢占条件:线程已获得的资源在未使用完之前不可被抢占，只能在使用完成后自己释放</p>
+<p>4)环路等待:在发生死锁时，必然存在一个线程，资源的循环链</p>
+<h1 id="如何解决死锁"><a href="#如何解决死锁" class="headerlink" title="如何解决死锁"></a>如何解决死锁</h1><p>解决死锁没有优雅的解决方案，需要和死锁死磕到底，解决死锁问题最常用的思路是：</p>
+<p>1.避免使用多线程，能单线程解决的就单线程解决</p>
+<p>2.让一个线程在同一个时刻只有一个锁在被使用</p>
+<p>3.如果在一个线程中同一个时刻有多锁在被使用，遵循先调用的锁先释放原则</p>
+<p>4.采用对锁的排序调用策略来避免不同线程中对锁的反序调用。如果他需要同时操作多个锁，可以为程序中的每一个锁分配一个唯一的 id，然后线程中只允许按照升序规则来使用多个锁，这样可以保障第二次操作的锁的 id 是大于之前操作的那个锁（锁的 id 顺序排列），从而避免了锁的反序调用</p>
+<p>5.使用看门狗计数器，这个方法比较绝，每隔一段时间重置一下计数器，当有死锁的时候计数器重置会被阻塞，从而超时，这个时候通过程序自身重启恢复到正常状态</p>
+<p>6.银行家算法</p>
+<h1 id="排序调用算法避免死锁代码示例"><a href="#排序调用算法避免死锁代码示例" class="headerlink" title="排序调用算法避免死锁代码示例"></a>排序调用算法避免死锁代码示例</h1><p>环境介绍</p>
+<p>1.多线程环境</p>
+<p>2.每个线程需要使用多个锁</p>
+<p>3.采用对锁的对象id排序调用策略（这种方法不优雅但是可以解决问题）</p>
+<p>4.锁的反序调用检测</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">__author__ = <span class="string">"hbw"</span></span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Lock</span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"><span class="keyword">from</span> contextlib <span class="keyword">import</span> contextmanager</span><br><span class="line"></span><br><span class="line">lock_a = Lock()</span><br><span class="line">lock_b = Lock()</span><br><span class="line">lock_c = Lock()</span><br><span class="line"></span><br><span class="line">_local = threading.local()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@contextmanager</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">acquire</span><span class="params">(*locks)</span>:</span></span><br><span class="line">    print(<span class="string">"acquire &#123;&#125;"</span>.format(threading.current_thread()))</span><br><span class="line">    locks = sorted(locks, key=<span class="keyword">lambda</span> lock_t: id(lock_t))</span><br><span class="line">    acquired = getattr(_local, <span class="string">'acquired'</span>, [])</span><br><span class="line">    <span class="keyword">if</span> acquired <span class="keyword">and</span> id(locks[<span class="number">0</span>]) &lt;= id(acquired[<span class="number">-1</span>]):</span><br><span class="line">        print(<span class="string">"Exception &#123;&#125;"</span>.format(threading.current_thread()))</span><br><span class="line">        <span class="keyword">raise</span> Exception</span><br><span class="line">    acquired.extend(locks)</span><br><span class="line">    <span class="comment"># 存放当前线程，锁的调用堆栈</span></span><br><span class="line">    _local.acquired = acquired</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">for</span> index, lock <span class="keyword">in</span> enumerate(locks):</span><br><span class="line">            lock.acquire()</span><br><span class="line">        <span class="keyword">yield</span></span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        <span class="keyword">for</span> lock <span class="keyword">in</span> reversed(locks):</span><br><span class="line">            lock.release()</span><br><span class="line">        <span class="comment"># 当前临界区代码执行完毕需要清除调用堆栈</span></span><br><span class="line">        <span class="keyword">del</span> acquired[-len(locks):]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func_1</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">with</span> acquire(lock_a, lock_b):</span><br><span class="line">        <span class="keyword">with</span> acquire(lock_c):</span><br><span class="line">            print(<span class="string">"func_1"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func_2</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">with</span> acquire(lock_c, lock_b):</span><br><span class="line">        <span class="keyword">with</span> acquire(lock_a):</span><br><span class="line">            print(<span class="string">"func_2"</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print(lock_a, lock_b, lock_c)</span><br><span class="line">lock_list = sorted([lock_a, lock_b, lock_c], key=<span class="keyword">lambda</span> lock: id(lock))</span><br><span class="line"><span class="keyword">for</span> lock <span class="keyword">in</span> lock_list:</span><br><span class="line">    print(lock)</span><br><span class="line"></span><br><span class="line">thread_1 = Thread(target=func_1)</span><br><span class="line">thread_2 = Thread(target=func_2)</span><br><span class="line">thread_1.start()</span><br><span class="line">thread_2.start()</span><br></pre></td></tr></table></figure>
+<p>这段代码方法非常简单，做了一个简单的死锁检测，避免了死锁，a，b，c 三个锁只能按照他们的 id 排序被调用，否则为风险代码</p>
+<h1 id="可重入锁解决互斥锁死锁"><a href="#可重入锁解决互斥锁死锁" class="headerlink" title="可重入锁解决互斥锁死锁"></a>可重入锁解决互斥锁死锁</h1><p>可重入锁是区别于互斥锁的一种很特别的锁，为了解决同一个线程内同一资源被多次调用导致死锁的问题，需要注意的是 acquire 了多少次就需要 release 多少次</p>
+<h1 id="银行家算法避免死锁代码示例"><a href="#银行家算法避免死锁代码示例" class="headerlink" title="银行家算法避免死锁代码示例"></a>银行家算法避免死锁代码示例</h1><p>todo</p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/09/28/docs/15356101137963/">python模块分析之threading-锁</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/09/28/docs/15356101137963/" title="python模块分析之threading-锁">https://hubinwei.me/2017/09/28/docs/15356101137963/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/python常用技巧/" rel="tag"># python常用技巧</a>
+          
+            <a href="/tags/python库分析/" rel="tag"># python库分析</a>
+          
+            <a href="/tags/threading/" rel="tag"># threading</a>
+          
+            <a href="/tags/线程/" rel="tag"># 线程</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/28/python模块分析之threading-数据交换/" rel="next" title="python模块分析之threading-数据交换">
+                <i class="fa fa-chevron-left"></i> python模块分析之threading-数据交换
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/28/python模块分析之threading-锁/" rel="prev" title="python模块分析之threading-锁">
+                python模块分析之threading-锁 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#锁的基础示例"><span class="nav-number">2.</span> <span class="nav-text">锁的基础示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#死锁"><span class="nav-number">3.</span> <span class="nav-text">死锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#死锁的必要条件"><span class="nav-number">4.</span> <span class="nav-text">死锁的必要条件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#如何解决死锁"><span class="nav-number">5.</span> <span class="nav-text">如何解决死锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#排序调用算法避免死锁代码示例"><span class="nav-number">6.</span> <span class="nav-text">排序调用算法避免死锁代码示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#可重入锁解决互斥锁死锁"><span class="nav-number">7.</span> <span class="nav-text">可重入锁解决互斥锁死锁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#银行家算法避免死锁代码示例"><span class="nav-number">8.</span> <span class="nav-text">银行家算法避免死锁代码示例</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/09/28/docs/15356101137963/';
+
+      var disqus_title = "python模块分析之threading-锁";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

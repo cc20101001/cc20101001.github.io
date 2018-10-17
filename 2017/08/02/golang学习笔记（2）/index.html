@@ -1,0 +1,969 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="golang,golang学习笔记," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言第一篇 golang 学习笔记介绍了 golang 的基础环境搭建以及一些最基础的语法，这里介绍稍微高级一点的几个 golang 语法 1.数组 2.引用类型 3.切片 slice 4.字典 map 5.通道 6.range语法 7.指针 8.结构体 9.接口类型 10.异常处理 数组golang 因为有数据类型需要声明，所以数组相比 python 用起来也就复杂了一些，数组定义格式: var">
+<meta name="keywords" content="golang,golang学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="golang学习笔记（2）">
+<meta property="og:url" content="https://hubinwei.me/2017/08/02/golang学习笔记（2）/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言第一篇 golang 学习笔记介绍了 golang 的基础环境搭建以及一些最基础的语法，这里介绍稍微高级一点的几个 golang 语法 1.数组 2.引用类型 3.切片 slice 4.字典 map 5.通道 6.range语法 7.指针 8.结构体 9.接口类型 10.异常处理 数组golang 因为有数据类型需要声明，所以数组相比 python 用起来也就复杂了一些，数组定义格式: var">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-07-09T09:57:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="golang学习笔记（2）">
+<meta name="twitter:description" content="前言第一篇 golang 学习笔记介绍了 golang 的基础环境搭建以及一些最基础的语法，这里介绍稍微高级一点的几个 golang 语法 1.数组 2.引用类型 3.切片 slice 4.字典 map 5.通道 6.range语法 7.指针 8.结构体 9.接口类型 10.异常处理 数组golang 因为有数据类型需要声明，所以数组相比 python 用起来也就复杂了一些，数组定义格式: var">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/08/02/golang学习笔记（2）/"/>
+
+
+
+
+
+  <title> golang学习笔记（2） | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/08/02/golang学习笔记（2）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                golang学习笔记（2）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-02T16:53:06+08:00">
+                2017-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/golang/" itemprop="url" rel="index">
+                    <span itemprop="name">golang</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/golang/golang学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">golang学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/08/02/golang学习笔记（2）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/08/02/golang学习笔记（2）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>第一篇 golang 学习笔记介绍了 golang 的基础环境搭建以及一些最基础的语法，这里介绍稍微高级一点的几个 golang 语法</p>
+<p>1.数组</p>
+<p>2.引用类型</p>
+<p>3.切片 slice</p>
+<p>4.字典 map</p>
+<p>5.通道</p>
+<p>6.range语法</p>
+<p>7.指针</p>
+<p>8.结构体</p>
+<p>9.接口类型</p>
+<p>10.异常处理</p>
+<h1 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h1><p>golang 因为有数据类型需要声明，所以数组相比 python 用起来也就复杂了一些，数组定义格式: <code>var arr [n]type</code>，用法和其他语言有点类似，有标识符，长度，数组对象类型，下标访问等特性，下面是数组的多种定义方式</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//常规定义:定义标识符为my_array，类型为int32，长度为2的数组，并且根据下标去赋值</span></span><br><span class="line"><span class="keyword">var</span> my_array [<span class="number">2</span>]<span class="keyword">int32</span></span><br><span class="line">my_array[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">my_array[<span class="number">1</span>] = <span class="number">2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//常规定义并赋值:定义标识符为my_array_1，类型为int32，长度为3的数组，并且直接初始化，这种定义数组的方式更加简洁</span></span><br><span class="line">my_array_1 := [<span class="number">3</span>]<span class="keyword">int32</span> &#123;<span class="number">23</span>,<span class="number">43</span>,<span class="number">54</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//不指定数组长度并赋值，很实用:golang定义数组还可以不指定长度，让编译器自动识别</span></span><br><span class="line">my_array_2 := [...]<span class="keyword">int</span>&#123;<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//多维数组:golang也支持多维数组，访问方式为下标访问 my_array_3[1][3]，这里定义了一个二维数组</span></span><br><span class="line">my_array_3 := [<span class="number">2</span>][<span class="number">4</span>]<span class="keyword">int</span>&#123;[<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;, [<span class="number">4</span>]<span class="keyword">int</span>&#123;<span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//多维数组更简洁的定义:定义多维数组的时候可以省略数组内部的类型定义，更加简洁</span></span><br><span class="line">my_array_4 := [<span class="number">2</span>][<span class="number">4</span>]<span class="keyword">int</span>&#123;&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;, &#123;<span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>如果定义的数组类型是 byte，那应该用 ‘’ 单引号来表示，如</p>
+<p><code>my_byte := [2]byte{&#39;a&#39;, &#39;b&#39;}</code></p>
+<h1 id="引用类型"><a href="#引用类型" class="headerlink" title="引用类型"></a>引用类型</h1><p>golang 中的引用类型，特指切片（slice），字典（map），通道（channel）这三种预定义类型，相比其他数据类型，引用类型拥有更复杂的存储结构，除了内存分配外，她们还需初始化一系列属性，诸如指针，长度，甚至包括哈希分布、队列等，毕竟接口更多，功能更强大</p>
+<h2 id="切片-slice"><a href="#切片-slice" class="headerlink" title="切片 slice"></a>切片 slice</h2><p>golang 的切片和 python 的有点像，不同点是 golang 是对数组中对象的引用，对切片中元素的修改会反过来修改原数组中元素，而 python 是重新生成了一个列表对象</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">slice_1 := []<span class="keyword">byte</span> &#123;<span class="string">'s'</span>, <span class="string">'e'</span>&#125;</span><br><span class="line"><span class="keyword">var</span> t []<span class="keyword">byte</span></span><br><span class="line">t = slice_1[<span class="number">0</span>:<span class="number">1</span>]</span><br><span class="line">fmt.Printf(<span class="string">"%s\n"</span>, <span class="keyword">string</span>(t[<span class="number">0</span>]))</span><br><span class="line">t[<span class="number">0</span>] = <span class="string">'k'</span></span><br><span class="line">fmt.Printf(<span class="string">"%s\n"</span>, <span class="keyword">string</span>(t[<span class="number">0</span>]))</span><br><span class="line">fmt.Printf(<span class="string">"%s\n"</span>, <span class="keyword">string</span>(slice_1[<span class="number">0</span>]))</span><br><span class="line"></span><br><span class="line">输出结果如下:</span><br><span class="line"></span><br><span class="line">s</span><br><span class="line">k</span><br><span class="line">k</span><br></pre></td></tr></table></figure>
+<p>我们用 slice_1 生成了一个切片对象 t，然后修改了切片对象 t 中的第一个元素，发现原 slice_1 也被修改了</p>
+<h2 id="字典（map）"><a href="#字典（map）" class="headerlink" title="字典（map）"></a>字典（map）</h2><p>go 中也提供了 python 一样的字典类型 map，不一样的是他使用起来多一步初始化的操作，需要先定义一个 map 对象，然后再初始化 map 对象，最后才是使用 map 对象，给它赋值。map 对象的访问和 python 一样，并且支持遍历访问</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//先定义map对象</span></span><br><span class="line"><span class="keyword">var</span> variable <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span></span><br><span class="line"><span class="comment">//初始化map对象，不然他是nil</span></span><br><span class="line">variable = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>)</span><br></pre></td></tr></table></figure>
+<p>实例</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//声明map对象</span></span><br><span class="line"><span class="keyword">var</span> variable <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//初始化map对象</span></span><br><span class="line">variable = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//给map对象赋值</span></span><br><span class="line">variable[<span class="string">"name"</span>] = <span class="string">"xiaobing"</span></span><br><span class="line">variable[<span class="string">"password"</span>] = <span class="string">"123123"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//map对象的访问</span></span><br><span class="line">log.Printf(<span class="string">"%v"</span>, i, variable[<span class="string">"name"</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="map-对象存在检测"><a href="#map-对象存在检测" class="headerlink" title="map 对象存在检测"></a>map 对象存在检测</h3><p>我们可以对 map 中的对象进行检测，如</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">captial, ok := variable[<span class="string">"name"</span>]</span><br><span class="line"><span class="comment">// 如果 ok 是 true, 则存在，否则不存在，有点像 python 中的 dict.get("name", "")</span></span><br><span class="line"><span class="keyword">if</span> ok &#123;</span><br><span class="line">    log.Printf(<span class="string">"key of name is existed value: %v"</span>, captial)</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    log.Printf(<span class="string">"key of name is not existed!"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="map-中-key-的删除"><a href="#map-中-key-的删除" class="headerlink" title="map 中 key 的删除"></a>map 中 key 的删除</h3><p>针对 map 中 key 的删除，golang 提供了 delete 语法，和 python 有点类似，并且没有返回值，这个例子删除了 map 对象 variable 中 key 为 name 的字段</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">delete</span>(variable, <span class="string">"name"</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="通道"><a href="#通道" class="headerlink" title="通道"></a>通道</h2><p>todolist</p>
+<h1 id="range-语法"><a href="#range-语法" class="headerlink" title="range 语法"></a>range 语法</h1><p>range 用于在 for 循环中迭代数组，切片，字典，字符串等元素，数组和切片中返回索引和值，字典中返回 key 值，这段代码对数组进行了迭代，并对数组 nums 进行求和</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">nums := []<span class="keyword">int</span>&#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line">sum := <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> index, num := <span class="keyword">range</span> nums &#123;</span><br><span class="line">    log.Printf(<span class="string">"%v %v"</span>, index, num)</span><br><span class="line">    sum += num</span><br><span class="line">&#125;</span><br><span class="line">log.Printf(<span class="string">"sum: %v"</span>, sum)</span><br></pre></td></tr></table></figure>
+<p>在 golang 中，我们也可以用 range 语法对 map 对象进行遍历。其中的 i 为 map 对象的 key，里面的 value 可以用 data[i] 数组加下标的方式获取</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i := <span class="keyword">range</span> variable &#123;</span><br><span class="line">    log.Printf(<span class="string">"%v %v"</span>, i, variable[i])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h1><p>在 golang 中有指针的概念，指针和内存地址是不一样的，内存地址是内存中每个字节单元的唯一编号，而指针则是一个实例，指针会分配内存空间，相当于一个专门用来保存内存地址的整形变量，里面存储了某个对象内存地址</p>
+<p>1.取址运算符 <code>&amp;</code> 用于获取对象地址</p>
+<p>2.指针运算符 <code>*</code> 用于间接引用目标对象</p>
+<p>3.二级指针 <code>**T</code> 如包含包名则写成 <code>*package.T</code></p>
+<p>指针定义格式：<code>var point_name *type</code>，point_name 为 指针变量名称，type 为指针的类型，不同类型的指针指向不同类型的变量</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义一个类型为int，名称为my_point的指针，指向my_name变量的内存地址</span></span><br><span class="line"><span class="keyword">var</span> my_point *<span class="keyword">int</span> = &amp;my_name</span><br><span class="line"><span class="comment">//通过指针运算符*然后加指针名称来间接引用my_name变量的值</span></span><br><span class="line">fmt.<span class="built_in">println</span>(*my_point)</span><br></pre></td></tr></table></figure>
+<h2 id="空指针"><a href="#空指针" class="headerlink" title="空指针"></a>空指针</h2><p>当一个指针变量被定义后但是没有指向任何变量的时候，那么他将是一个空指针 nil（指针的值为 nil，他就是一个空指针），对于空指针的判断我们可以用如下代码</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> my_pointer *<span class="keyword">int</span></span><br><span class="line">fmt.Println(my_pointer)</span><br><span class="line"><span class="keyword">if</span> my_pointer == <span class="literal">nil</span> &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"my_pointer 是空指针 %v\n"</span>, my_pointer)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"my_pointer 不是空指针\n"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="指针数组"><a href="#指针数组" class="headerlink" title="指针数组"></a>指针数组</h2><p>golang 也支持指针数组，一个指针数组指向某个数组，只是指向过程略显麻烦，这里定一个了一个普通数组 <code>array</code>，然后定一了一个指针数组 <code>array_point</code>，通过遍历的方式让指针指向了指针数组，最后输出指针数组里面的对象值，实际上也就是指针数组里面的值</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">array := [<span class="number">3</span>]<span class="keyword">int</span>&#123;<span class="number">3</span>, <span class="number">4</span>, <span class="number">54</span>&#125;</span><br><span class="line"><span class="keyword">var</span> array_point [<span class="number">3</span>]*<span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> index, value := <span class="keyword">range</span> array &#123;</span><br><span class="line">    fmt.Println(index, value)</span><br><span class="line">    array_point[index] = &amp;array[index]</span><br><span class="line">&#125;</span><br><span class="line">fmt.Println(array_point)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> index, value := <span class="keyword">range</span> array_point &#123;</span><br><span class="line">    fmt.Println(index, *value)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="二级指针"><a href="#二级指针" class="headerlink" title="二级指针"></a>二级指针</h2><p>如果一个指针指向的是另一个指针的内存地址，那么他就是一个二级指针，其中 a 为一个变量，bp 为一级指针，bpp 为二级指针，然后通过引用二级指针 bpp 来输出 a 的值</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a := <span class="number">300</span></span><br><span class="line"><span class="keyword">var</span> bp = &amp;a</span><br><span class="line"><span class="keyword">var</span> bpp = &amp;bp</span><br><span class="line">fmt.Print(**bpp)</span><br></pre></td></tr></table></figure>
+<h2 id="带指针参数的函数"><a href="#带指针参数的函数" class="headerlink" title="带指针参数的函数"></a>带指针参数的函数</h2><p>指针也可以作为函数的参数，例子如下，函数调用的时候可以把某个指针对象直接当作参数传递进来</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">pointer_func</span><span class="params">(value *<span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    fmt.Print(value)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h1><h2 id="结构体的定义和声明"><a href="#结构体的定义和声明" class="headerlink" title="结构体的定义和声明"></a>结构体的定义和声明</h2><p>在 golang 里面有类似 c 语言中的结构体，使用语法如：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> struct_variable_type <span class="keyword">struct</span> &#123;</span><br><span class="line">    member_name member_type;</span><br><span class="line">    member_name member_type;</span><br><span class="line">    member_name member_type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>定义一个结构体对象，名称为 struct_variable_type，他里面设置了三个成员变量，并且对这些变量的类型进行了声明。结构体里面属性值的赋值和访问非常的方便，通过 <code>.</code> 就可以实现（类似 python 中的对象属性访问）</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"log"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> people <span class="keyword">struct</span> &#123;</span><br><span class="line">    name <span class="keyword">string</span></span><br><span class="line">    age <span class="keyword">int</span></span><br><span class="line">    heigth <span class="keyword">float32</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 初始化方式1</span></span><br><span class="line">    <span class="keyword">var</span> people_1 people</span><br><span class="line">    xiaoming.name = <span class="string">"xiaoming"</span></span><br><span class="line">    xiaoming.age = <span class="number">17</span></span><br><span class="line">    xiaoming.heigth = <span class="number">174.65</span></span><br><span class="line">    log.Println(people_1.name)</span><br><span class="line">    log.Println(people_1.age)</span><br><span class="line">    log.Println(people_1.heigth)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化方式2</span></span><br><span class="line">    <span class="keyword">var</span> people_2 = people &#123;</span><br><span class="line">        name: <span class="string">"xiaoming"</span></span><br><span class="line">        age: <span class="number">17</span></span><br><span class="line">        heigth: <span class="number">174.65</span></span><br><span class="line">    &#125;</span><br><span class="line">    log.Println(people_2.name)</span><br><span class="line">    log.Println(people_2.age)</span><br><span class="line">    log.Println(people_2.heigth)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 初始化方式3</span></span><br><span class="line">    <span class="keyword">var</span> people_3 = &amp;people &#123;</span><br><span class="line">        name: <span class="string">"xiaoming"</span></span><br><span class="line">        age: <span class="number">17</span></span><br><span class="line">        heigth: <span class="number">174.65</span></span><br><span class="line">    &#125;</span><br><span class="line">    log.Println(people_3.name)</span><br><span class="line">    log.Println(people_3.age)</span><br><span class="line">    log.Println(people_3.heigth)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 匿名结构体及初始化</span></span><br><span class="line">    people_4 := <span class="keyword">struct</span> &#123;</span><br><span class="line">        name <span class="keyword">string</span></span><br><span class="line">        age <span class="keyword">int</span></span><br><span class="line">        height <span class="keyword">int</span></span><br><span class="line">    &#125;&#123;name: <span class="string">"wangwu"</span>, age: <span class="number">20</span>, height: <span class="number">209</span>&#125;</span><br><span class="line">    log.Printf(<span class="string">"%T %v"</span>, people_4, people_4)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>1.在结构体中我们经常和 golang 的方法一起用，很好使，有点像 python 中的 class 定义一个对象</p>
+<p>2.他的初始化有三种常见方法，我个人更喜欢用方法2，方法3的区别在于返回了一个指针对象，结构体如果当作函数内部的接收参数，修改结构体里面变量值，不改变原结构体变量值，如果传入的是结构体指针则会改变结构体里面原来值</p>
+<h2 id="匿名结构体"><a href="#匿名结构体" class="headerlink" title="匿名结构体"></a>匿名结构体</h2><p>匿名结构体和匿名函数有点类似，没有结构体名的</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">person:= <span class="keyword">struct</span> &#123;<span class="comment">//匿名结构体</span></span><br><span class="line">    name <span class="keyword">string</span></span><br><span class="line">    age <span class="keyword">int</span></span><br><span class="line">&#125;&#123;name:<span class="string">"匿名结构体"</span>,age:<span class="number">1</span>&#125;</span><br><span class="line">f.Println(<span class="string">"person:"</span>,person)</span><br></pre></td></tr></table></figure>
+<h2 id="结构体的继承"><a href="#结构体的继承" class="headerlink" title="结构体的继承"></a>结构体的继承</h2><p>在 golang 中没有继承的概念，但是用结构体特性，我们可以实现类似继承的功能</p>
+<h1 id="接口类型"><a href="#接口类型" class="headerlink" title="接口类型"></a>接口类型</h1><p>golang 不是传统意义上的面向对象编程语言，他没有类的概念，也没有继承的概念，接口类型（当然还有结构体类型）为他弥补了这一点的不足，通过接口类型他规定了类型的行为，并且通过接口可以实现函数的多态</p>
+<p>type Namer interface {<br>    Method1(param_list) return_type<br>    Method2(param_list) return_type<br>    …<br>}</p>
+<h1 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h1><p>一些异常的处理</p>
+<h1 id="同比-python，golang-的一些特殊语法"><a href="#同比-python，golang-的一些特殊语法" class="headerlink" title="同比 python，golang 的一些特殊语法"></a>同比 python，golang 的一些特殊语法</h1><p>1.goto 语句</p>
+<p>有点类似 python 中的 yield，可以改变程序执行流程</p>
+<p>2.defer</p>
+<p>延时执行，当前作用域内程序跑完后最后执行</p>
+<p>3.指针</p>
+<p>golang 有指针，用法和 c 语言一样，并且也有多级指针的概念</p>
+<p>4.rang 语法</p>
+<p>range 语法可以用来做遍历，python 中 dict 和 list 遍历分别有自己的特定语法</p>
+<p>5.结构体</p>
+<p>结构体是一个非常有意思的东西，和 c 语言的结构体很像，实际编程中可以作为一个对象的原型，结构体和方法是不一样的</p>
+<p>6.方法</p>
+<p>golang 中的方法和函数有非常明显的区别，这点和其他编程语言如 python, c, java 等有非常大的区别</p>
+<p>7.switch..case.. 语句</p>
+<p>golang 中有 switch case 语句，方便做条件判断</p>
+<p>8.select 语法</p>
+<p>后面介绍</p>
+<p>9.常量组</p>
+<p>常量组挺有意思的，把所有常量可以放到一起，还可以配合 iota 语法使用</p>
+<p>9.iota 语法</p>
+<p>golang 并没有实际上的枚举类型，但有 iota 类型，配合常量组使用，可以一定层度上构建自己的枚举类型</p>
+<p>10.通道</p>
+<p>后面介绍</p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/08/02/golang学习笔记（2）/">golang学习笔记（2）</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/08/02/golang学习笔记（2）/" title="golang学习笔记（2）">https://hubinwei.me/2017/08/02/golang学习笔记（2）/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/golang/" rel="tag"># golang</a>
+          
+            <a href="/tags/golang学习笔记/" rel="tag"># golang学习笔记</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/02/docs/15356101140042/" rel="next" title="golang学习笔记（2）">
+                <i class="fa fa-chevron-left"></i> golang学习笔记（2）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/02/docs/15356101139842/" rel="prev" title="golang学习笔记（3）">
+                golang学习笔记（3） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数组"><span class="nav-number">2.</span> <span class="nav-text">数组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引用类型"><span class="nav-number">3.</span> <span class="nav-text">引用类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#切片-slice"><span class="nav-number">3.1.</span> <span class="nav-text">切片 slice</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字典（map）"><span class="nav-number">3.2.</span> <span class="nav-text">字典（map）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#map-对象存在检测"><span class="nav-number">3.2.1.</span> <span class="nav-text">map 对象存在检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#map-中-key-的删除"><span class="nav-number">3.2.2.</span> <span class="nav-text">map 中 key 的删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通道"><span class="nav-number">3.3.</span> <span class="nav-text">通道</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#range-语法"><span class="nav-number">4.</span> <span class="nav-text">range 语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#指针"><span class="nav-number">5.</span> <span class="nav-text">指针</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#空指针"><span class="nav-number">5.1.</span> <span class="nav-text">空指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指针数组"><span class="nav-number">5.2.</span> <span class="nav-text">指针数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二级指针"><span class="nav-number">5.3.</span> <span class="nav-text">二级指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#带指针参数的函数"><span class="nav-number">5.4.</span> <span class="nav-text">带指针参数的函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结构体"><span class="nav-number">6.</span> <span class="nav-text">结构体</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#结构体的定义和声明"><span class="nav-number">6.1.</span> <span class="nav-text">结构体的定义和声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#匿名结构体"><span class="nav-number">6.2.</span> <span class="nav-text">匿名结构体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结构体的继承"><span class="nav-number">6.3.</span> <span class="nav-text">结构体的继承</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#接口类型"><span class="nav-number">7.</span> <span class="nav-text">接口类型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#异常处理"><span class="nav-number">8.</span> <span class="nav-text">异常处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#同比-python，golang-的一些特殊语法"><span class="nav-number">9.</span> <span class="nav-text">同比 python，golang 的一些特殊语法</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/08/02/golang学习笔记（2）/';
+
+      var disqus_title = "golang学习笔记（2）";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

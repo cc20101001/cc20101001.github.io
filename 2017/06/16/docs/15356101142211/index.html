@@ -1,0 +1,933 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="OAuth2.0,http授权,统一认证系统," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版，本文对OAuth2.0的设计思想和运行流程，做一个简明通俗的解释，主要参考材料RFC 6749 应用场景实际系统集成过程中经常会涉及到和第三方应用做集成，于是涉及到一个验权的问题，比如知乎的网站需要访问微信的API服务器获取某个人的个人信息数据，那么问题来了，微信服务器如何给知乎网">
+<meta name="keywords" content="OAuth2.0,http授权,统一认证系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OAuth2.0学习笔记，实战分析">
+<meta property="og:url" content="https://hubinwei.me/2017/06/16/docs/15356101142211/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版，本文对OAuth2.0的设计思想和运行流程，做一个简明通俗的解释，主要参考材料RFC 6749 应用场景实际系统集成过程中经常会涉及到和第三方应用做集成，于是涉及到一个验权的问题，比如知乎的网站需要访问微信的API服务器获取某个人的个人信息数据，那么问题来了，微信服务器如何给知乎网">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017061612861oauth.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017061633317screenshot_70.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017061620830screenshot_71.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017061697212screenshot_69.png">
+<meta property="og:updated_time" content="2018-08-30T06:21:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OAuth2.0学习笔记，实战分析">
+<meta name="twitter:description" content="前言OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版，本文对OAuth2.0的设计思想和运行流程，做一个简明通俗的解释，主要参考材料RFC 6749 应用场景实际系统集成过程中经常会涉及到和第三方应用做集成，于是涉及到一个验权的问题，比如知乎的网站需要访问微信的API服务器获取某个人的个人信息数据，那么问题来了，微信服务器如何给知乎网">
+<meta name="twitter:image" content="http://odh5je629.bkt.clouddn.com/2017061612861oauth.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/06/16/docs/15356101142211/"/>
+
+
+
+
+
+  <title> OAuth2.0学习笔记，实战分析 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/06/16/docs/15356101142211/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                OAuth2.0学习笔记，实战分析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-16T16:31:51+08:00">
+                2017-06-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web开发通用/" itemprop="url" rel="index">
+                    <span itemprop="name">web开发通用</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/16/docs/15356101142211/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/16/docs/15356101142211/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版，本文对OAuth2.0的设计思想和运行流程，做一个简明通俗的解释，主要参考材料<a href="http://www.rfcreader.com/#rfc6749" target="_blank" rel="noopener">RFC 6749</a></p>
+<h1 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h1><p>实际系统集成过程中经常会涉及到和第三方应用做集成，于是涉及到一个验权的问题，比如知乎的网站需要访问微信的API服务器获取某个人的个人信息数据，那么问题来了，微信服务器如何给知乎网站授权呢？</p>
+<p>传统方案是用户将自己微信的用户名和密码告诉知乎网站，让知乎去登录微信服务器，这样非常麻烦，并且存在诸多问题，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.知乎为了后续更多的业务，会保留微信的用户名和密码，这样存在安全隐患</span><br><span class="line">2.微信必须提供一个接口支持帐号密码方式的登录</span><br><span class="line">3.帐号密码方式登录，很难限权</span><br><span class="line">4.用户如果修改密码，需要同步修改知乎的密码</span><br></pre></td></tr></table></figure>
+<h1 id="相关名词介绍"><a href="#相关名词介绍" class="headerlink" title="相关名词介绍"></a>相关名词介绍</h1><p>这里先介绍几个和OAuth2.0相关的名词，后面再展开对原理的分析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1.第三方应用-客户端（Third-party application）：即上一节例子中的知乎应用</span><br><span class="line">2.服务提供商（HTTP service）：即上一节介绍的微信</span><br><span class="line">3.资源所有者-用户（Resource Owner）：这里指的我</span><br><span class="line">4.用户代理－浏览器：用户代理</span><br><span class="line">5.认证服务器（Authorization server）：即服务提供商专门用来处理认证的服务器</span><br><span class="line">6.资源服务器（Resource server）：即服务提供商专门用来存放资源的服务器</span><br></pre></td></tr></table></figure>
+<p>知道了这么名词就很容易理解OAuth2.0的原理了</p>
+<h1 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h1><p>OAuth旨在让服务提供商可以给第三方应用授权（以某种形式给第三方应用一个令牌token），让第三方应用不用密码和帐号就可以访问资源服务器上的资源，当令牌失效的时候，服务将停止</p>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p><img src="http://odh5je629.bkt.clouddn.com/2017061612861oauth.png" alt="2017061612861oauth.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">（A）用户打开客户端以后，客户端要求用户给予授权。</span><br><span class="line"></span><br><span class="line">（B）用户同意给予客户端授权。</span><br><span class="line"></span><br><span class="line">（C）客户端使用上一步获得的授权，向认证服务器申请令牌。</span><br><span class="line"></span><br><span class="line">（D）认证服务器对客户端进行认证以后，确认无误，同意发放令牌。</span><br><span class="line"></span><br><span class="line">（E）客户端使用令牌，向资源服务器申请获取资源。</span><br><span class="line"></span><br><span class="line">（F）资源服务器确认令牌无误，同意向客户端开放资源。</span><br></pre></td></tr></table></figure>
+<p>OAuth2.0的具体实现形式有许多种，他的核心其实就是服务提供商如何把token信息给用户，并让用户带上token去访问资源服务器的信息</p>
+<h1 id="实战分析－虎嗅网网页版微信登录"><a href="#实战分析－虎嗅网网页版微信登录" class="headerlink" title="实战分析－虎嗅网网页版微信登录"></a>实战分析－虎嗅网网页版微信登录</h1><p>这里我来分析一下互联网厂商的OAuth2.0对接是如何实现的</p>
+<p>虎嗅网的web版支持微信登录，我来抓包分析一下他的OAuth原理</p>
+<p>1.我们先打开虎嗅网网页版的微信登录页面，虎嗅会上传他的appid，回调地址，login_type，scope给微信服务端（用一个http长轮询），微信返回提供了一个二维码，希望我们用微信来扫一扫</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/2017061633317screenshot_70.png" alt="2017061633317screenshot_70.png"></p>
+<p>这个二维码是微信提供的，转化为url后格式如下：<a href="https://open.weixin.qq.com/connect/confirm?uuid=0817MznOwr0zDxtc，其中uuid是随机生成的" target="_blank" rel="noopener">https://open.weixin.qq.com/connect/confirm?uuid=0817MznOwr0zDxtc，其中uuid是随机生成的</a></p>
+<p>在虎嗅网的web端此刻并启用了第一个http长轮询，用来向微信服务器获取用户是否扫描了该二维码</p>
+<p>http长轮询：</p>
+<p><a href="https://long.open.weixin.qq.com/connect/l/qrconnect?uuid=021-J5ZWqyQzdaOR&amp;_=1497623274214" target="_blank" rel="noopener">https://long.open.weixin.qq.com/connect/l/qrconnect?uuid=021-J5ZWqyQzdaOR&amp;_=1497623274214</a></p>
+<p>2.我们用微信扫一扫</p>
+<p>我们用微信的扫一扫，扫描这个二维码，微信发现该url被访问后会在后台生成一条访问记录（猜测某条uuid记录的请求，请求访问微信用户数据），此刻虎嗅网页面第二个长轮询返回response，告诉虎嗅前端，用户已经扫描了二维码，等待确定授权，此刻又发起了第三个长轮询，等待用户点击确认授权按钮</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/2017061620830screenshot_71.png" alt="2017061620830screenshot_71.png"></p>
+<p><a href="https://long.open.weixin.qq.com/connect/l/qrconnect?uuid=051Ipzd2zyr-tEON&amp;last=404&amp;_=1497623631146" target="_blank" rel="noopener">https://long.open.weixin.qq.com/connect/l/qrconnect?uuid=051Ipzd2zyr-tEON&amp;last=404&amp;_=1497623631146</a></p>
+<p>3.我们点击确认，授权使用微信帐号</p>
+<p>此时虎嗅网前端第三个http长轮询收到授权结果反馈，获取code，带上code，访问虎嗅回调url，在后台获取微信用户信息：<a href="https://www.huxiu.com/user_action/oauthCallback/weixin.html?code=041Mzl9l0JC8ao1JJA9l02el9l0Mzl9A&amp;state=" target="_blank" rel="noopener">https://www.huxiu.com/user_action/oauthCallback/weixin.html?code=041Mzl9l0JC8ao1JJA9l02el9l0Mzl9A&amp;state=</a></p>
+<p>4.重定向到虎嗅首页</p>
+<p>回调http请求会在后台获取微信用户信息，并完成用户注册，登陆相关操作，然后返回一个302跳转到虎嗅首页，抓包请求如下：</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/2017061697212screenshot_69.png" alt="2017061697212screenshot_69.png"></p>
+<p>总结：</p>
+<p>到此虎嗅网微信授权登录分析完成，虎嗅网web端的微信登录过程中，关键步骤有如下：</p>
+<p>1.他的code验证最核心步骤是让用户点击确认按钮</p>
+<p>2.然后通过虎嗅url请求回调，在后台获取微信用户信息，并在后台完成注册，登陆相关操作，也完成了授权</p>
+<p>3.这里面核心角色是微信（服务提供商，需要提供个人信息和头像照片），虎嗅网（第三方服务，需要微信的信息来完成登录），我（用户，需要操作，确认授权）</p>
+<p>4.三个http长轮询，第一次是获取微信登陆二维码，第二次是获取用户是否扫描过二维码，第三次是获取用户是否点击确认按钮</p>
+<p>5.http互动过程中每个角色所做的事</p>
+<p>微信：</p>
+<p>1.提供二维码</p>
+<p>2.响应虎嗅前端三次http长轮询</p>
+<p>3.验证，导出微信用户数据到虎嗅后台</p>
+<p>虎嗅网前端：</p>
+<p>1.三次http长轮询，第一次收到二维码然后显示，第二次用户扫描二维码后显示让他点击，第三次用户点击后回调之前的回调地址并附带上code，然后重定向到虎嗅首页</p>
+<p>虎嗅网后端：</p>
+<p>第三次用户点击确认后，附带code回调访问虎嗅后台，此刻会去微信服务器导用户数据到虎嗅后台，并完成注册相关操作，然后回调回虎嗅首页</p>
+<p>我：</p>
+<p>1.点击微信登陆</p>
+<p>2.扫描二维码</p>
+<p>3.点击确认登陆按钮</p>
+<h1 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h1><p><a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html</a></p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/06/16/docs/15356101142211/">OAuth2.0学习笔记，实战分析</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/06/16/docs/15356101142211/" title="OAuth2.0学习笔记，实战分析">https://hubinwei.me/2017/06/16/docs/15356101142211/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OAuth2-0/" rel="tag"># OAuth2.0</a>
+          
+            <a href="/tags/http授权/" rel="tag"># http授权</a>
+          
+            <a href="/tags/统一认证系统/" rel="tag"># 统一认证系统</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/16/OAuth2-0学习笔记，实战分析/" rel="next" title="OAuth2.0学习笔记，实战分析">
+                <i class="fa fa-chevron-left"></i> OAuth2.0学习笔记，实战分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/21/docs/15356101143916/" rel="prev" title="sublime text资料，技巧">
+                sublime text资料，技巧 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#应用场景"><span class="nav-number">2.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#相关名词介绍"><span class="nav-number">3.</span> <span class="nav-text">相关名词介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心思想"><span class="nav-number">4.</span> <span class="nav-text">核心思想</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#原理"><span class="nav-number">5.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实战分析－虎嗅网网页版微信登录"><span class="nav-number">6.</span> <span class="nav-text">实战分析－虎嗅网网页版微信登录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#相关资料"><span class="nav-number">7.</span> <span class="nav-text">相关资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/06/16/docs/15356101142211/';
+
+      var disqus_title = "OAuth2.0学习笔记，实战分析";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

@@ -1,0 +1,967 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="http报文,http,http请求头," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言在 HTTP 规范里面客户端和浏览器交互是靠指令来完成的，而这些指令是放在请求头中的，请求头是以 key，value 对的形式提交参数，那些 key 都是固定的，但是有很多种，我对一些常见的 key 进行了归类整理，以下是我们常见的一个 request headers 信息（response headers 同理）：  headers 分 Request header 和 Response h">
+<meta name="keywords" content="http报文,http,http请求头">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP请求头详解">
+<meta property="og:url" content="https://hubinwei.me/2017/06/05/docs/15356101138207/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言在 HTTP 规范里面客户端和浏览器交互是靠指令来完成的，而这些指令是放在请求头中的，请求头是以 key，value 对的形式提交参数，那些 key 都是固定的，但是有很多种，我对一些常见的 key 进行了归类整理，以下是我们常见的一个 request headers 信息（response headers 同理）：  headers 分 Request header 和 Response h">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201706055380screenshot_63.png">
+<meta property="og:updated_time" content="2018-08-30T06:21:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTTP请求头详解">
+<meta name="twitter:description" content="前言在 HTTP 规范里面客户端和浏览器交互是靠指令来完成的，而这些指令是放在请求头中的，请求头是以 key，value 对的形式提交参数，那些 key 都是固定的，但是有很多种，我对一些常见的 key 进行了归类整理，以下是我们常见的一个 request headers 信息（response headers 同理）：  headers 分 Request header 和 Response h">
+<meta name="twitter:image" content="http://odh5je629.bkt.clouddn.com/201706055380screenshot_63.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/06/05/docs/15356101138207/"/>
+
+
+
+
+
+  <title> HTTP请求头详解 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/06/05/docs/15356101138207/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                HTTP请求头详解
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-05T09:09:49+08:00">
+                2017-06-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web开发通用/" itemprop="url" rel="index">
+                    <span itemprop="name">web开发通用</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/05/docs/15356101138207/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/05/docs/15356101138207/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在 HTTP 规范里面客户端和浏览器交互是靠指令来完成的，而这些指令是放在请求头中的，请求头是以 key，value 对的形式提交参数，那些 key 都是固定的，但是有很多种，我对一些常见的 key 进行了归类整理，以下是我们常见的一个 request headers 信息（response headers 同理）：</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/201706055380screenshot_63.png" alt="201706055380screenshot_63.png"></p>
+<p>headers 分 Request header 和 Response header，我们分别进行分析</p>
+<h2 id="Request-header列表"><a href="#Request-header列表" class="headerlink" title="Request header列表"></a>Request header列表</h2><h3 id="Content-Type"><a href="#Content-Type" class="headerlink" title="Content-Type"></a>Content-Type</h3><p>Content-Type 里面存的是互联网媒体信息也叫 mime type，用来标识request主体里面的数据类型，常见的媒体信息列表如下：</p>
+<table>
+<thead>
+<tr>
+<th>媒体类型</th>
+<th>应用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>text/html</td>
+<td>普通html文件传输</td>
+</tr>
+<tr>
+<td>text/plain</td>
+<td>文本传输</td>
+</tr>
+<tr>
+<td>text/css</td>
+<td>css文件传输</td>
+</tr>
+<tr>
+<td>text/javascript</td>
+<td>js文件传输</td>
+</tr>
+<tr>
+<td>application/x-www-form-urlencoded</td>
+<td>request 提交form表单数据</td>
+</tr>
+<tr>
+<td>multipart/form-data</td>
+<td>传输文件时候会用到，表示分段传输</td>
+</tr>
+<tr>
+<td>application/json</td>
+<td>传输的为json字符串</td>
+</tr>
+<tr>
+<td>application/xml</td>
+<td>传输的为xml字符串</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Content-Length"><a href="#Content-Length" class="headerlink" title="Content-Length"></a>Content-Length</h3><p>请求主体的字节长度（也就是body部分长度）</p>
+<h3 id="Accept"><a href="#Accept" class="headerlink" title="Accept"></a>Accept</h3><p>设置接收请求的content-type 如: <code>Accept: text/plain</code></p>
+<h3 id="Accept-Charset"><a href="#Accept-Charset" class="headerlink" title="Accept-Charset"></a>Accept-Charset</h3><p>设置接受请求的字符集编码，如: <code>Accept-Charset: utf-8</code></p>
+<h3 id="Accept-Encoding"><a href="#Accept-Encoding" class="headerlink" title="Accept-Encoding"></a>Accept-Encoding</h3><p>设置接受的压缩编码格式，如: <code>Accept-Encoding: gzip, deflate</code>，和Accept-Charset不是一样的，他是对accept-charset编码后的二进制数据进行压缩采用的编码，减少数据体积，降低web服务器延时，提高web服务器性能</p>
+<h3 id="Accept-Language"><a href="#Accept-Language" class="headerlink" title="Accept-Language"></a>Accept-Language</h3><p>浏览器所希望的语言种类，当服务器能够提供一种以上的语言版本时要用到</p>
+<h3 id="Connection"><a href="#Connection" class="headerlink" title="Connection"></a>Connection</h3><p>请求头发起，表示是否需要持久连接（HTTP 1.1 默认进行持久连接，Keep-Alive，Upgrade 等），因为 HTTP 协议是建立在 TCP 之上，因此也有三次握手特性，为了提高web服务器响应性能，我们可以使用 keep-alive，让浏览器能够重用已经打开的空闲持久连接，避免三次握手</p>
+<h3 id="Cache-Control"><a href="#Cache-Control" class="headerlink" title="Cache-Control"></a>Cache-Control</h3><p>设置请求响应链上所有的缓存机制必须遵守的指令</p>
+<p>请求时的缓存指令包括： no-cache、no-store、max-age、 max-stale、min-fresh、only-if-cached</p>
+<p>响应消息中的指令包括： public、private、no-cache、no- store、no-transform、must-revalidate、proxy-revalidate、max-age</p>
+<p>web的缓存机制非常重要，这块我还没单独测试，需要后期更新</p>
+<h3 id="Referer"><a href="#Referer" class="headerlink" title="Referer"></a>Referer</h3><p>先前网页的地址，当前请求网页紧随其后，即来路，如 <code>Referer: http://www.zhihu.com/</code>，表示请求是从知乎首页跳转过来的</p>
+<h3 id="Origin"><a href="#Origin" class="headerlink" title="Origin"></a>Origin</h3><p>为了防止 CSRF 的攻击，我们建议修改浏览器在发送 POST 请求的时候加上一个 Origin 字段，这个 Origin 字段主要是用来标识出最初请求是从哪里发起的。如果浏览器不能确定源在哪里，那么在发送的请求里面 Origin 字段的值就为空</p>
+<p>1.Origin字段里只包含是谁发起的请求，并没有其他信息 (通常情况下是方案，主机和活动文档URL的端口)。跟 Referer 不一样的是，Origin 字段并没有包含涉及到用户隐私的 URL 路径和请求内容，这个尤其重要</p>
+<p>2.按照约定，Origin 字段只存在于 POST，而Referer则存在于所有类型的请求</p>
+<p><a href="http://blog.sina.com.cn/s/blog_625f850801015tik.html" target="_blank" rel="noopener">http://blog.sina.com.cn/s/blog_625f850801015tik.html</a></p>
+<h3 id="Authorization"><a href="#Authorization" class="headerlink" title="Authorization"></a>Authorization</h3><p>设置HTTP身份验证的凭证，如 Oauth2.0 中经常就会涉及到，如，<code>Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==</code></p>
+<h3 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h3><p>HTTP 请求发送时，会把保存在该请求域名下的所有 cookie 值一起发送给web服务器。如 <code>Cookie: $Version=1; Skin=new;</code></p>
+<h3 id="Host"><a href="#Host" class="headerlink" title="Host"></a>Host</h3><p>指定请求的服务器的域名和端口号    <code>Host: www.zhihu.com</code></p>
+<h3 id="User-Agent"><a href="#User-Agent" class="headerlink" title="User-Agent"></a>User-Agent</h3><p>User-Agent 的内容包含发出请求的用户信息，User-Agent: Mozilla/5.0 (Linux; X11)，表示是 Linux 操作系统中的火狐浏览器发出的</p>
+<h3 id="X-Forwarded-For"><a href="#X-Forwarded-For" class="headerlink" title="X-Forwarded-For"></a>X-Forwarded-For</h3><p>这是一个标示 http 代理情况的请求头字段，格式如下 <code>X-Forwarded-For: client, proxy1, proxy2</code>，其中 client 代表客户端 ip，proxy1，proxy2 等代表客户端到服务端过程中经过的 proxy 的 ip 地址，其中最后一个 proxy 代表请求直连服务器</p>
+<h2 id="Response-header列表"><a href="#Response-header列表" class="headerlink" title="Response header列表"></a>Response header列表</h2><h3 id="Content-MD5"><a href="#Content-MD5" class="headerlink" title="Content-MD5"></a>Content-MD5</h3><p>返回资源的MD5校验值，如：<code>Content-MD5: Q2hlY2sgSW50ZWdyaXR5IQ==</code></p>
+<h3 id="Expires"><a href="#Expires" class="headerlink" title="Expires"></a>Expires</h3><p>响应过期的日期和时间    ，如 <code>Expires: Thu, 01 Dec 2010 16:00:00 GMT</code></p>
+<h3 id="Set-Cookie"><a href="#Set-Cookie" class="headerlink" title="Set-Cookie"></a>Set-Cookie</h3><p>设置Http Cookie，如 <code>Set-Cookie: UserID=JohnDoe; Max-Age=3600; Version=1</code></p>
+<h3 id="Content-Length-1"><a href="#Content-Length-1" class="headerlink" title="Content-Length"></a>Content-Length</h3><p>响应体的长度通常配合http持久连接使用。对于非持久连接，浏览器可以通过连接是否关闭来界定请求和响应实体的边界；而对于持久连接，这种方法显然不奏效，因此就需要服务端在响应头里面标示一个body长度，方便客户端知道数据是否传完了</p>
+<h3 id="Content-Type-1"><a href="#Content-Type-1" class="headerlink" title="Content-Type"></a>Content-Type</h3><p>返回内容的MIME类型和字符集编码     Content-Type: text/html; charset=utf-8</p>
+<h3 id="Content-Encoding"><a href="#Content-Encoding" class="headerlink" title="Content-Encoding"></a>Content-Encoding</h3><p>web服务器支持的返回内容压缩编码类型 <code>Content-Encoding: gzip</code>，一般文本文件会需要压缩编码，图片因为本来就是高压缩的所以不再需要</p>
+<h3 id="Transfer-Encoding"><a href="#Transfer-Encoding" class="headerlink" title="Transfer-Encoding"></a>Transfer-Encoding</h3><p>文件传输分块编码，通常在传输大文件的时候使用，如图片等。使用样例： <code>Transfer-Encoding:chunked</code>，表示分块编码传输，他和 Content-Encoding 同为http中编码相关的请求头，可以一起用，表示对每一块进行单独压缩。</p>
+<p>注意：当使用 <code>Transfer-Encoding</code> 的时候因为比较底层，会影响实际body长度（增大），所以此时 <code>Content-Encoding</code> 就会被浏览器忽略，界定请求和响应实体边界的事就落到了 <code>Transfer-Encoding</code> 的头上，每个分块包含十六进制的长度值和数据，长度值独占一行，长度不包括它结尾的 CRLF（\r\n），也不包括分块数据结尾的 CRLF。最后一个分块长度值必须为 0，对应的分块数据没有内容，表示实体结束，界定请求和响应实体边界</p>
+<h3 id="Location"><a href="#Location" class="headerlink" title="Location"></a>Location</h3><p>用来重定向接收方到非请求URL的位置来完成请求或标识新的资源如：<code>Location: http://www.zcmhi.com/archives/94.html</code>，</p>
+<h3 id="secure-cookie"><a href="#secure-cookie" class="headerlink" title="secure cookie"></a>secure cookie</h3><p>用于服务端告诉浏览器不要通过任何不安全的渠道发送cookie（只在https协议下发送cookies），从而保证了敏感会话暗号（token）一定是经过加密处理才发生的</p>
+<h3 id="HttpOnly"><a href="#HttpOnly" class="headerlink" title="HttpOnly"></a>HttpOnly</h3><p>用于指示浏览器禁止任何脚本访问 cookies 内容，这样可以降低 js 偷取 cookies</p>
+<h3 id="Content-Security-Policy"><a href="#Content-Security-Policy" class="headerlink" title="Content-Security-Policy"></a>Content-Security-Policy</h3><p>CSP 的实质就是白名单制度，开发者明确告诉客户端，哪些外部资源可以加载和执行，等同于提供白名单</p>
+<h3 id="X-Content-Type-Options"><a href="#X-Content-Type-Options" class="headerlink" title="X-Content-Type-Options"></a>X-Content-Type-Options</h3><p>对于客户端返回的数据，如果 content-type 是未知会触发浏览器的自动检测机制去自主判断文件类型并执行，该选项就是禁用该功能。当用户上传了某段恶意 js 代码组成的文件，又被其他用户当作图片文件下载，但是又没告诉浏览器文件类型，这次浏览器会误认为这是一个 js 文件并执行</p>
+<h3 id="strict-Transport-Security"><a href="#strict-Transport-Security" class="headerlink" title="strict-Transport-Security"></a>strict-Transport-Security</h3><p>指示浏览器必须通过有效的 HTTPS 通信与网站通信</p>
+<h3 id="X-Frame-Options"><a href="#X-Frame-Options" class="headerlink" title="X-Frame-Options"></a>X-Frame-Options</h3><p>用于阻止浏览器中的 iframe 内页嵌套问题，防止一部分界面伪装攻击，如透明页面覆盖引起的点击劫持</p>
+<h1 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h1><h2 id="理解-http-无状态"><a href="#理解-http-无状态" class="headerlink" title="理解 http 无状态"></a>理解 http 无状态</h2><p>http 无状态我们通常说的是 http 协议层的无状态，服务器在处理不同 http 请求的时候不需要去处理不同请求之间的关系和依赖。而在应用层 http 是有状态的，我们通常将每一个 http 请求都会记录到一次会话中，会话有之对应的会话 id，专门用于追踪用户请求之间的关系，这些会话信息，我们可以存到 localstorage 或者 cookies，session 中，方便服务端记录用户状态</p>
+<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><p>附上两种维基百科的总结</p>
+<p><a href="https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Request_fields" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Request_fields</a></p>
+<p><a href="https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Response_fields" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Response_fields</a></p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/06/05/docs/15356101138207/">HTTP请求头详解</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/06/05/docs/15356101138207/" title="HTTP请求头详解">https://hubinwei.me/2017/06/05/docs/15356101138207/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/http报文/" rel="tag"># http报文</a>
+          
+            <a href="/tags/http/" rel="tag"># http</a>
+          
+            <a href="/tags/http请求头/" rel="tag"># http请求头</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/01/mysqlbackup数据库备份初体验/" rel="next" title="mysqlbackup数据库备份初体验">
+                <i class="fa fa-chevron-left"></i> mysqlbackup数据库备份初体验
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/05/http请求头详解/" rel="prev" title="HTTP请求头详解">
+                HTTP请求头详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Request-header列表"><span class="nav-number">1.1.</span> <span class="nav-text">Request header列表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Content-Type"><span class="nav-number">1.1.1.</span> <span class="nav-text">Content-Type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Content-Length"><span class="nav-number">1.1.2.</span> <span class="nav-text">Content-Length</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Accept"><span class="nav-number">1.1.3.</span> <span class="nav-text">Accept</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Accept-Charset"><span class="nav-number">1.1.4.</span> <span class="nav-text">Accept-Charset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Accept-Encoding"><span class="nav-number">1.1.5.</span> <span class="nav-text">Accept-Encoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Accept-Language"><span class="nav-number">1.1.6.</span> <span class="nav-text">Accept-Language</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Connection"><span class="nav-number">1.1.7.</span> <span class="nav-text">Connection</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cache-Control"><span class="nav-number">1.1.8.</span> <span class="nav-text">Cache-Control</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Referer"><span class="nav-number">1.1.9.</span> <span class="nav-text">Referer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Origin"><span class="nav-number">1.1.10.</span> <span class="nav-text">Origin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Authorization"><span class="nav-number">1.1.11.</span> <span class="nav-text">Authorization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cookie"><span class="nav-number">1.1.12.</span> <span class="nav-text">Cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Host"><span class="nav-number">1.1.13.</span> <span class="nav-text">Host</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#User-Agent"><span class="nav-number">1.1.14.</span> <span class="nav-text">User-Agent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#X-Forwarded-For"><span class="nav-number">1.1.15.</span> <span class="nav-text">X-Forwarded-For</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Response-header列表"><span class="nav-number">1.2.</span> <span class="nav-text">Response header列表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Content-MD5"><span class="nav-number">1.2.1.</span> <span class="nav-text">Content-MD5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Expires"><span class="nav-number">1.2.2.</span> <span class="nav-text">Expires</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Set-Cookie"><span class="nav-number">1.2.3.</span> <span class="nav-text">Set-Cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Content-Length-1"><span class="nav-number">1.2.4.</span> <span class="nav-text">Content-Length</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Content-Type-1"><span class="nav-number">1.2.5.</span> <span class="nav-text">Content-Type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Content-Encoding"><span class="nav-number">1.2.6.</span> <span class="nav-text">Content-Encoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Transfer-Encoding"><span class="nav-number">1.2.7.</span> <span class="nav-text">Transfer-Encoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Location"><span class="nav-number">1.2.8.</span> <span class="nav-text">Location</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#secure-cookie"><span class="nav-number">1.2.9.</span> <span class="nav-text">secure cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpOnly"><span class="nav-number">1.2.10.</span> <span class="nav-text">HttpOnly</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Content-Security-Policy"><span class="nav-number">1.2.11.</span> <span class="nav-text">Content-Security-Policy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#X-Content-Type-Options"><span class="nav-number">1.2.12.</span> <span class="nav-text">X-Content-Type-Options</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#strict-Transport-Security"><span class="nav-number">1.2.13.</span> <span class="nav-text">strict-Transport-Security</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#X-Frame-Options"><span class="nav-number">1.2.14.</span> <span class="nav-text">X-Frame-Options</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#补充"><span class="nav-number">2.</span> <span class="nav-text">补充</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#理解-http-无状态"><span class="nav-number">2.1.</span> <span class="nav-text">理解 http 无状态</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#附录"><span class="nav-number">3.</span> <span class="nav-text">附录</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/06/05/docs/15356101138207/';
+
+      var disqus_title = "HTTP请求头详解";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

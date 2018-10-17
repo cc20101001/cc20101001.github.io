@@ -1,0 +1,944 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux,操作系统,fdisk,分区扩容,磁盘分区," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言最近项目上线，涉及部署升级相关的内容，我们原先的数据量不大加上用的阿里云，所以许多基础设施方面的问题都不用自己来操心，这次项目组使用了第三方厂商的共享存储，所以得自己去处理分区，磁盘相关基础设置，这里主要记录了如何使用 Linux 中的 fdisk 工具对磁盘进行分区管理 LVM为了方便进行硬盘资源的动态管理，我采用 LVM 来管理分区和磁盘（LVM是 Logical Volume Manag">
+<meta name="keywords" content="Linux,操作系统,fdisk,分区扩容,磁盘分区">
+<meta property="og:type" content="article">
+<meta property="og:title" content="fdisk-磁盘分区与分区扩容">
+<meta property="og:url" content="https://hubinwei.me/2017/12/28/docs/15356101138529/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言最近项目上线，涉及部署升级相关的内容，我们原先的数据量不大加上用的阿里云，所以许多基础设施方面的问题都不用自己来操心，这次项目组使用了第三方厂商的共享存储，所以得自己去处理分区，磁盘相关基础设置，这里主要记录了如何使用 Linux 中的 fdisk 工具对磁盘进行分区管理 LVM为了方便进行硬盘资源的动态管理，我采用 LVM 来管理分区和磁盘（LVM是 Logical Volume Manag">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20171229151451892696996.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20171229151454068079166.png">
+<meta property="og:updated_time" content="2018-08-30T06:21:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="fdisk-磁盘分区与分区扩容">
+<meta name="twitter:description" content="前言最近项目上线，涉及部署升级相关的内容，我们原先的数据量不大加上用的阿里云，所以许多基础设施方面的问题都不用自己来操心，这次项目组使用了第三方厂商的共享存储，所以得自己去处理分区，磁盘相关基础设置，这里主要记录了如何使用 Linux 中的 fdisk 工具对磁盘进行分区管理 LVM为了方便进行硬盘资源的动态管理，我采用 LVM 来管理分区和磁盘（LVM是 Logical Volume Manag">
+<meta name="twitter:image" content="http://odh5je629.bkt.clouddn.com/20171229151451892696996.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/12/28/docs/15356101138529/"/>
+
+
+
+
+
+  <title> fdisk-磁盘分区与分区扩容 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/12/28/docs/15356101138529/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                fdisk-磁盘分区与分区扩容
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-28T14:55:11+08:00">
+                2017-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/操作系统/" itemprop="url" rel="index">
+                    <span itemprop="name">操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/操作系统/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/12/28/docs/15356101138529/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/28/docs/15356101138529/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近项目上线，涉及部署升级相关的内容，我们原先的数据量不大加上用的阿里云，所以许多基础设施方面的问题都不用自己来操心，这次项目组使用了第三方厂商的共享存储，所以得自己去处理分区，磁盘相关基础设置，这里主要记录了如何使用 Linux 中的 fdisk 工具对磁盘进行分区管理</p>
+<h1 id="LVM"><a href="#LVM" class="headerlink" title="LVM"></a>LVM</h1><p>为了方便进行硬盘资源的动态管理，我采用 LVM 来管理分区和磁盘（LVM是 Logical Volume Manager 逻辑卷管理的简写）</p>
+<p>LVM 磁盘管理结构如下：</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/20171229151451892696996.png" alt="20171229151451892696996.png"></p>
+<p>1.一个硬盘可以分多个区</p>
+<p>2.每个区可以用来创建一个 PV（物理卷）</p>
+<p>3.多个pv可以加入到同一个 VG（卷组）</p>
+<p>4.从 VG 可以划分多个 LV（逻辑卷）</p>
+<p>LVM 最大的特点是提出了 VG 的概念，VG 可以理解为一个虚拟的大磁盘，他底下是由多个小磁盘组成，从 VG 中我们可以划分出不同的 LV 当作磁盘使用，更方便的是利用 LV 我们还可以实现磁盘在线扩容，相比传统的硬盘管理方式，LVM更加灵活方便，谁用谁知道。</p>
+<h1 id="fdisk-磁盘分区"><a href="#fdisk-磁盘分区" class="headerlink" title="fdisk 磁盘分区"></a>fdisk 磁盘分区</h1><p>使用分区工具创建 LVM 分区和创建其他分区一样，只是 LVM 分区的格式是 8e，流程如下：</p>
+<p>1.想分区需要先选择待分区磁盘，命令: fdisk /dev/sdx，其中 sdx 待分区磁盘</p>
+<p>2.输入 n 创建分区</p>
+<p>3.选择分区类型，这里我们选择创建一个主分区（一共可以创建四个主分区，一个扩展分区），注意扩展分区不要创建在主分区前面</p>
+<p>4.设置起始扇号，分区大小</p>
+<p>5.输入 t 更改分区类型，然后选择确定，开始分区，新创建的分区一般都在 /dev/mapper/ 目录下</p>
+<p><img src="http://odh5je629.bkt.clouddn.com/20171229151454068079166.png" alt="20171229151454068079166.png"></p>
+<p>6.写入分区表，命令 w</p>
+<h1 id="使用分区"><a href="#使用分区" class="headerlink" title="使用分区"></a>使用分区</h1><p>要想使用分区需要先格式化分区，然后挂载</p>
+<p>格式化可以使用 mkfs 命令，如下，我们这里格式化为 ext4 类型，因为性能好一点</p>
+<p><code>mkfs.ext4 /dev/mapper/分区号</code></p>
+<p>挂载磁盘很简单，直接使用 Linux 自带的 mount 命令就可以，其中 my_mount_point 是我的挂载点（其实就是创建的一个目录）</p>
+<p><code>mount /opt/my_mount_point</code></p>
+<h1 id="使用-LVM-管理磁盘"><a href="#使用-LVM-管理磁盘" class="headerlink" title="使用 LVM 管理磁盘"></a>使用 LVM 管理磁盘</h1><p>前面只是做铺垫，这里才开始进入重点，使用 LVM 进行磁盘管理</p>
+<p>之前我们创建的分区在集群环境下并不建议直接使用，而是将这些分区作为 PV（物理卷），添加到 VG（卷组）中，然后再在 VG 中划分 LV（逻辑卷）来使用</p>
+<h2 id="创建物理卷"><a href="#创建物理卷" class="headerlink" title="创建物理卷"></a>创建物理卷</h2><p>pvcreate </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# pvcreate /dev/mapper/361430041007df79a001961fb0000000c-part2</span><br><span class="line">Physical volume &quot;/dev/mapper/361430041007df79a001961fb0000000c-part2&quot; successfully created</span><br></pre></td></tr></table></figure>
+<h2 id="创建卷组"><a href="#创建卷组" class="headerlink" title="创建卷组"></a>创建卷组</h2><p><code>vgcreate DATA_VG_GROUP_235 /dev/mapper/361430041007df79a001961fb0000000c-part2</code></p>
+<h2 id="创建逻辑卷"><a href="#创建逻辑卷" class="headerlink" title="创建逻辑卷"></a>创建逻辑卷</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@inspurdb01:~# lvcreate -L 10G -n db_back_2 DATA_VG_GROUP_235</span><br><span class="line">Logical volume &quot;db_back_2&quot; created.</span><br></pre></td></tr></table></figure>
+<p>这里在卷组 DATA_VG_GROUP_235 下创建了一个逻辑卷 db_back_2</p>
+<h2 id="挂载逻辑卷使用"><a href="#挂载逻辑卷使用" class="headerlink" title="挂载逻辑卷使用"></a>挂载逻辑卷使用</h2><p>要挂载逻辑卷需要先创建一个文件夹作为挂载点，我这里的是 opt 目录下的 db_back_2</p>
+<p>先格式化磁盘为 ext4格式</p>
+<p><code>mkfs.ext4 /dev/mapper/DATA_VG_GROUP_235-db_back_2</code></p>
+<p>挂载磁盘到挂载点</p>
+<p><code>mount /dev/mapper/DATA_VG_GROUP_235-db_back_2 /opt/db_back_2</code></p>
+<h1 id="LVM-在线扩容"><a href="#LVM-在线扩容" class="headerlink" title="LVM 在线扩容"></a>LVM 在线扩容</h1><p>在线扩容分两种，扩容 VG 和扩容 LV</p>
+<h2 id="扩容-VG"><a href="#扩容-VG" class="headerlink" title="扩容 VG"></a>扩容 VG</h2><p>扩容 VG 很方便，Linux 提供了  vgextend 命令，只需要 vgextend vg_name pv_name ，就可以把对应的 PV 添加进 VG 了</p>
+<h2 id="扩容-LV"><a href="#扩容-LV" class="headerlink" title="扩容 LV"></a>扩容 LV</h2><p><code>lvextend -L +5G /dev/DATA_VG_GROUP_235/db_back_2</code></p>
+<p>当前 LV 扩容 5G</p>
+<h1 id="更新逻辑卷信息"><a href="#更新逻辑卷信息" class="headerlink" title="更新逻辑卷信息"></a>更新逻辑卷信息</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:/opt# resize2fs /dev/mapper/DATA_VG_GROUP_235-db_back_2</span><br><span class="line">resize2fs 1.42.13 (17-May-2015)</span><br><span class="line">The filesystem is already 3932160 (4k) blocks long.  Nothing to do!</span><br></pre></td></tr></table></figure>
+<h1 id="其他相关命令或者操作"><a href="#其他相关命令或者操作" class="headerlink" title="其他相关命令或者操作"></a>其他相关命令或者操作</h1><p>这些命令是分区过程中经常使用的一些命令或者相关操作</p>
+<h2 id="更新系统分区信息"><a href="#更新系统分区信息" class="headerlink" title="更新系统分区信息"></a>更新系统分区信息</h2><p>partprobe，该命令不用重启就能更新系统分区信息</p>
+<h2 id="查看当前系统已存在物理卷"><a href="#查看当前系统已存在物理卷" class="headerlink" title="查看当前系统已存在物理卷"></a>查看当前系统已存在物理卷</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# pvdisplay</span><br><span class="line">--- Physical volume ---</span><br><span class="line">PV Name               /dev/mapper/361430041007df79a001961fb0000000c-part1</span><br><span class="line">VG Name               DATA_VG_GROUP_235</span><br><span class="line">PV Size               300.00 GiB / not usable 4.00 MiB</span><br><span class="line">Allocatable           yes </span><br><span class="line">PE Size               4.00 MiB</span><br><span class="line">Total PE              76799</span><br><span class="line">Free PE               25599</span><br><span class="line">Allocated PE          51200</span><br><span class="line">PV UUID               zU9IMo-2AyK-L7bb-KKYB-mPS1-CjJF-SZ8XiL</span><br></pre></td></tr></table></figure>
+<h2 id="查看当前系统已存在卷组"><a href="#查看当前系统已存在卷组" class="headerlink" title="查看当前系统已存在卷组"></a>查看当前系统已存在卷组</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# vgdisplay</span><br><span class="line">--- Volume group ---</span><br><span class="line">VG Name               DATA_VG_GROUP_235</span><br><span class="line">System ID             </span><br><span class="line">Format                lvm2</span><br><span class="line">Metadata Areas        1</span><br><span class="line">Metadata Sequence No  2</span><br><span class="line">VG Access             read/write</span><br><span class="line">VG Status             resizable</span><br><span class="line">MAX LV                0</span><br><span class="line">Cur LV                1</span><br><span class="line">Open LV               1</span><br><span class="line">Max PV                0</span><br><span class="line">Cur PV                1</span><br><span class="line">Act PV                1</span><br><span class="line">VG Size               300.00 GiB</span><br><span class="line">PE Size               4.00 MiB</span><br><span class="line">Total PE              76799</span><br><span class="line">Alloc PE / Size       51200 / 200.00 GiB</span><br><span class="line">Free  PE / Size       25599 / 100.00 GiB</span><br><span class="line">VG UUID               QeFjlc-b5FF-aA9I-KhWT-pgB1-fCCy-NxHy2a</span><br></pre></td></tr></table></figure>
+<h2 id="查看当前系统存在的逻辑卷"><a href="#查看当前系统存在的逻辑卷" class="headerlink" title="查看当前系统存在的逻辑卷"></a>查看当前系统存在的逻辑卷</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# lvdisplay</span><br><span class="line">--- Logical volume ---</span><br><span class="line">LV Path                /dev/DATA_VG_GROUP_235/db_back</span><br><span class="line">LV Name                db_back</span><br><span class="line">VG Name                DATA_VG_GROUP_235</span><br><span class="line">LV UUID                PFcPEA-22W1-kWcR-PIjy-ppqc-5RL3-OhUkcF</span><br><span class="line">LV Write Access        read/write</span><br><span class="line">LV Creation host, time inspurdb01, 2017-12-28 17:57:20 +0800</span><br><span class="line">LV Status              available</span><br><span class="line"># open                 1</span><br><span class="line">LV Size                200.00 GiB</span><br><span class="line">Current LE             51200</span><br><span class="line">Segments               1</span><br><span class="line">Allocation             inherit</span><br><span class="line">Read ahead sectors     auto</span><br><span class="line">- currently set to     256</span><br><span class="line">Block device           252:4</span><br></pre></td></tr></table></figure>
+<h2 id="查看文件系统信息"><a href="#查看文件系统信息" class="headerlink" title="查看文件系统信息"></a>查看文件系统信息</h2><p>df -Th</p>
+<h2 id="查看系统块设备"><a href="#查看系统块设备" class="headerlink" title="查看系统块设备"></a>查看系统块设备</h2><p>lsblk -l</p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/12/28/docs/15356101138529/">fdisk-磁盘分区与分区扩容</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/12/28/docs/15356101138529/" title="fdisk-磁盘分区与分区扩容">https://hubinwei.me/2017/12/28/docs/15356101138529/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+            <a href="/tags/操作系统/" rel="tag"># 操作系统</a>
+          
+            <a href="/tags/fdisk/" rel="tag"># fdisk</a>
+          
+            <a href="/tags/分区扩容/" rel="tag"># 分区扩容</a>
+          
+            <a href="/tags/磁盘分区/" rel="tag"># 磁盘分区</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/28/fdisk-磁盘分区与分区扩容/" rel="next" title="fdisk-磁盘分区与分区扩容">
+                <i class="fa fa-chevron-left"></i> fdisk-磁盘分区与分区扩容
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/05/docs/15356101142118/" rel="prev" title="深入理解 docker 镜像构建分层原理">
+                深入理解 docker 镜像构建分层原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LVM"><span class="nav-number">2.</span> <span class="nav-text">LVM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fdisk-磁盘分区"><span class="nav-number">3.</span> <span class="nav-text">fdisk 磁盘分区</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用分区"><span class="nav-number">4.</span> <span class="nav-text">使用分区</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用-LVM-管理磁盘"><span class="nav-number">5.</span> <span class="nav-text">使用 LVM 管理磁盘</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建物理卷"><span class="nav-number">5.1.</span> <span class="nav-text">创建物理卷</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建卷组"><span class="nav-number">5.2.</span> <span class="nav-text">创建卷组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建逻辑卷"><span class="nav-number">5.3.</span> <span class="nav-text">创建逻辑卷</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#挂载逻辑卷使用"><span class="nav-number">5.4.</span> <span class="nav-text">挂载逻辑卷使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LVM-在线扩容"><span class="nav-number">6.</span> <span class="nav-text">LVM 在线扩容</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#扩容-VG"><span class="nav-number">6.1.</span> <span class="nav-text">扩容 VG</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩容-LV"><span class="nav-number">6.2.</span> <span class="nav-text">扩容 LV</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#更新逻辑卷信息"><span class="nav-number">7.</span> <span class="nav-text">更新逻辑卷信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他相关命令或者操作"><span class="nav-number">8.</span> <span class="nav-text">其他相关命令或者操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#更新系统分区信息"><span class="nav-number">8.1.</span> <span class="nav-text">更新系统分区信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看当前系统已存在物理卷"><span class="nav-number">8.2.</span> <span class="nav-text">查看当前系统已存在物理卷</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看当前系统已存在卷组"><span class="nav-number">8.3.</span> <span class="nav-text">查看当前系统已存在卷组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看当前系统存在的逻辑卷"><span class="nav-number">8.4.</span> <span class="nav-text">查看当前系统存在的逻辑卷</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看文件系统信息"><span class="nav-number">8.5.</span> <span class="nav-text">查看文件系统信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看系统块设备"><span class="nav-number">8.6.</span> <span class="nav-text">查看系统块设备</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/12/28/docs/15356101138529/';
+
+      var disqus_title = "fdisk-磁盘分区与分区扩容";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

@@ -1,0 +1,1118 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python,正则表达式," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言正则表达式不是 python 所独有的，而是所有编程语言有相关模块支持的，但是它们的基本思想是相同的，本篇文章将主要围绕 python 进行正则表达式的学习 在 python1.5 之前 python 用的 Emacs 风格的正则表达式，在1.5引入了 re 模块，使用 perl 风格的正则表达式，你可以把正则表达式看作一门小型，专业度非常高的编程语言，他有内置的字符集和语法，专门来对字符串进">
+<meta name="keywords" content="python,正则表达式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python正则表达式学习">
+<meta property="og:url" content="https://hubinwei.me/2017/06/16/python正则表达式学习/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言正则表达式不是 python 所独有的，而是所有编程语言有相关模块支持的，但是它们的基本思想是相同的，本篇文章将主要围绕 python 进行正则表达式的学习 在 python1.5 之前 python 用的 Emacs 风格的正则表达式，在1.5引入了 re 模块，使用 perl 风格的正则表达式，你可以把正则表达式看作一门小型，专业度非常高的编程语言，他有内置的字符集和语法，专门来对字符串进">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-25T01:36:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python正则表达式学习">
+<meta name="twitter:description" content="前言正则表达式不是 python 所独有的，而是所有编程语言有相关模块支持的，但是它们的基本思想是相同的，本篇文章将主要围绕 python 进行正则表达式的学习 在 python1.5 之前 python 用的 Emacs 风格的正则表达式，在1.5引入了 re 模块，使用 perl 风格的正则表达式，你可以把正则表达式看作一门小型，专业度非常高的编程语言，他有内置的字符集和语法，专门来对字符串进">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/06/16/python正则表达式学习/"/>
+
+
+
+
+
+  <title> python正则表达式学习 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/06/16/python正则表达式学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                python正则表达式学习
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-16T10:44:21+08:00">
+                2017-06-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/正则表达式/" itemprop="url" rel="index">
+                    <span itemprop="name">正则表达式</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/16/python正则表达式学习/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/16/python正则表达式学习/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>正则表达式不是 python 所独有的，而是所有编程语言有相关模块支持的，但是它们的基本思想是相同的，本篇文章将主要围绕 python 进行正则表达式的学习</p>
+<p>在 python1.5 之前 python 用的 Emacs 风格的正则表达式，在1.5引入了 re 模块，使用 perl 风格的正则表达式，你可以把正则表达式看作一门小型，专业度非常高的编程语言，他有内置的字符集和语法，专门来对字符串进行处理</p>
+<h1 id="普通字符"><a href="#普通字符" class="headerlink" title="普通字符"></a>普通字符</h1><p>在正则表达式里面都是用提供的字符去和待求值字符串进行比较，我主要围绕我们提供的字符进行分析</p>
+<h2 id="一般字符"><a href="#一般字符" class="headerlink" title="一般字符"></a>一般字符</h2><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>表达式实例</th>
+<th>想匹配的字符串</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一般字符</td>
+<td>匹配自身</td>
+<td>abc</td>
+<td>abc</td>
+</tr>
+<tr>
+<td>.</td>
+<td>匹配所有除了换行符\n外的所有字符</td>
+<td>a.c</td>
+<td>abc</td>
+</tr>
+<tr>
+<td>\</td>
+<td>转移字符，把内置字符转化为某个变量</td>
+<td>a.c</td>
+<td>a.c</td>
+</tr>
+<tr>
+<td>[…]</td>
+<td>字符集，在字符集中所有特殊字符失去含义变为普通字符串，在字符集中有^表示取反</td>
+<td>a[123]c</td>
+<td>a1c或a2c或a3c，在字符集中可以使用其他字符集</td>
+</tr>
+</tbody>
+</table>
+<h2 id="预定义字符集"><a href="#预定义字符集" class="headerlink" title="预定义字符集"></a>预定义字符集</h2><p>这个字符集是我们使用最多的一些字符集，在字符集[…]中也可以使用</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>表达式实例</th>
+<th>可以匹配到的字符串</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一般字符</td>
+<td>匹配自身</td>
+<td>abc</td>
+<td>abc</td>
+</tr>
+<tr>
+<td>\d</td>
+<td>数字[0-9]</td>
+<td>a\dc</td>
+<td>a1c等等</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>非数字[^\d]</td>
+<td>a\Dc</td>
+<td>abc</td>
+</tr>
+<tr>
+<td>\w</td>
+<td>字母活着数字[a-zA-Z0-9]</td>
+<td>a\wc</td>
+<td>abc</td>
+</tr>
+<tr>
+<td>\W</td>
+<td>非字母且非数字[^\w]</td>
+<td>a\Wc</td>
+<td>a*c</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>空白字符[空格\t\n\r\f\v]</td>
+<td>a\sc</td>
+<td>a c</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>非空白字符[^\s]</td>
+<td>a\Sc</td>
+<td>abc</td>
+</tr>
+<tr>
+<td>\t</td>
+<td>tab</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>\r</td>
+<td>回车</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>\v</td>
+<td>竖向制表符</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>\f</td>
+<td>换页符</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>\n</td>
+<td>换行符</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="数量词"><a href="#数量词" class="headerlink" title="数量词"></a>数量词</h2><p>可以写在字符之后或者字符集之后，用来表示字符被匹配的次数</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>表达式实例</th>
+<th>可以匹配到的字符串</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td>匹配前一个字符0次或者无限次</td>
+<td>abc*</td>
+<td>ab或者abcccc</td>
+</tr>
+<tr>
+<td>+</td>
+<td>匹配前一个字符1次或者无限次</td>
+<td>abc+</td>
+<td>abc或者abcccc</td>
+</tr>
+<tr>
+<td>?</td>
+<td>匹配前一个字符0次或者1次</td>
+<td>abc?</td>
+<td>ab或者abc</td>
+</tr>
+<tr>
+<td>{m}</td>
+<td>匹配前一个字符m次</td>
+<td>a{2}c</td>
+<td>aac</td>
+</tr>
+<tr>
+<td>{m,n}</td>
+<td>匹配前一个字符m至n次（其中m或n可以忽略）</td>
+<td>a{1,2}c</td>
+<td>ac或者aac</td>
+</tr>
+</tbody>
+</table>
+<h2 id="边界匹配"><a href="#边界匹配" class="headerlink" title="边界匹配"></a>边界匹配</h2><p>这次字符主要表示设定开头，并不消耗字符</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>表达式实例</th>
+<th>可以匹配到的字符串</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>^</td>
+<td>匹配字符串开头，在多行字符串中匹配字符串的开头</td>
+<td>^abc</td>
+<td>匹配每行中abc开头的字符串</td>
+</tr>
+<tr>
+<td>$</td>
+<td>匹配字符串的末尾，在多行字符串中匹配字符串的末尾</td>
+<td>abc$</td>
+<td>匹配每行中abc结尾的字符串</td>
+</tr>
+<tr>
+<td>\A</td>
+<td>仅适用于单行模式，仅匹配字符串开头</td>
+<td>\Awer</td>
+<td>wer开头的单行字符串</td>
+</tr>
+<tr>
+<td>\Z</td>
+<td>仅适用于单行模式，仅匹配字符串末尾</td>
+<td>wer\Z</td>
+<td>wer结尾的单行字符串</td>
+</tr>
+<tr>
+<td>\b</td>
+<td>仅匹配\w和\W之间</td>
+</tr>
+<tr>
+<td>\B</td>
+<td>[^\b]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="逻辑，分组"><a href="#逻辑，分组" class="headerlink" title="逻辑，分组"></a>逻辑，分组</h2><p>这个代表了正则表达式的逻辑运算和分组策略</p>
+<table>
+<thead>
+<tr>
+<th>语法</th>
+<th>说明</th>
+<th>表达式实例</th>
+<th>可以匹配到的字符串</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>\</td>
+<td></td>
+<td>代表逻辑或，先尝试左边的表达式，如果尝试通过了直接返回，尝试未通过会继续尝试右边的表达式，并且支持()表示限定作用范围</td>
+<td>abc(123\</td>
+<td>456)bcd</td>
+<td>abc123bcd或者abc456bcd</td>
+</tr>
+<tr>
+<td>(…)</td>
+<td>被括起来的表达式将作为一个分组，编号从1开始，从表达式的左边开始每遇到一个括号编号+1，另外分组作为一个整体后面依然可以接数量词，表达式中间的\</td>
+<td>的作用域将只在()内</td>
+<td>abc(.*)def</td>
+<td>abc123def等等</td>
+</tr>
+</tbody>
+</table>
+<h2 id="特殊构造"><a href="#特殊构造" class="headerlink" title="特殊构造"></a>特殊构造</h2>
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/06/16/python正则表达式学习/">python正则表达式学习</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/06/16/python正则表达式学习/" title="python正则表达式学习">https://hubinwei.me/2017/06/16/python正则表达式学习/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/正则表达式/" rel="tag"># 正则表达式</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/11/python模块分析之concurrent-futures-线程池，进程池/" rel="next" title="python模块分析之concurrent.futures-线程池，进程池">
+                <i class="fa fa-chevron-left"></i> python模块分析之concurrent.futures-线程池，进程池
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/16/docs/15356101141174/" rel="prev" title="python正则表达式学习">
+                python正则表达式学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#普通字符"><span class="nav-number">2.</span> <span class="nav-text">普通字符</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一般字符"><span class="nav-number">2.1.</span> <span class="nav-text">一般字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预定义字符集"><span class="nav-number">2.2.</span> <span class="nav-text">预定义字符集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数量词"><span class="nav-number">2.3.</span> <span class="nav-text">数量词</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#边界匹配"><span class="nav-number">2.4.</span> <span class="nav-text">边界匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑，分组"><span class="nav-number">2.5.</span> <span class="nav-text">逻辑，分组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特殊构造"><span class="nav-number">2.6.</span> <span class="nav-text">特殊构造</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/06/16/python正则表达式学习/';
+
+      var disqus_title = "python正则表达式学习";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

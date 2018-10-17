@@ -1,0 +1,1010 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="go,docker,云平台,k8s,golang," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言如果你想定制自己的 docker 镜像，完成一些基础环境工具包的安装，基础环境设置，这篇文章将会对你有一些帮助。这里介绍了利用 Dockfile 构建 docker 镜像，以及使用 docker commit 方法手工构建镜像。 镜像构建 Dockerfile 简介手工命令构建 docker 镜像非常繁琐，在生产环境中不适用（文章最后我会简单介绍如何使用 commit 命令制作 docker">
+<meta name="keywords" content="go,docker,云平台,k8s,golang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerfile镜像构建">
+<meta property="og:url" content="https://hubinwei.me/2017/12/07/Dockerfile镜像构建/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言如果你想定制自己的 docker 镜像，完成一些基础环境工具包的安装，基础环境设置，这篇文章将会对你有一些帮助。这里介绍了利用 Dockfile 构建 docker 镜像，以及使用 docker commit 方法手工构建镜像。 镜像构建 Dockerfile 简介手工命令构建 docker 镜像非常繁琐，在生产环境中不适用（文章最后我会简单介绍如何使用 commit 命令制作 docker">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-07T07:30:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dockerfile镜像构建">
+<meta name="twitter:description" content="前言如果你想定制自己的 docker 镜像，完成一些基础环境工具包的安装，基础环境设置，这篇文章将会对你有一些帮助。这里介绍了利用 Dockfile 构建 docker 镜像，以及使用 docker commit 方法手工构建镜像。 镜像构建 Dockerfile 简介手工命令构建 docker 镜像非常繁琐，在生产环境中不适用（文章最后我会简单介绍如何使用 commit 命令制作 docker">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/12/07/Dockerfile镜像构建/"/>
+
+
+
+
+
+  <title> Dockerfile镜像构建 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/12/07/Dockerfile镜像构建/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Dockerfile镜像构建
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-07T11:45:28+08:00">
+                2017-12-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/golang/" itemprop="url" rel="index">
+                    <span itemprop="name">golang</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/golang/docker/" itemprop="url" rel="index">
+                    <span itemprop="name">docker</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/12/07/Dockerfile镜像构建/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/07/Dockerfile镜像构建/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>如果你想定制自己的 docker 镜像，完成一些基础环境工具包的安装，基础环境设置，这篇文章将会对你有一些帮助。这里介绍了利用 Dockfile 构建 docker 镜像，以及使用 docker commit 方法手工构建镜像。</p>
+<h1 id="镜像构建-Dockerfile-简介"><a href="#镜像构建-Dockerfile-简介" class="headerlink" title="镜像构建 Dockerfile 简介"></a>镜像构建 Dockerfile 简介</h1><p>手工命令构建 docker 镜像非常繁琐，在生产环境中不适用（文章最后我会简单介绍如何使用 commit 命令制作 docker 镜像），docker 为开发者提供了一种 docker 脚本（原语）来帮助构建 docker 镜像，这个 docker 脚本就是 Dockerfile</p>
+<h2 id="Dockerfile-分层构建简介"><a href="#Dockerfile-分层构建简介" class="headerlink" title="Dockerfile 分层构建简介"></a>Dockerfile 分层构建简介</h2><p>镜像分层构建的本质是镜像文件系统的分层，docker 镜像构建是基于分层构建来完成的，每个 Dockerfile 指令会构建一层镜像，每一层构建是一系列的 linux 命令组成，这么设置的好处是让镜像构建更加灵活。比如我们可以把代码放在构建的最上层，这样每次代码提交的时候只需要重新构建最上层代码，下层用之前的构建缓存，加快镜像构建速度，如果想更深入了解分层构建，请看这里</p>
+<h2 id="Dockerfile-核心指令介绍"><a href="#Dockerfile-核心指令介绍" class="headerlink" title="Dockerfile 核心指令介绍"></a>Dockerfile 核心指令介绍</h2><p>Dockerfile 指令忽略大小写，建议使用大写，用 # 作为注释，每一行只支持一条指令，每条指令可以携带多个参数（多个 Linux 命令）</p>
+<p>Dockerfile 指令执行格式为: <code>INSTRUCTION arguments</code>，指令加参数，下面列出了一些常用 Dockerfile 指令</p>
+<h3 id="Dockerfile-样例"><a href="#Dockerfile-样例" class="headerlink" title="Dockerfile 样例"></a>Dockerfile 样例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">FROM nginx:latest</span><br><span class="line">MAINTAINER Bill Hu &lt;596454327@qq.com&gt;</span><br><span class="line"></span><br><span class="line">RUN apt-get update -y &amp;&amp; apt-get install telnet -y &amp;&amp; apt-get install python2.7 -y &amp;&amp; ln -s /usr/bin/python2.7 /usr/bin/python</span><br><span class="line"></span><br><span class="line">WORKDIR /root</span><br><span class="line"></span><br><span class="line">ADD test.py /root/</span><br><span class="line"></span><br><span class="line">EXPOSE 80 81 82</span><br><span class="line"></span><br><span class="line">ENV BASE_PATH=&quot;/root&quot; \</span><br><span class="line">    BASE_FILE_NAME=&quot;123.html&quot;</span><br><span class="line">RUN echo &apos;&lt;h1&gt;Hello Docker for hbw 1&lt;/h1&gt;&apos; &gt; /usr/share/nginx/html/index.html</span><br></pre></td></tr></table></figure>
+<h3 id="FROM"><a href="#FROM" class="headerlink" title="FROM"></a>FROM</h3><ul>
+<li>在每个 Dockerfile 的首行都是 FROM 指令，指定父镜像，也可以指定为空，表示为裸镜像制作</li>
+</ul>
+<h3 id="MAINTAINER"><a href="#MAINTAINER" class="headerlink" title="MAINTAINER"></a>MAINTAINER</h3><ul>
+<li>指定镜像制作者姓名</li>
+</ul>
+<h3 id="ADD"><a href="#ADD" class="headerlink" title="ADD"></a>ADD</h3><p>格式 <code>ADD &lt;src&gt; &lt;dest&gt;</code></p>
+<ul>
+<li><p>拷贝文件，文件夹到容器里面的某个目录，如果目录不存在则新建</p>
+</li>
+<li><p>src 也可以是远程目录（建议用 curl 或者 wget）</p>
+</li>
+<li><p>src 支持通配符匹配</p>
+</li>
+<li><p>src 如果是压缩文件，支持镜像制作时候解压（只需在镜像制作时候解压一次）</p>
+</li>
+<li><p>良好习惯，以反斜杠 / 结尾</p>
+</li>
+</ul>
+<h3 id="COPY"><a href="#COPY" class="headerlink" title="COPY"></a>COPY</h3><ul>
+<li>COPY 指令和 ADD 指令类似，是它的替代品，只是他不支持远程 url 拷贝和文件解压，建议使用 COPY 和 RUN 指令替代 ADD 指令</li>
+</ul>
+<h3 id="EXPOSE"><a href="#EXPOSE" class="headerlink" title="EXPOSE"></a>EXPOSE</h3><ul>
+<li><p>告诉容器运行时可以暴露的端口，如： <code>EXPOSE 80 81 82</code> 就是暴露三个端口</p>
+</li>
+<li><p>在 docker run 时候加 <code>-P</code> 命令，这些端口会被随机映射到高位端口，加 <code>-p</code> 命令手工映射到指定端口</p>
+</li>
+<li><p>容器暴露端口和 docker run 中的端口映射还是有区别的，暴露不一定需要映射到宿主机，可以在 docker 网络中暴露给其他容器内部使用</p>
+</li>
+</ul>
+<h3 id="ENV"><a href="#ENV" class="headerlink" title="ENV"></a>ENV</h3><ul>
+<li><p>该指令用于设置环境变量，后续构建指令可以直接引用，并且在容器中环境变量依然存在</p>
+</li>
+<li><p>如果想修改环境变量，可以在 docker run 的时候添加 -env 参数，指定环境变量</p>
+</li>
+<li><p>如果有多条记录则如下</p>
+</li>
+</ul>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ENV</span> OUTER_PORT=<span class="string">'5002'</span> \</span><br><span class="line">    INNER_PORT=<span class="string">'8009'</span></span><br></pre></td></tr></table></figure>
+<h3 id="VOLUME"><a href="#VOLUME" class="headerlink" title="VOLUME"></a>VOLUME</h3><ul>
+<li>这个指令很特别，是文件系统挂载指令，也算是虚拟化技术的三大板块之一，存储，专门用来挂在存储卷</li>
+</ul>
+<h3 id="WORKDIR"><a href="#WORKDIR" class="headerlink" title="WORKDIR"></a>WORKDIR</h3><ul>
+<li>设置应用程序运行根目录，该指令可以多次执行，第二次执行支持相对路径设置根目录</li>
+</ul>
+<h3 id="ONBUILD"><a href="#ONBUILD" class="headerlink" title="ONBUILD"></a>ONBUILD</h3><ul>
+<li><p>这是一个非常特殊的指令，指定后面的指令在当前镜像构建中不会执行</p>
+</li>
+<li><p>A 是基镜像，并且它的构建过程有 ONBUILD 指令，B 镜像构建过程中引用了 A 镜像，则在 B 镜像构建前会按照顺序执行 A 镜像中的 ONBUILD 指令，如果有一个执行失败则镜像构建失败，ONBUILD 指令执行完后才会继续镜像 B 正常的构建流程</p>
+</li>
+<li><p>B 镜像不会继承 A 镜像的 ONBUILD 指令，即 C 镜像引用 B 镜像，构建过程中则不会执行 ONBUILD 指令</p>
+</li>
+<li><p>ONBUILD 指令不允许嵌套，且不会执行其定义的 FROM 或 MAINTAINER 指令</p>
+</li>
+</ul>
+<h3 id="RUN"><a href="#RUN" class="headerlink" title="RUN"></a>RUN</h3><ul>
+<li>支持格式 shell form 和 exec form，如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">shell form</span><br><span class="line">RUN &lt;commnad&gt;</span><br><span class="line"></span><br><span class="line">exec form</span><br><span class="line">RUN [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;]</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>exec form 的缺点是不触发 shell，比如环境变量没法使用，优点是可以在没有 bash 的镜像中执行，并且避免字符串解析错误</p>
+</li>
+<li><p>每个 RUN 指令会构建一层镜像，后续构建镜像可以重复利用之间的镜像缓存，是镜像分层构建的基础</p>
+</li>
+</ul>
+<h3 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h3><ul>
+<li><p>支持格式 shell form 和 exec form，同 RUN</p>
+</li>
+<li><p>在 Dockerfile 中 CMD 命令一般只有一条，如果有多条则只执行最后一条</p>
+</li>
+<li><p>当 docker run command 中含有 command 命令时，会替换 CMD 执行的命令</p>
+</li>
+<li><p>只在容器启动过程中执行</p>
+</li>
+</ul>
+<h3 id="ENTRYPOINT"><a href="#ENTRYPOINT" class="headerlink" title="ENTRYPOINT"></a>ENTRYPOINT</h3><ul>
+<li><p>支持格式 shell form 和 exec form，同 RUN</p>
+</li>
+<li><p>容器启动过程中执行该命令，一个 Dockerfile 只能有一条 ENTRYPOINT 指令，如果有多条 ENTRYPOINT 指令则只执行最后一条</p>
+</li>
+<li><p>注意和 CMD 指令的区别和联系</p>
+</li>
+</ul>
+<h1 id="docker-镜像构建命令-build"><a href="#docker-镜像构建命令-build" class="headerlink" title="docker 镜像构建命令 build"></a>docker 镜像构建命令 build</h1><p>构建命令格式如下</p>
+<ul>
+<li>Usage:    docker build [OPTIONS] PATH | URL | -</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Build an image from a Dockerfile</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">      --add-host list              Add a custom host-to-IP mapping (host:ip)</span><br><span class="line">      --build-arg list             Set build-time variables</span><br><span class="line">      --cache-from stringSlice     Images to consider as cache sources</span><br><span class="line">      --cgroup-parent string       Optional parent cgroup for the container</span><br><span class="line">      --compress                   Compress the build context using gzip</span><br><span class="line">      --cpu-period int             Limit the CPU CFS (Completely Fair Scheduler) period</span><br><span class="line">      --cpu-quota int              Limit the CPU CFS (Completely Fair Scheduler) quota</span><br><span class="line">  -c, --cpu-shares int             CPU shares (relative weight)</span><br><span class="line">      --cpuset-cpus string         CPUs in which to allow execution (0-3, 0,1)</span><br><span class="line">      --cpuset-mems string         MEMs in which to allow execution (0-3, 0,1)</span><br><span class="line">      --disable-content-trust      Skip image verification (default true)</span><br><span class="line">  -f, --file string                Name of the Dockerfile (Default is &apos;PATH/Dockerfile&apos;)</span><br><span class="line">      --force-rm                   Always remove intermediate containers</span><br><span class="line">      --help                       Print usage</span><br><span class="line">      --iidfile string             Write the image ID to the file</span><br><span class="line">      --isolation string           Container isolation technology</span><br><span class="line">      --label list                 Set metadata for an image</span><br><span class="line">  -m, --memory bytes               Memory limit</span><br><span class="line">      --memory-swap bytes          Swap limit equal to memory plus swap: &apos;-1&apos; to enable unlimited swap</span><br><span class="line">      --network string             Set the networking mode for the RUN instructions during build (default &quot;default&quot;)</span><br><span class="line">      --no-cache                   Do not use cache when building the image</span><br><span class="line">      --pull                       Always attempt to pull a newer version of the image</span><br><span class="line">  -q, --quiet                      Suppress the build output and print image ID on success</span><br><span class="line">      --rm                         Remove intermediate containers after a successful build (default true)</span><br><span class="line">      --security-opt stringSlice   Security options</span><br><span class="line">      --shm-size bytes             Size of /dev/shm</span><br><span class="line">      --squash                     Squash newly built layers into a single new layer</span><br><span class="line">  -t, --tag list                   Name and optionally a tag in the &apos;name:tag&apos; format</span><br><span class="line">      --target string              Set the target build stage to build.</span><br><span class="line">      --ulimit ulimit              Ulimit options (default [])</span><br></pre></td></tr></table></figure>
+<p>构建命令对 Dockerfile 的支持很友好，支持 git repo，tar 包，标准输入，等</p>
+<h1 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h1><p>1.理解容器和虚拟机的区别</p>
+<ul>
+<li>容器和虚拟机不同，他只是对系统环境的包装，程序不存在后台运行的说法，如我们使用 CMD 指令来启动 nginx，只能 <code>CMD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]</code>，不能 <code>service nginx start</code>，他没有 upstart 后台守护进程</li>
+</ul>
+<p>2.理解 CMD 和 ENTRYPOINT 的区别</p>
+<ul>
+<li><p>CMD 不能和 docker run 命令配合使用， docker run 中的 指令会覆盖 CMD 中的指令，而 ENTRYPOINT 可以配合 docker run 命令使用，docker run 传进来的其他指令会被当作参数传递给 ENTRYPOINT</p>
+</li>
+<li><p>ENTRYPOINT 和 CMD 同时存在的时候，CMD 指令中的值会被当作参数传递给 ENTRYPOINT</p>
+</li>
+</ul>
+<p>3.理解 RUN 和 CMD 的区别</p>
+<ul>
+<li>RUN 只在容器构建时候执行，执行的结果会写入镜像中，而 CMD 只在容器初始化启动时候执行</li>
+</ul>
+<h1 id="实用命令"><a href="#实用命令" class="headerlink" title="实用命令"></a>实用命令</h1><h2 id="构建镜像"><a href="#构建镜像" class="headerlink" title="构建镜像"></a>构建镜像</h2><p>docker build -t “nginx_1_2” ./</p>
+<p>以当前路径下的 Dockerfile 构建名称为 nginx_1_2 的镜像</p>
+<p>docker build -t “nginx_1_2:1128” ./</p>
+<p>以当前路径下的 Dockerfile 构建名称为 nginx_1_2 tag 标签为 1128 的镜像</p>
+<h1 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h1><p>todolist</p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/12/07/Dockerfile镜像构建/">Dockerfile镜像构建</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/12/07/Dockerfile镜像构建/" title="Dockerfile镜像构建">https://hubinwei.me/2017/12/07/Dockerfile镜像构建/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/go/" rel="tag"># go</a>
+          
+            <a href="/tags/docker/" rel="tag"># docker</a>
+          
+            <a href="/tags/云平台/" rel="tag"># 云平台</a>
+          
+            <a href="/tags/k8s/" rel="tag"># k8s</a>
+          
+            <a href="/tags/golang/" rel="tag"># golang</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/07/k8s常用命令集/" rel="next" title="k8s常用命令集">
+                <i class="fa fa-chevron-left"></i> k8s常用命令集
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/07/docs/15356101138326/" rel="prev" title="Dockerfile镜像构建">
+                Dockerfile镜像构建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#镜像构建-Dockerfile-简介"><span class="nav-number">2.</span> <span class="nav-text">镜像构建 Dockerfile 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile-分层构建简介"><span class="nav-number">2.1.</span> <span class="nav-text">Dockerfile 分层构建简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile-核心指令介绍"><span class="nav-number">2.2.</span> <span class="nav-text">Dockerfile 核心指令介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dockerfile-样例"><span class="nav-number">2.2.1.</span> <span class="nav-text">Dockerfile 样例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FROM"><span class="nav-number">2.2.2.</span> <span class="nav-text">FROM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MAINTAINER"><span class="nav-number">2.2.3.</span> <span class="nav-text">MAINTAINER</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ADD"><span class="nav-number">2.2.4.</span> <span class="nav-text">ADD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#COPY"><span class="nav-number">2.2.5.</span> <span class="nav-text">COPY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EXPOSE"><span class="nav-number">2.2.6.</span> <span class="nav-text">EXPOSE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ENV"><span class="nav-number">2.2.7.</span> <span class="nav-text">ENV</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VOLUME"><span class="nav-number">2.2.8.</span> <span class="nav-text">VOLUME</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WORKDIR"><span class="nav-number">2.2.9.</span> <span class="nav-text">WORKDIR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ONBUILD"><span class="nav-number">2.2.10.</span> <span class="nav-text">ONBUILD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RUN"><span class="nav-number">2.2.11.</span> <span class="nav-text">RUN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CMD"><span class="nav-number">2.2.12.</span> <span class="nav-text">CMD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ENTRYPOINT"><span class="nav-number">2.2.13.</span> <span class="nav-text">ENTRYPOINT</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-镜像构建命令-build"><span class="nav-number">3.</span> <span class="nav-text">docker 镜像构建命令 build</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注意点"><span class="nav-number">4.</span> <span class="nav-text">注意点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实用命令"><span class="nav-number">5.</span> <span class="nav-text">实用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#构建镜像"><span class="nav-number">5.1.</span> <span class="nav-text">构建镜像</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#相关资料"><span class="nav-number">6.</span> <span class="nav-text">相关资料</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/12/07/Dockerfile镜像构建/';
+
+      var disqus_title = "Dockerfile镜像构建";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

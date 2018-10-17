@@ -1,0 +1,1008 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="devops,linux,系统克隆,系统备份,系统还原,windows,操作系统镜像制作,再生龙,clonezilla," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言 本文档主要介绍clonezilla用作linux系统的备份与恢复，方便私有化部署  clonezilla 再生龙软件介绍 Clonezilla是一个用于Linux，Free-Net-OpenBSD，Mac OS X，Windows以及Minix的分区和磁盘克隆程序。它支持所有主要的文件系统，包括EXT，NTFS，FAT，XFS，JFS和Btrfs，LVM2，以及VMWare的企业集群文件系统">
+<meta name="keywords" content="devops,linux,系统克隆,系统备份,系统还原,windows,操作系统镜像制作,再生龙,clonezilla">
+<meta property="og:type" content="article">
+<meta property="og:title" content="clonezilla 再生龙 Linux操作系统备份，恢复,私有化部署实战">
+<meta property="og:url" content="https://hubinwei.me/2017/02/09/docs/15356101138408/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言 本文档主要介绍clonezilla用作linux系统的备份与恢复，方便私有化部署  clonezilla 再生龙软件介绍 Clonezilla是一个用于Linux，Free-Net-OpenBSD，Mac OS X，Windows以及Minix的分区和磁盘克隆程序。它支持所有主要的文件系统，包括EXT，NTFS，FAT，XFS，JFS和Btrfs，LVM2，以及VMWare的企业集群文件系统">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170209339991.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170209426503.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170209285774.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170209769505.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170209769505.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170209184018.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170209272069.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017020985610.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702091304411.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702092876712.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702093575913.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702098888516.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702098225017.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702096402718.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702092765519.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702092047520.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702098921021.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702094046622.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702092342023.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702095956924.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017020980325.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702098272026.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702099157727.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702093727128.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702096101029.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702099491230.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702097641432.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702098273733.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702097133234.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702091664535.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702093289036.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170209238837.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170209959538.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702092922839.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702095401540.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702093927241.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702096586742.png">
+<meta property="og:image" content="http://odh5je629.bkt.clouddn.com/201702097298432.png">
+<meta property="og:updated_time" content="2018-08-30T06:21:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="clonezilla 再生龙 Linux操作系统备份，恢复,私有化部署实战">
+<meta name="twitter:description" content="前言 本文档主要介绍clonezilla用作linux系统的备份与恢复，方便私有化部署  clonezilla 再生龙软件介绍 Clonezilla是一个用于Linux，Free-Net-OpenBSD，Mac OS X，Windows以及Minix的分区和磁盘克隆程序。它支持所有主要的文件系统，包括EXT，NTFS，FAT，XFS，JFS和Btrfs，LVM2，以及VMWare的企业集群文件系统">
+<meta name="twitter:image" content="http://odh5je629.bkt.clouddn.com/20170209339991.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/02/09/docs/15356101138408/"/>
+
+
+
+
+
+  <title> clonezilla 再生龙 Linux操作系统备份，恢复,私有化部署实战 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/02/09/docs/15356101138408/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                clonezilla 再生龙 Linux操作系统备份，恢复,私有化部署实战
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-09T08:59:09+08:00">
+                2017-02-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/操作系统/" itemprop="url" rel="index">
+                    <span itemprop="name">操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/操作系统/镜像制作/" itemprop="url" rel="index">
+                    <span itemprop="name">镜像制作</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/02/09/docs/15356101138408/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/02/09/docs/15356101138408/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
+<p>本文档主要介绍clonezilla用作linux系统的备份与恢复，方便私有化部署</p>
+</blockquote>
+<h1 id="clonezilla-再生龙软件介绍"><a href="#clonezilla-再生龙软件介绍" class="headerlink" title="clonezilla 再生龙软件介绍"></a>clonezilla 再生龙软件介绍</h1><blockquote>
+<p>Clonezilla是一个用于Linux，Free-Net-OpenBSD，Mac OS X，Windows以及Minix的分区和磁盘克隆程序。它支持所有主要的文件系统，包括EXT，NTFS，FAT，XFS，JFS和Btrfs，LVM2，以及VMWare的企业集群文件系统VMFS3和VMFS5。Clonezilla支持32位和64位系统，同时支持旧版BIOS和UEFI BIOS，并且同时支持MBR和GPT分区表。它是一个用于完整备份Windows系统和所有安装于上的应用软件的好工具，而我主要用来来做系统克隆，私有化部署。</p>
+</blockquote>
+<blockquote>
+<p>Clonezilla也可以使用dd命令来备份不支持的文件系统，该命令可以复制块而非文件，因而不必在意文件系统。简单点说，就是Clonezilla可以复制任何东西。（关于块的快速说明：磁盘扇区是磁盘上最小的可编址存储单元，而块是由单个或者多个扇区组成的逻辑数据结构。）</p>
+</blockquote>
+<blockquote>
+<p>Clonezilla分为两个版本：Clonezilla Live和Clonezilla Server Edition（SE）。Clonezilla Live对于将单个计算机克隆到本地存储设备或者网络共享来说是一流的。而Clonezilla SE则适合更大的部署，用于一次性快速多点克隆整个网络中的PC。Clonezilla SE是一个神奇的软件，我们将在今后讨论。今天，我们将创建一个Clonezilla Live USB存储棒，克隆某个系统，然后恢复它。</p>
+</blockquote>
+<h1 id="当前操作系统备份方案调查（Linux）"><a href="#当前操作系统备份方案调查（Linux）" class="headerlink" title="当前操作系统备份方案调查（Linux）"></a>当前操作系统备份方案调查（Linux）</h1><p>当前备份方案有：<br>1.简单暴力的对虚拟机层面的备份<br>2.有对操作系统层面的备份<br>3.有更细化的对硬盘或者分区层面的备份</p>
+<p>对于系统克隆，可选的方案有四种<br>clonezilla，partimage，ghost4linux，acronis true image</p>
+<p>这里主要讨论第一种，再生龙，系统克隆，恢复</p>
+<h1 id="选择-clonezilla-再生龙-作为备份软件的优势"><a href="#选择-clonezilla-再生龙-作为备份软件的优势" class="headerlink" title="选择 clonezilla (再生龙)作为备份软件的优势"></a>选择 clonezilla (再生龙)作为备份软件的优势</h1><p>非常好非常棒，软件免费，不仅支持对整个系统进行克隆，而且也可以克隆单个的分区，支持磁盘格式非常多，支持mbr信息克隆，支持iso镜像打包，支持windows，支持linux，克隆操作灵活，这种灵活性可能更能适应备份者的需要。</p>
+<h1 id="clonezilla-再生龙-备份软件私有化部署实战教程"><a href="#clonezilla-再生龙-备份软件私有化部署实战教程" class="headerlink" title="clonezilla (再生龙)备份软件私有化部署实战教程"></a>clonezilla (再生龙)备份软件私有化部署实战教程</h1><h2 id="测试环境准备"><a href="#测试环境准备" class="headerlink" title="测试环境准备"></a>测试环境准备</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.物理机一台，里面安装了vmware，方便用虚拟机来进行测试</span><br><span class="line"></span><br><span class="line">2.vmware虚拟机三台，A,B,C,其中ABC各有一块20GB的硬盘，A作为原机器，B作为准备目标机器,C主要是为了存储镜像数据</span><br><span class="line"></span><br><span class="line">3.8G U盘一个,用来制作再生龙U盘镜像（如果你只是在虚拟机里面做操作，可以省去制作再生龙U盘镜像）</span><br></pre></td></tr></table></figure>
+<h2 id="软件下载，镜像制作"><a href="#软件下载，镜像制作" class="headerlink" title="软件下载，镜像制作"></a>软件下载，镜像制作</h2><p><a href="http://www.clonezilla.org/downloads/download.php?branch=stable" target="_blank" rel="noopener">软件下载页面</a>因为我的操作系统是64位的，所以我这里的clonezilla软件下载的amd64的iso镜像</p>
+<p>下载好了iso镜像我们需要制作一个U盘镜像,方便真实场景下来启动clonezilla（毕竟大多数的真实场景不能做vmware的 cd镜像挂载）</p>
+<p>制作U盘镜像我这里使用的是软碟通UItraISO，把iso镜像文件写入到U盘就可以了</p>
+<h2 id="系统备份"><a href="#系统备份" class="headerlink" title="系统备份"></a>系统备份</h2><p>接下来我们进行核心操作，系统的备份和还原，先看备份</p>
+<p>先准备好A,B,C三台虚拟机，界面如下<br><img src="http://odh5je629.bkt.clouddn.com/20170209339991.png" alt="20170209339991.png"></p>
+<p>把我们之前制作的U盘进行插到物理机上</p>
+<p>在vmware里面给虚拟机A添加磁盘，然后把我们的U盘添加进去</p>
+<p>修改bios的boot引导项，选择优先走刚才所选的U盘加载（如果是虚拟机环境其实不用插U盘，直接用cd/rom启动镜像，操作更方便），F10保存修改，重启电脑</p>
+<p>现在我们看到了clonezilla的系统启动界面，他提供了许多模式，我们选择默认的第一种,如下图:<br><img src="http://odh5je629.bkt.clouddn.com/20170209426503.png" alt="20170209426503.png"></p>
+<p>clonezilla语音选择<br><img src="http://odh5je629.bkt.clouddn.com/20170209285774.png" alt="20170209285774.png"></p>
+<p>操作系统键盘映射关系，我们选择默认<br><img src="http://odh5je629.bkt.clouddn.com/20170209769505.png" alt="20170209769505.png"></p>
+<p>初次使用，建议不要使用命令行操作，选择默认<br><img src="http://odh5je629.bkt.clouddn.com/20170209769505.png" alt="20170209769505.png"></p>
+<p>选择clonezilla存储镜像路径，这里我建议选择ssh存放，其次为本地硬盘存储，这个硬盘可以是你的usb或者本地硬盘,这里我们默认为ssh存储<br><img src="http://odh5je629.bkt.clouddn.com/20170209184018.png" alt="20170209184018.png"></p>
+<p>配置本机ip信息，这里我们使用dhcp<br><img src="http://odh5je629.bkt.clouddn.com/20170209272069.png" alt="20170209272069.png"></p>
+<p>配置ssh服务器地址(clonezilla的数据默认会存储在这里)<br><img src="http://odh5je629.bkt.clouddn.com/2017020985610.png" alt="2017020985610.png"></p>
+<p>配置ssh服务器登陆端口，我们使用默认的22端口<br><img src="http://odh5je629.bkt.clouddn.com/201702091304411.png" alt="201702091304411.png"></p>
+<p>配置ssh服务器登陆的用户名<br><img src="http://odh5je629.bkt.clouddn.com/201702092876712.png" alt="201702092876712.png"></p>
+<p>配置clonezilla数据存储路径（最好确保ssh服务器上该目录存在且为空）<br><img src="http://odh5je629.bkt.clouddn.com/201702093575913.png" alt="201702093575913.png"></p>
+<p>继续下一步ssh连接并验证ssh登陆信息<br><img src="http://odh5je629.bkt.clouddn.com/201702098888516.png" alt="201702098888516.png"></p>
+<p>挂载ssh远端数据存储目录到本地文件系统<br><img src="http://odh5je629.bkt.clouddn.com/201702098225017.png" alt="201702098225017.png"></p>
+<p>默认的模式已经能够满足我们的需求了，有特殊需求的可以选择专家模式，里面有更多的自定义选项<br><img src="http://odh5je629.bkt.clouddn.com/201702096402718.png" alt="201702096402718.png"></p>
+<p>选择硬盘为镜像文件<br><img src="http://odh5je629.bkt.clouddn.com/201702092765519.png" alt="201702092765519.png"></p>
+<p>数据存储目录命名（他这里并不镜像文件，镜像文件还需要再次打包，后面会继续说）<br><img src="http://odh5je629.bkt.clouddn.com/201702092047520.png" alt="201702092047520.png"></p>
+<p>选择需要克隆的硬盘<br><img src="http://odh5je629.bkt.clouddn.com/201702098921021.png" alt="201702098921021.png"></p>
+<p>默认选项一<br><img src="http://odh5je629.bkt.clouddn.com/201702094046622.png" alt="201702094046622.png"></p>
+<p>默认选项一<br><img src="http://odh5je629.bkt.clouddn.com/201702092342023.png" alt="201702092342023.png"></p>
+<p>默认选项一<br><img src="http://odh5je629.bkt.clouddn.com/201702095956924.png" alt="201702095956924.png"></p>
+<p>默认选项一<br><img src="http://odh5je629.bkt.clouddn.com/2017020980325.png" alt="2017020980325.png"></p>
+<p>按enter继续操作<br><img src="http://odh5je629.bkt.clouddn.com/201702098272026.png" alt="201702098272026.png"></p>
+<p>选择y继续下一步操作<br><img src="http://odh5je629.bkt.clouddn.com/201702099157727.png" alt="201702099157727.png"></p>
+<p>系统在开始克隆了，他会一个分区一个分区的克隆<br><img src="http://odh5je629.bkt.clouddn.com/201702093727128.png" alt="201702093727128.png"></p>
+<p>系统克隆完毕，并且校验通过<br><img src="http://odh5je629.bkt.clouddn.com/201702096101029.png" alt="201702096101029.png"></p>
+<p>克隆完毕，重启系统，克隆教程到此结束<br><img src="http://odh5je629.bkt.clouddn.com/201702099491230.png" alt="201702099491230.png"></p>
+<h2 id="系统还原"><a href="#系统还原" class="headerlink" title="系统还原"></a>系统还原</h2><p>系统还原之前的操作和系统备份是一样的（核心步骤包括ssh验证，ssh目录名设置，普通模式，重新按照系统备份流程走一遍，一直到出现这个界面），选择还原镜像文件到本地硬盘<br><img src="http://odh5je629.bkt.clouddn.com/201702097641432.png" alt="201702097641432.png"></p>
+<p>选择还原的镜像名<br><img src="http://odh5je629.bkt.clouddn.com/201702098273733.png" alt="201702098273733.png"></p>
+<p>选择目标机器的系统盘，数据会恢复到这里，并且建议新的系统盘大小要大于原来系统的系统盘<br><img src="http://odh5je629.bkt.clouddn.com/201702097133234.png" alt="201702097133234.png"></p>
+<p>默认操作下一步<br><img src="http://odh5je629.bkt.clouddn.com/201702091664535.png" alt="201702091664535.png"></p>
+<p>默认操作下一步<br><img src="http://odh5je629.bkt.clouddn.com/201702093289036.png" alt="201702093289036.png"></p>
+<p>系统在开始恢复了<br><img src="http://odh5je629.bkt.clouddn.com/20170209238837.png" alt="20170209238837.png"></p>
+<p>镜像检查，选择y，覆盖原来数据（不可回滚）<br><img src="http://odh5je629.bkt.clouddn.com/20170209959538.png" alt="20170209959538.png"></p>
+<p>同上<br><img src="http://odh5je629.bkt.clouddn.com/201702092922839.png" alt="201702092922839.png"></p>
+<p>同上<br><img src="http://odh5je629.bkt.clouddn.com/201702095401540.png" alt="201702095401540.png"></p>
+<p>系统恢复完毕<br><img src="http://odh5je629.bkt.clouddn.com/201702093927241.png" alt="201702093927241.png"></p>
+<p>新操作系统启动成功<br><img src="http://odh5je629.bkt.clouddn.com/201702096586742.png" alt="201702096586742.png"></p>
+<h1 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h1><p>因为只是做硬盘层面的恢复，所以最好做一下硬件的检测，比如网卡信息可能需要手工配置一下，修改下ip或者mac地址啥的</p>
+<p>引导丢失系统会默认有grub工具，可以用于恢复</p>
+<p>软件版本号一定要对上，先确认好该用32位的还是64位的</p>
+<p>有时候我们觉得使用文件系统太麻烦，可以直接把所有的资料打包位一个iso镜像，选择产生恢复专用的再生龙，只需要在新机器安装这个镜像，就可以把系统打包过去，非常方便<br><img src="http://odh5je629.bkt.clouddn.com/201702097298432.png" alt="201702097298432.png"></p>
+<h1 id="相关文档"><a href="#相关文档" class="headerlink" title="相关文档"></a>相关文档</h1><p><a href="http://www.clonezilla.org/" target="_blank" rel="noopener">再生龙官方网站</a></p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/02/09/docs/15356101138408/">clonezilla 再生龙 Linux操作系统备份，恢复,私有化部署实战</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/02/09/docs/15356101138408/" title="clonezilla 再生龙 Linux操作系统备份，恢复,私有化部署实战">https://hubinwei.me/2017/02/09/docs/15356101138408/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/devops/" rel="tag"># devops</a>
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/系统克隆/" rel="tag"># 系统克隆</a>
+          
+            <a href="/tags/系统备份/" rel="tag"># 系统备份</a>
+          
+            <a href="/tags/系统还原/" rel="tag"># 系统还原</a>
+          
+            <a href="/tags/windows/" rel="tag"># windows</a>
+          
+            <a href="/tags/操作系统镜像制作/" rel="tag"># 操作系统镜像制作</a>
+          
+            <a href="/tags/再生龙/" rel="tag"># 再生龙</a>
+          
+            <a href="/tags/clonezilla/" rel="tag"># clonezilla</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/09/clonezilla 再生龙 Linux操作系统备份，恢复,私有化部署实战/" rel="next" title="clonezilla 再生龙 Linux操作系统备份，恢复,私有化部署实战">
+                <i class="fa fa-chevron-left"></i> clonezilla 再生龙 Linux操作系统备份，恢复,私有化部署实战
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/10/python-Queue-threading模块实现生产者消费者模型/" rel="prev" title="python Queue，threading模块实现生产者消费者模型">
+                python Queue，threading模块实现生产者消费者模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#clonezilla-再生龙软件介绍"><span class="nav-number">2.</span> <span class="nav-text">clonezilla 再生龙软件介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#当前操作系统备份方案调查（Linux）"><span class="nav-number">3.</span> <span class="nav-text">当前操作系统备份方案调查（Linux）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#选择-clonezilla-再生龙-作为备份软件的优势"><span class="nav-number">4.</span> <span class="nav-text">选择 clonezilla (再生龙)作为备份软件的优势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#clonezilla-再生龙-备份软件私有化部署实战教程"><span class="nav-number">5.</span> <span class="nav-text">clonezilla (再生龙)备份软件私有化部署实战教程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#测试环境准备"><span class="nav-number">5.1.</span> <span class="nav-text">测试环境准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件下载，镜像制作"><span class="nav-number">5.2.</span> <span class="nav-text">软件下载，镜像制作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统备份"><span class="nav-number">5.3.</span> <span class="nav-text">系统备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统还原"><span class="nav-number">5.4.</span> <span class="nav-text">系统还原</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见问题"><span class="nav-number">6.</span> <span class="nav-text">常见问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#相关文档"><span class="nav-number">7.</span> <span class="nav-text">相关文档</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/02/09/docs/15356101138408/';
+
+      var disqus_title = "clonezilla 再生龙 Linux操作系统备份，恢复,私有化部署实战";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

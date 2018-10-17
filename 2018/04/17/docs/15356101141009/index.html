@@ -1,0 +1,913 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="docker,云平台,虚拟化,虚拟机,容器技术,k8s," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言最近几年云计算非常火，他背后的技术是虚拟化技术，现在虚拟化技术主要有两个流派，一个是以 vmware 为首的虚拟机技术，以虚拟化硬件为主，另一个是以 docker 为首的容器技术，以虚拟化内核为主（轻量级虚拟化） 虚拟机，容器技术这里主要介绍虚拟机技术，容器技术以及它们的联系和区别，有一条可以带着阅读，虚拟化的是硬件，那么硬件架构就必须一致，虚拟化的是 kernel 那么 kernel 版本就">
+<meta name="keywords" content="docker,云平台,虚拟化,虚拟机,容器技术,k8s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker for mac - 虚拟机与容器">
+<meta property="og:url" content="https://hubinwei.me/2018/04/17/docs/15356101141009/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言最近几年云计算非常火，他背后的技术是虚拟化技术，现在虚拟化技术主要有两个流派，一个是以 vmware 为首的虚拟机技术，以虚拟化硬件为主，另一个是以 docker 为首的容器技术，以虚拟化内核为主（轻量级虚拟化） 虚拟机，容器技术这里主要介绍虚拟机技术，容器技术以及它们的联系和区别，有一条可以带着阅读，虚拟化的是硬件，那么硬件架构就必须一致，虚拟化的是 kernel 那么 kernel 版本就">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-30T06:21:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker for mac - 虚拟机与容器">
+<meta name="twitter:description" content="前言最近几年云计算非常火，他背后的技术是虚拟化技术，现在虚拟化技术主要有两个流派，一个是以 vmware 为首的虚拟机技术，以虚拟化硬件为主，另一个是以 docker 为首的容器技术，以虚拟化内核为主（轻量级虚拟化） 虚拟机，容器技术这里主要介绍虚拟机技术，容器技术以及它们的联系和区别，有一条可以带着阅读，虚拟化的是硬件，那么硬件架构就必须一致，虚拟化的是 kernel 那么 kernel 版本就">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2018/04/17/docs/15356101141009/"/>
+
+
+
+
+
+  <title> docker for mac - 虚拟机与容器 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2018/04/17/docs/15356101141009/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                docker for mac - 虚拟机与容器
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-17T15:44:52+08:00">
+                2018-04-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/虚拟化/" itemprop="url" rel="index">
+                    <span itemprop="name">虚拟化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/04/17/docs/15356101141009/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/04/17/docs/15356101141009/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近几年云计算非常火，他背后的技术是虚拟化技术，现在虚拟化技术主要有两个流派，一个是以 vmware 为首的虚拟机技术，以虚拟化硬件为主，另一个是以 docker 为首的容器技术，以虚拟化内核为主（轻量级虚拟化）</p>
+<h1 id="虚拟机，容器技术"><a href="#虚拟机，容器技术" class="headerlink" title="虚拟机，容器技术"></a>虚拟机，容器技术</h1><p>这里主要介绍虚拟机技术，容器技术以及它们的联系和区别，有一条可以带着阅读，虚拟化的是硬件，那么硬件架构就必须一致，虚拟化的是 kernel 那么 kernel 版本就一致</p>
+<h2 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h2><p>广义来说，虚拟机是一种模拟系统，即通过模拟硬件的输入和输出，让虚拟机的操作系统得以运行，我这里介绍的虚拟机是狭义上的虚拟机，不是完全用软件模拟硬件输入输出（这种虚拟机速度太慢了，后面会有介绍）</p>
+<p>在笔记本上调试安卓程序，因为笔记本硬件不支持安卓系统（arm系统，可以理解为不同的硬件架构体系和cpu指令集），完全靠软件模拟硬件输入输出。这种虚拟化系统如果要给人来用可知这个速度是感人的，人是很聪明的，觉得完全靠软件模拟硬件输入输出速度太慢了，不如直接做硬件输入输出的搬运工，如 vmware，这个速度才能直接给人用</p>
+<p>1.虚拟机是在硬件层面虚拟化了一层虚拟硬件，模拟了硬件的输入输出，做真实硬件输入输出的搬运工，让其中的虚拟机感觉自己有自己的独立的硬件，实际上用的是宿主机硬件，cpu 指令集也由宿主机硬件直接执行</p>
+<p>2.宿主机的硬件架构必须和虚拟硬件架构一致（PC 机安装安卓系统输入输出完全靠软件模拟，因为虚拟硬件架构不一致）</p>
+<p>3.虚拟机会有自己独立的 kernel，自己的虚拟硬件，这样虚拟机启动时候需要先做开机自检，启动kernel，启动用户进程等一系列行为，虽然现在电脑运行速度挺快，但是这一系列检查做下来，也要几十秒，也就是虚拟机启动慢的原因</p>
+<h2 id="容器技术"><a href="#容器技术" class="headerlink" title="容器技术"></a>容器技术</h2><p>计算机科学家发现其实我们创建虚拟机也不一定需要模拟硬件的输入和输出，假如宿主机和虚拟机他们的kernel 是一致的，就不用做硬件输入输出的搬运工了，只需要做 kernel 输入输出的搬运工即可，还少了好多 linux 启动项。为了有别于硬件层面的虚拟机，这种虚拟机被命名为 操作系统层虚拟化：Operating-system-level virtualization 也被叫做容器</p>
+<p>简单说容器技术就是用软件，在操作系统层面虚拟了 kernel，模拟了 kernel 的输入和输出，做 kernel 输入输出的搬运工，让其中的容器感觉自己有自己的独立内核</p>
+<p>1.容器实际上使用的是宿主机的 kernel，因此他的内核版本和宿主机一致用 <code>cat /proc/version</code> 或者 <code>uname -a</code> 可以查看，是一样的。这也就是为什么 docker for mac 的容器都是运行在 LinuxKit 中的，它利用 HyperKit 虚拟化技术运行了一个 LinuxKit 的虚拟机，这样才可以跑 docker，不然他得用 macos 的内核来开发一套 docker，那可就麻烦了</p>
+<p>2.相比虚拟机，他少了很多 linux 启动项，因此启动速度非常快，就像启动一个 linux 进程一样，因此他是一种轻量级的虚拟化技术</p>
+<p>3.容器相关的隔离技术就太多了，这里就不一一介绍了（我也还没看完）</p>
+<h1 id="docker-for-mac介绍"><a href="#docker-for-mac介绍" class="headerlink" title="docker for mac介绍"></a>docker for mac介绍</h1><p>最新版的 docker for mac 非常酷，虚拟化不再依赖于 VirtualBox，而用了自主研发的 HyperKit，相比之前的虚拟化方案，性能提升杠杠的</p>
+<h2 id="Hypervisor"><a href="#Hypervisor" class="headerlink" title="Hypervisor"></a>Hypervisor</h2><p>百度百科版本：Hypervisor 是一种在虚拟环境中的”元”操作系统。他们可以访问服务器上包括磁盘和内存在内的所有物理设备。Hypervisor 不但协调着这些硬件资源的访问，而且在各个虚拟机之间施加防护。当服务器启动并执行 Hypervisor 时，它会加载所有虚拟机客户端的操作系统同时会分配给每一台虚拟机适量的内存，CPU，网络和磁盘。</p>
+<p>我的版本：在没有物理硬件的环境中（也就是宿主机的操作系统上），Hypervisor 能够模拟出硬件输入输出，让虚拟机的操作系统可以启动起来</p>
+<p>如果那么多你没看懂？没关系，简单的说，他就是其他虚拟化方案（如 KVM，HyperKit，VirtualBox 等）的底层技术，很牛逼的东西，你知道需要记住它很牛逼就行了</p>
+<h2 id="VirtualBox"><a href="#VirtualBox" class="headerlink" title="VirtualBox"></a>VirtualBox</h2><p>docker for mac 原先采用的虚拟化方案，但是效率极低，太耗系统资源，于是在新版中 docker for mac 被自主研发的 HyperKit 给替代了，换后效率杠杠的</p>
+<h3 id="HyperKit"><a href="#HyperKit" class="headerlink" title="HyperKit"></a>HyperKit</h3><p>HyperKit 是 moby 开发一种轻量级虚拟化方法，基于 Hypervisor 框架（MacOSX10.10 之后引入的 Hypervisor，所以之前的 macos 版本都享受不到这个福利）。HyperKit 应用可以利用硬件虚拟化运行 VMs，但是并不需要特殊权限或者复杂管理工具栈</p>
+<p>HyperKit 是基于 xHyve 和 vHyve 项目，与其他相关功能模块（例如：VPNKit 和 DataKit）合作使得运行更加有效。由于 HyperKit 架构与库之上，因此将其和 unikernel 库连接起来就显得很直接。例如，我们可以通过使用 MirageOS QCow 库（用OCaml编写），加入持久化块设备支持 （这段是引用，我还没体会到）</p>
+<h3 id="VPNKit"><a href="#VPNKit" class="headerlink" title="VPNKit"></a>VPNKit</h3><p>moby 推出的嵌入式虚拟网络库，配合 HyperKit 使用</p>
+<h3 id="DataKit"><a href="#DataKit" class="headerlink" title="DataKit"></a>DataKit</h3><p>moby 推出的现代化分布式组件框架，配合 HyperKit 使用</p>
+<h2 id="LinuxKit"><a href="#LinuxKit" class="headerlink" title="LinuxKit"></a>LinuxKit</h2><p>LinuxKit 是 moby 最新发布的一个用于为容器构建安全、便携、可移植操作系统的工具包。它根据用户编写的 yaml（指定 kernel 和基于 docker image 的一些列服务）自动构建一个常见虚拟化平台或云平台的虚拟机镜像，并自动运行起来。主要特性包括：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">增强安全性</span><br><span class="line">    系统安全，基于 MirageOS unikernel</span><br><span class="line">    紧跟最新 kernel 并精简不必要的模块</span><br><span class="line">    Immutable，只读根文件系统，根文件系统只能在构建的时候生成</span><br><span class="line">    社区合作，比如 Kernel Self Protection Project (KSPP)、Wireguard、Landlock、Mirage、oKernel、Clear Containers 等</span><br><span class="line">易用、可扩展</span><br><span class="line">    所有服务均可定制，且用户服务和系统服务都是基于 docker image</span><br><span class="line">    构建过程基于 docker</span><br><span class="line">    基于 Infrakit 方便部署生成的镜像</span><br></pre></td></tr></table></figure>
+<h1 id="k8s-on-mac"><a href="#k8s-on-mac" class="headerlink" title="k8s on mac"></a>k8s on mac</h1><p>在新版的 <code>docker for mac</code> 中，自带了 k8s 环境，k8s 环境是搭建在 Linuxkit 中的，然后通过端口转发到宿主机，让用户感觉就像装在本地一样，毕竟容器是跑在虚拟机里面的，所以或多或少又一些不方便</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>这篇文章简单介绍了虚拟机和容器技术，说了很多虚拟化的相关名词和概念，方便对虚拟化有更加深入的理解</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://zhuanlan.zhihu.com/p/22382728" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/22382728</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/22403015" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/22403015</a></p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2018/04/17/docs/15356101141009/">docker for mac - 虚拟机与容器</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2018/04/17/docs/15356101141009/" title="docker for mac - 虚拟机与容器">https://hubinwei.me/2018/04/17/docs/15356101141009/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/docker/" rel="tag"># docker</a>
+          
+            <a href="/tags/云平台/" rel="tag"># 云平台</a>
+          
+            <a href="/tags/虚拟化/" rel="tag"># 虚拟化</a>
+          
+            <a href="/tags/虚拟机/" rel="tag"># 虚拟机</a>
+          
+            <a href="/tags/容器技术/" rel="tag"># 容器技术</a>
+          
+            <a href="/tags/k8s/" rel="tag"># k8s</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/17/docker-for-mac - 虚拟机与容器/" rel="next" title="docker for mac - 虚拟机与容器">
+                <i class="fa fa-chevron-left"></i> docker for mac - 虚拟机与容器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/25/一个python正则表达式字符串编码引发的血案/" rel="prev" title="一个python正则表达式字符串编码引发的血案">
+                一个python正则表达式字符串编码引发的血案 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟机，容器技术"><span class="nav-number">2.</span> <span class="nav-text">虚拟机，容器技术</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机"><span class="nav-number">2.1.</span> <span class="nav-text">虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器技术"><span class="nav-number">2.2.</span> <span class="nav-text">容器技术</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-for-mac介绍"><span class="nav-number">3.</span> <span class="nav-text">docker for mac介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hypervisor"><span class="nav-number">3.1.</span> <span class="nav-text">Hypervisor</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VirtualBox"><span class="nav-number">3.2.</span> <span class="nav-text">VirtualBox</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HyperKit"><span class="nav-number">3.2.1.</span> <span class="nav-text">HyperKit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VPNKit"><span class="nav-number">3.2.2.</span> <span class="nav-text">VPNKit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DataKit"><span class="nav-number">3.2.3.</span> <span class="nav-text">DataKit</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinuxKit"><span class="nav-number">3.3.</span> <span class="nav-text">LinuxKit</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#k8s-on-mac"><span class="nav-number">4.</span> <span class="nav-text">k8s on mac</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2018/04/17/docs/15356101141009/';
+
+      var disqus_title = "docker for mac - 虚拟机与容器";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>

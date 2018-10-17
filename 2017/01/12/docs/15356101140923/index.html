@@ -1,0 +1,941 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python,代码之美,编码,解码," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言 python2的编码解码问题是python程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助  简介要弄清楚python2.x编码解码问题，核心需要弄清楚五个概念: 1.什么是编码 2.系统编码 3.python内部编码 4.文件编码 5.python内部转码机制 什么是编码大家约定一套规则，解决如何用字节来表示字符的问题，这就是编码。最早的规则是 ASCII码">
+<meta name="keywords" content="python,代码之美,编码,解码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python2.x 编码，解码实战解说">
+<meta property="og:url" content="https://hubinwei.me/2017/01/12/docs/15356101140923/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言 python2的编码解码问题是python程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助  简介要弄清楚python2.x编码解码问题，核心需要弄清楚五个概念: 1.什么是编码 2.系统编码 3.python内部编码 4.文件编码 5.python内部转码机制 什么是编码大家约定一套规则，解决如何用字节来表示字符的问题，这就是编码。最早的规则是 ASCII码">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-30T06:21:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python2.x 编码，解码实战解说">
+<meta name="twitter:description" content="前言 python2的编码解码问题是python程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助  简介要弄清楚python2.x编码解码问题，核心需要弄清楚五个概念: 1.什么是编码 2.系统编码 3.python内部编码 4.文件编码 5.python内部转码机制 什么是编码大家约定一套规则，解决如何用字节来表示字符的问题，这就是编码。最早的规则是 ASCII码">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2017/01/12/docs/15356101140923/"/>
+
+
+
+
+
+  <title> python2.x 编码，解码实战解说 | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/01/12/docs/15356101140923/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                python2.x 编码，解码实战解说
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-12T18:33:07+08:00">
+                2017-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/点点滴滴/" itemprop="url" rel="index">
+                    <span itemprop="name">点点滴滴</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/12/docs/15356101140923/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/01/12/docs/15356101140923/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
+<p>python2的编码解码问题是python程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助</p>
+</blockquote>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>要弄清楚python2.x编码解码问题，核心需要弄清楚五个概念:</p>
+<p>1.什么是编码</p>
+<p>2.系统编码</p>
+<p>3.python内部编码</p>
+<p>4.文件编码</p>
+<p>5.python内部转码机制</p>
+<h1 id="什么是编码"><a href="#什么是编码" class="headerlink" title="什么是编码"></a>什么是编码</h1><p>大家约定一套规则，解决如何用字节来表示字符的问题，这就是编码。最早的规则是 ASCII码，ASCII码有7位码和8位码两种形式，分别可以表示128和256种字符，在python里面正好也有两种数据结构和字节，字符相对应，分别是str和u”213123”(字符的编码有许多种)。</p>
+<h1 id="系统编码"><a href="#系统编码" class="headerlink" title="系统编码"></a>系统编码</h1><p>在windows里面默认编码是gbk，在linux里面默认编码是utf-8，你也可以用命令 <code>locale</code> 来查看系统默认的一些编码。我们python里面里面的字符串如果想要在操作系统的终端输出显示正确的话需要提前转换为操作系统相对应的编码，他才会显示为可读的字符串（有汉字时）。</p>
+<h1 id="python解释器编码"><a href="#python解释器编码" class="headerlink" title="python解释器编码"></a>python解释器编码</h1><p>python解释器默认编码方式是ascii，我们可以用sys模块的 <code>getdefaultencoding()</code> 方法来获取</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">print</span> sys.getdefaultencoding()</span><br></pre></td></tr></table></figure>
+<p>输出结果: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ascii</span><br><span class="line">[Finished in 0.0s]</span><br></pre></td></tr></table></figure>
+<p>修改python解释器编码方式(默认是ascii)，注意python2.7里面需要reload <code>sys</code> 模块</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">reload(sys)</span><br><span class="line">sys.setdefaultencoding(<span class="string">'utf-8'</span>)</span><br><span class="line"><span class="keyword">print</span> sys.getdefaultencoding()</span><br></pre></td></tr></table></figure>
+<p>python2.x转码是用unicode做为中间编码，我们通常在定义一个python字符串的时候，如:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line">a = <span class="string">"123"</span></span><br><span class="line">b = a.decode(<span class="string">"utf-8"</span>)</span><br><span class="line"><span class="keyword">print</span> b, type(b)</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">123 &lt;type &apos;unicode&apos;&gt;</span><br><span class="line">[Finished in 0.2s]</span><br></pre></td></tr></table></figure>
+<p>说明decode实际上是把utf-8编码的字符串，解码，然后转换为unicdoe编码</p>
+<p>关于python的指定编码，我们可以给特定的字符串指定编码，如果你不指定，他会用python2.x环境的默认编码 <code>ascii</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="string">u"haha"</span></span><br></pre></td></tr></table></figure>
+<p>实际上是在指定该字节的编码方式为unicode编码，如果不这样处理，那么python的解码器遇到的时候会用ascii编码来处理该字符串</p>
+<p>为了在python源文件中添加汉字（如汉字注释，汉字字符串变量），我们需要在文件头引入 <code># coding=utf-8</code>，他会把ascii不支持的字符串保存为 <code>utf-8</code> 编码的字符串，如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> chardet</span><br><span class="line">a = <span class="string">"123"</span></span><br><span class="line"></span><br><span class="line">b = <span class="string">"水电费"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> chardet.detect(a)</span><br><span class="line"><span class="keyword">print</span> chardet.detect(b)</span><br></pre></td></tr></table></figure>
+<p>输出结果如下，加入头部引入之后，a依然是 <code>ascii</code> 编码，而b却是 <code>utf-8</code> 编码，是不是很奇怪？自己查一查 <code>123</code> 的 ascii 编码和 <code>123</code> 的 utf-8 编码有啥区别？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&apos;confidence&apos;: 1.0, &apos;encoding&apos;: &apos;ascii&apos;&#125;</span><br><span class="line">&#123;&apos;confidence&apos;: 0.87625, &apos;encoding&apos;: &apos;utf-8&apos;&#125;</span><br><span class="line">[Finished in 0.8s]</span><br></pre></td></tr></table></figure>
+<h1 id="文件编码"><a href="#文件编码" class="headerlink" title="文件编码"></a>文件编码</h1><p>文件编码是文件的编码保存方式，在 python 中也可以获得操作系统的文件编码，其中 mac 环境是 <code>utf-8</code> 而 windows环境是 <code>gbk</code></p>
+<p>如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.getfilesystemencoding()</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">utf-8</span><br><span class="line">[Finished in 0.0s]</span><br></pre></td></tr></table></figure>
+<h1 id="python内部转码机制"><a href="#python内部转码机制" class="headerlink" title="python内部转码机制"></a>python内部转码机制</h1><p>1.python 内部的转码解码实际上是用 unicode 来当作中间编码方式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line">a = <span class="string">"测试编码"</span></span><br><span class="line"><span class="keyword">print</span> a</span><br><span class="line"><span class="keyword">print</span> type(a)</span><br><span class="line"></span><br><span class="line">b = a.decode(<span class="string">"utf-8"</span>)</span><br><span class="line"><span class="keyword">print</span> b</span><br><span class="line"><span class="keyword">print</span> type(b)</span><br><span class="line"></span><br><span class="line">c = b.encode(<span class="string">"gbk"</span>)</span><br><span class="line"><span class="keyword">print</span> c</span><br><span class="line"><span class="keyword">print</span> type(c)</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">测试编码</span><br><span class="line">&lt;type &apos;str&apos;&gt;</span><br><span class="line">测试编码</span><br><span class="line">&lt;type &apos;unicode&apos;&gt;</span><br><span class="line">���Ա���</span><br><span class="line">&lt;type &apos;str&apos;&gt;</span><br></pre></td></tr></table></figure>
+<p>因为我的ide（这里为什么说的是ide编码呢，说起来就又加了一个概念，你可以理解为用你linux系统的终端控制台来运行这个程序，效果是一样的）默认编码用的是utf-8，所以gbk编码的显示出来就是乱码</p>
+<p>2.python里面还有一个自动解码的功能，如果字符串的编码方式为unicode，当print到控制台（终端）的时候，他会自动编码为操作系统对对应的系统编码，如 <code>windows</code> 里面是 <code>gbk</code> ，而linux里面是 <code>utf-8</code>，如上的测试例子里面，b就是unicode编码的字符串，他输出到控制台的时候实际上是被python先做编码检测，如果为unicode就会encode为操作系统对应的编码然后输出（我这里是macos，所以他会被转码为utf-8）</p>
+<h1 id="python的编码检测方法"><a href="#python的编码检测方法" class="headerlink" title="python的编码检测方法"></a>python的编码检测方法</h1><p>这里列出了我经常用来检测python编码的几种办法</p>
+<h2 id="利用控制台输出"><a href="#利用控制台输出" class="headerlink" title="利用控制台输出"></a>利用控制台输出</h2><p>如果你不确定你的字符串是用什么来编码的，你可以用ide来调试，常用函数，type，instances，encode，decode，方便你定为他是什么编码</p>
+<h2 id="使用python编码检测工具"><a href="#使用python编码检测工具" class="headerlink" title="使用python编码检测工具"></a>使用python编码检测工具</h2><p>如果你觉得上面测试办法很麻烦，你可以用 <code>chardet</code> python的编码检测包来做编码检测，非常好用，栗子如下:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> chardet</span><br><span class="line"></span><br><span class="line">my_str_test = <span class="string">"编码测试"</span></span><br><span class="line">fencoding = chardet.detect(my_str_test)</span><br><span class="line"><span class="keyword">print</span> my_str_test</span><br><span class="line"><span class="keyword">print</span> fencoding</span><br></pre></td></tr></table></figure>
+<p>输出结果如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">编码测试</span><br><span class="line">&#123;&apos;confidence&apos;: 0.938125, &apos;encoding&apos;: &apos;utf-8&apos;&#125;</span><br></pre></td></tr></table></figure>
+<p>其中 confidence 表示的是检测结果的可信值，encoding表示的是编码，当然这个东西也有一个坑，就是如果你的字符串编码用的是 unicode 的时候他的检测就会抛出异常，我很纳闷为什么编码都检测出来了，他不直接处理，因为这个库有坑，并不完全靠谱，用多了就知道了</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>今天就撸到这里，撸了那么多也不知道给撸清楚了没，回顾一下，python2.x 的编码解码出现乱码的问题，主要还是控制台支持的默认编码格式和你的字符串的编码格式不一样所造成的，如果你不确定你字符串的编码到底是什么，你可以用 <code>ide + 系统函数</code> 调试或者用python的编码检测工具包 <code>chardet</code> 来专门做编码的检测。</p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2017/01/12/docs/15356101140923/">python2.x 编码，解码实战解说</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2017/01/12/docs/15356101140923/" title="python2.x 编码，解码实战解说">https://hubinwei.me/2017/01/12/docs/15356101140923/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/代码之美/" rel="tag"># 代码之美</a>
+          
+            <a href="/tags/编码/" rel="tag"># 编码</a>
+          
+            <a href="/tags/解码/" rel="tag"># 解码</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/12/python2.x-编码，解码实战解说/" rel="next" title="python2.x 编码，解码实战解说">
+                <i class="fa fa-chevron-left"></i> python2.x 编码，解码实战解说
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/13/初探python staticmethod 和 classmethod装饰器/" rel="prev" title="初探 python staticmethod 和 classmethod装饰器">
+                初探 python staticmethod 和 classmethod装饰器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">260</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是编码"><span class="nav-number">3.</span> <span class="nav-text">什么是编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#系统编码"><span class="nav-number">4.</span> <span class="nav-text">系统编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python解释器编码"><span class="nav-number">5.</span> <span class="nav-text">python解释器编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件编码"><span class="nav-number">6.</span> <span class="nav-text">文件编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python内部转码机制"><span class="nav-number">7.</span> <span class="nav-text">python内部转码机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python的编码检测方法"><span class="nav-number">8.</span> <span class="nav-text">python的编码检测方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#利用控制台输出"><span class="nav-number">8.1.</span> <span class="nav-text">利用控制台输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用python编码检测工具"><span class="nav-number">8.2.</span> <span class="nav-text">使用python编码检测工具</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2017/01/12/docs/15356101140923/';
+
+      var disqus_title = "python2.x 编码，解码实战解说";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>
