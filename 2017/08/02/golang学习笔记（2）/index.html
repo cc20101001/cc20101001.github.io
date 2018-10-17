@@ -490,7 +490,11 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">person:= <span class="keyword">struct</span> &#123;<span class="comment">//匿名结构体</span></span><br><span class="line">    name <span class="keyword">string</span></span><br><span class="line">    age <span class="keyword">int</span></span><br><span class="line">&#125;&#123;name:<span class="string">"匿名结构体"</span>,age:<span class="number">1</span>&#125;</span><br><span class="line">f.Println(<span class="string">"person:"</span>,person)</span><br></pre></td></tr></table></figure>
 <h2 id="结构体的继承"><a href="#结构体的继承" class="headerlink" title="结构体的继承"></a>结构体的继承</h2><p>在 golang 中没有继承的概念，但是用结构体特性，我们可以实现类似继承的功能</p>
 <h1 id="接口类型"><a href="#接口类型" class="headerlink" title="接口类型"></a>接口类型</h1><p>golang 不是传统意义上的面向对象编程语言，他没有类的概念，也没有继承的概念，接口类型（当然还有结构体类型）为他弥补了这一点的不足，通过接口类型他规定了类型的行为，并且通过接口可以实现函数的多态</p>
-<p>type Namer interface {<br>    Method1(param_list) return_type<br>    Method2(param_list) return_type<br>    …<br>}</p>
+<p>type Namer interface {
+    Method1(param_list) return_type
+    Method2(param_list) return_type
+    …
+}</p>
 <h1 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h1><p>一些异常的处理</p>
 <h1 id="同比-python，golang-的一些特殊语法"><a href="#同比-python，golang-的一些特殊语法" class="headerlink" title="同比 python，golang 的一些特殊语法"></a>同比 python，golang 的一些特殊语法</h1><p>1.goto 语句</p>
 <p>有点类似 python 中的 yield，可以改变程序执行流程</p>
@@ -588,8 +592,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/02/docs/15356101140042/" rel="next" title="golang学习笔记（2）">
-                <i class="fa fa-chevron-left"></i> golang学习笔记（2）
+              <a href="/2017/08/02/golang学习笔记（1）/" rel="next" title="golang学习笔记（1）">
+                <i class="fa fa-chevron-left"></i> golang学习笔记（1）
               </a>
             
           </div>
@@ -598,7 +602,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/08/02/docs/15356101139842/" rel="prev" title="golang学习笔记（3）">
+              <a href="/2017/08/02/golang学习笔记（3）/" rel="prev" title="golang学习笔记（3）">
                 golang学习笔记（3） <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -677,7 +681,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-count">162</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

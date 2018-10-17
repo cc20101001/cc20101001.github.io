@@ -448,7 +448,15 @@
 <h2 id="http响应报文"><a href="#http响应报文" class="headerlink" title="http响应报文"></a>http响应报文</h2><p><img src="http://odh5je629.bkt.clouddn.com/2017060188973screenshot_62.png" alt="2017060188973screenshot_62.png"></p>
 <h1 id="get和post的区别"><a href="#get和post的区别" class="headerlink" title="get和post的区别"></a>get和post的区别</h1><p>核心原理上他们只有一点根本区别，简单点儿说，一个用于获取数据，一个用于创建修改数据，单纯了为了遵循 RESTFUL 设计理念（严格的 RESTFUL 规范来看 POST 只能用于创建）</p>
 <p>但在使用过程中（只限于通常的使用方法，按照 http 规范，GET 数据放在 url，POST 数据放在 body）他们有如下区别：</p>
-<p>1、GET在浏览器回退时是无害的，而 POST 会再次提交请求（浏览器回退重复请求）<br>2、GET 产生的 URL 地址可以被 Bookmark，而 POST 不可以（收藏夹）<br>3、GET 请求会被浏览器主动 cache，而POST不会，除非手动设置（浏览器缓存）<br>4、GET 请求只能进行 url 编码，而POST支持多种编码方式（对数据的编码方式，其实这点也不算区别，因为 POST 参数也可以放 url）<br>5、GET 请求参数会被完整保留在浏览器历史记录里，而 POST 中的参数不会被保留<br>6、GET 请求在 URL 中传送的参数是有长度限制的，而 POST 没有（这个长度限制是 web 服务器限制的或者浏览器限制的）<br>7、对参数的数据类型，GET 只接受 ASCII 字符，而 POST 没有限制。<br>8、GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息。<br>9、GET参数通过URL传递，POST放在Request body中</p>
+<p>1、GET在浏览器回退时是无害的，而 POST 会再次提交请求（浏览器回退重复请求）
+2、GET 产生的 URL 地址可以被 Bookmark，而 POST 不可以（收藏夹）
+3、GET 请求会被浏览器主动 cache，而POST不会，除非手动设置（浏览器缓存）
+4、GET 请求只能进行 url 编码，而POST支持多种编码方式（对数据的编码方式，其实这点也不算区别，因为 POST 参数也可以放 url）
+5、GET 请求参数会被完整保留在浏览器历史记录里，而 POST 中的参数不会被保留
+6、GET 请求在 URL 中传送的参数是有长度限制的，而 POST 没有（这个长度限制是 web 服务器限制的或者浏览器限制的）
+7、对参数的数据类型，GET 只接受 ASCII 字符，而 POST 没有限制。
+8、GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息。
+9、GET参数通过URL传递，POST放在Request body中</p>
 <h2 id="你觉得get和post请求数据放的位置不一样"><a href="#你觉得get和post请求数据放的位置不一样" class="headerlink" title="你觉得get和post请求数据放的位置不一样?"></a>你觉得get和post请求数据放的位置不一样?</h2><p>get 请求数据其实也可以放到 body 里面，而 post 请求数据也可以放到 url 里面，我们通常不这么用是因为 http 协议的约定</p>
 <p>get请求数据放在body里面:</p>
 <p><img src="http://odh5je629.bkt.clouddn.com/201706014181screenshot_60.png" alt="201706014181screenshot_60.png"></p>
@@ -628,7 +636,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-count">322</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

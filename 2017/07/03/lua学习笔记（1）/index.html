@@ -498,7 +498,8 @@
 <h1 id="赋值语句"><a href="#赋值语句" class="headerlink" title="赋值语句"></a>赋值语句</h1><p>赋值语句是改变当前变量最基本的方法，lua的赋值和python挺类似的，先计算出右面的值，然后把计算结果赋给左面，可以用于值交换，如：</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">20</span></span><br><span class="line">a, b = <span class="number">10</span>, <span class="number">2</span>*x</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(a, b)</span><br><span class="line">a, b = b, a</span><br><span class="line"><span class="built_in">print</span>(a, b)</span><br><span class="line"></span><br><span class="line"># <span class="number">10</span> <span class="number">40</span></span><br><span class="line"># <span class="number">40</span> <span class="number">10</span></span><br><span class="line"></span><br><span class="line"># 但不要这么赋值</span><br><span class="line"></span><br><span class="line">a, b, c = <span class="number">40</span></span><br><span class="line"></span><br><span class="line">#这个结果是<span class="number">40</span>只会赋给a，而b，c都是<span class="literal">nil</span></span><br></pre></td></tr></table></figure>
 <p>当变量个数和值的个数不一致时，Lua会一直以变量个数为基础采取以下策略：</p>
-<p>a. 变量个数 &gt; 值的个数   按变量个数补足nil<br>b. 变量个数 &lt; 值的个数   多余的值会被忽略</p>
+<p>a. 变量个数 &gt; 值的个数   按变量个数补足nil
+b. 变量个数 &lt; 值的个数   多余的值会被忽略</p>
 <h1 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h1><p>lua的循环语句支持for循环，while循环，repeat…until（这个有点类似于do while语句）以及循环嵌套</p>
 <h1 id="逻辑判断"><a href="#逻辑判断" class="headerlink" title="逻辑判断"></a>逻辑判断</h1><p>逻辑判断和其他语言并无不同，支持if语句，支持if else，支持if语句嵌套</p>
 <h2 id="if-else"><a href="#if-else" class="headerlink" title="if else"></a>if else</h2><p>lua数据</p>
@@ -622,12 +623,17 @@
 </tbody>
 </table>
 <h2 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h2><p>从高到低的优先级</p>
-<p>^<br>not    - (unary)</p>
+<p>^
+not    - (unary)</p>
 <ul>
 <li>/</li>
 </ul>
 <ul>
-<li>-<br>..<br>&lt;      &gt;      &lt;=     &gt;=     ~=     ==<br>and<br>or</li>
+<li>-
+..
+&lt;      &gt;      &lt;=     &gt;=     ~=     ==
+and
+or</li>
 </ul>
 <p>可以看出和python挺像的，最好还是用括号表示</p>
 <h1 id="lua字符串"><a href="#lua字符串" class="headerlink" title="lua字符串"></a>lua字符串</h1><p>lua语言中的字符串表示形式有三种</p>
@@ -700,7 +706,8 @@
 <p>2.如果需要对lua的数组进行遍历，可以用如下语法</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">array = &#123;<span class="string">"sdf"</span>, <span class="string">"wer"</span>, <span class="string">"w1er"</span>&#125;</span><br><span class="line"><span class="built_in">print</span>()</span><br><span class="line"><span class="keyword">for</span> i = <span class="number">1</span>, #array <span class="keyword">do</span></span><br><span class="line">    <span class="built_in">print</span>(array[i])</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 <p>其中for i = 1, #array表示从1开始，递增直到为 #array（这个就是array的长度）</p>
-<h1 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h1><p>迭代器是一种对象，它能够用来遍历标准模版库容器中的部分或全部元素，每个迭代器对象代表容器中的确定的地址<br>在lua中迭代器是一种支持指针类型的结构，它可以遍历集合的每一个元素</p>
+<h1 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h1><p>迭代器是一种对象，它能够用来遍历标准模版库容器中的部分或全部元素，每个迭代器对象代表容器中的确定的地址
+在lua中迭代器是一种支持指针类型的结构，它可以遍历集合的每一个元素</p>
 <p>如ipairs函数，就是lua内置的一个迭代器函数，可以返回一个迭代器，用来遍历数组</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">array = &#123;<span class="string">"Lua"</span>, <span class="string">"Tutorial"</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> key, value <span class="keyword">in</span> <span class="built_in">ipairs</span>(array) </span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">   <span class="built_in">print</span>(key, value)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 <h2 id="ipairs和pairs的区别"><a href="#ipairs和pairs的区别" class="headerlink" title="ipairs和pairs的区别"></a>ipairs和pairs的区别</h2><p>ipairs 仅仅遍历值，按照索引升序遍历（key如果为非索引值则不遍历），索引中断停止遍历。即不能返回 nil,只能返回数字 0，如果遇到 nil 则退出。它只能遍历到集合中出现的第一个key不是整数的对象。</p>
@@ -808,7 +815,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/06/25/docs/15356101144462/" rel="next" title="macbook pro硬件升级完美攻略">
+              <a href="/2017/06/25/macbook-pro硬件升级完美攻略/" rel="next" title="macbook pro硬件升级完美攻略">
                 <i class="fa fa-chevron-left"></i> macbook pro硬件升级完美攻略
               </a>
             
@@ -818,8 +825,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/07/03/docs/15356101142627/" rel="prev" title="lua学习笔记（1）">
-                lua学习笔记（1） <i class="fa fa-chevron-right"></i>
+              <a href="/2017/07/07/lua学习笔记（2）/" rel="prev" title="lua学习笔记（2）">
+                lua学习笔记（2） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -897,7 +904,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-count">162</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

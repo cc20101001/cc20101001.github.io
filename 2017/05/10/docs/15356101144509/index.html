@@ -440,7 +440,10 @@
 <h1 id="原始前端模块系统"><a href="#原始前端模块系统" class="headerlink" title="原始前端模块系统"></a>原始前端模块系统</h1><p>模块系统主要解决模块的定义、依赖和导出，先来看看已经存在的模块系统。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">"module1.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line">&lt;script src=<span class="string">"module2.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line">&lt;script src=<span class="string">"libraryA.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line">&lt;script src=<span class="string">"module3.js"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
 <p>原模块系统有诸多问题：</p>
-<p>1.全局作用域下容易造成变量冲突（没有作用域，存在变量名冲突）<br>2.文件只能按照 <code>&lt;script&gt;</code> 的书写顺序进行加载（顺序加载）<br>3.开发人员必须主观解决模块和代码库的依赖关系（手工解决模块依赖关系）<br>4.在大型项目中各种资源难以管理，长期积累的问题导致代码库混乱不堪（该模块系统难以支持大型模块化应用）</p>
+<p>1.全局作用域下容易造成变量冲突（没有作用域，存在变量名冲突）
+2.文件只能按照 <code>&lt;script&gt;</code> 的书写顺序进行加载（顺序加载）
+3.开发人员必须主观解决模块和代码库的依赖关系（手工解决模块依赖关系）
+4.在大型项目中各种资源难以管理，长期积累的问题导致代码库混乱不堪（该模块系统难以支持大型模块化应用）</p>
 <h1 id="新一代前端模块系统"><a href="#新一代前端模块系统" class="headerlink" title="新一代前端模块系统"></a>新一代前端模块系统</h1><p>新一代前端模块系统，能够很好解决上述问题，CommonJS，AMD，CMD是目前最常用的三种模块系统。</p>
 <h1 id="CommondJS"><a href="#CommondJS" class="headerlink" title="CommondJS"></a>CommondJS</h1><p>代表框架：nodejs，Browserify</p>
 <p>CommonJS是在浏览器环境之外以构建JavaScript生态系统为目标产生的项目，比如服务器和桌面环境中。CommonJS规范是为了解决JavaScript的作用域问题而定义的模块形式，可以使每个模块在它自身的命名空间中执行。该规范的主要内容是：模块必须通过  module.exports导出对外的变量或接口，通过require()来导入其他模块的输出到当前模块。大名鼎鼎的NodeJS就采用了CommonJS。</p>
@@ -540,8 +543,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/10/angularjs1.x学习笔记/" rel="next" title="angularjs1.x学习笔记">
-                <i class="fa fa-chevron-left"></i> angularjs1.x学习笔记
+              <a href="/2017/05/10/JS模块系统学习：AMD，CMD，CommondJS/" rel="next" title="JS模块系统学习：AMD，CMD，CommondJS">
+                <i class="fa fa-chevron-left"></i> JS模块系统学习：AMD，CMD，CommondJS
               </a>
             
           </div>
@@ -550,8 +553,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/10/JS模块系统学习：AMD，CMD，CommondJS/" rel="prev" title="JS模块系统学习：AMD，CMD，CommondJS">
-                JS模块系统学习：AMD，CMD，CommondJS <i class="fa fa-chevron-right"></i>
+              <a href="/2017/05/11/docs/15356101143959/" rel="prev" title="SCSS，SASS学习笔记">
+                SCSS，SASS学习笔记 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -629,7 +632,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-count">322</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

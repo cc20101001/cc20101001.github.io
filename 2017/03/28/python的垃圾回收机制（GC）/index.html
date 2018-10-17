@@ -440,10 +440,22 @@
 <h1 id="引用计数"><a href="#引用计数" class="headerlink" title="引用计数"></a>引用计数</h1><p>python里每一个东西都是对象，它们的核心就是一个结构体：PyObject，PyObject都有一个int字段，为 <code>ob_refcnt</code>，他就是引用计数的标示，每个实例创建的时候，它的数目就缺省为1，当有其它实例或者对象来引用它的时候，它的数目就会加1，当引用它的对象被删除时，它的数据就减1，当它的数目为0时，他的生命周期也就结束了，会被python的GC回收掉</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> struct_object &#123;</span><br><span class="line">    <span class="keyword">int</span> ob_refcnt;</span><br><span class="line">    struct_typeobject *ob_type;</span><br><span class="line">&#125; PyObject;</span><br></pre></td></tr></table></figure>
 <h2 id="引用计数查看"><a href="#引用计数查看" class="headerlink" title="引用计数查看"></a>引用计数查看</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">a = <span class="string">"123123"</span></span><br><span class="line"><span class="keyword">print</span> sys.getrefcount(a)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2</span></span><br></pre></td></tr></table></figure>
-<h2 id="引用计数出发机制"><a href="#引用计数出发机制" class="headerlink" title="引用计数出发机制"></a>引用计数出发机制</h2><p>引用计数+1:<br>对象被创建，例如 a=23<br>对象被引用，例如 b=a<br>对象被作为参数，传入到一个函数中，例如func(a)<br>对象作为一个元素，存储在容器中，例如 list1=[a,a]</p>
-<p>引用计数-1:<br>对象的别名被显式销毁，例如 del a<br>对象的别名被赋予新的对象，例如 a=24<br>一个对象离开它的作用域，例如 f函数执行完毕时，func 函数中的局部变量（全局变量不会）<br>对象所在的容器被销毁，或从容器中删除对象</p>
-<h2 id="引用计数优缺点"><a href="#引用计数优缺点" class="headerlink" title="引用计数优缺点"></a>引用计数优缺点</h2><p>优点:<br>1.实现原理简单<br>2.gc实时性强，一旦没有引用，内存就直接释放了。不用像其他机制等到特定时机。实时性还带来一个好处，处理回收内存的时间分摊到了平时</p>
-<p>缺点：<br>1.维护引用计数（也就是上面所说的 ob_refcnt字段）消耗空间和计算资源<br>2.循环引用问题无法解决</p>
+<h2 id="引用计数出发机制"><a href="#引用计数出发机制" class="headerlink" title="引用计数出发机制"></a>引用计数出发机制</h2><p>引用计数+1:
+对象被创建，例如 a=23
+对象被引用，例如 b=a
+对象被作为参数，传入到一个函数中，例如func(a)
+对象作为一个元素，存储在容器中，例如 list1=[a,a]</p>
+<p>引用计数-1:
+对象的别名被显式销毁，例如 del a
+对象的别名被赋予新的对象，例如 a=24
+一个对象离开它的作用域，例如 f函数执行完毕时，func 函数中的局部变量（全局变量不会）
+对象所在的容器被销毁，或从容器中删除对象</p>
+<h2 id="引用计数优缺点"><a href="#引用计数优缺点" class="headerlink" title="引用计数优缺点"></a>引用计数优缺点</h2><p>优点: 
+1.实现原理简单
+2.gc实时性强，一旦没有引用，内存就直接释放了。不用像其他机制等到特定时机。实时性还带来一个好处，处理回收内存的时间分摊到了平时</p>
+<p>缺点：
+1.维护引用计数（也就是上面所说的 ob_refcnt字段）消耗空间和计算资源
+2.循环引用问题无法解决</p>
 <h1 id="标记-清除"><a href="#标记-清除" class="headerlink" title="标记-清除"></a>标记-清除</h1><p>python 引入标记-清除机制，是为了解决循环引用可能出现内存泄漏的情况</p>
 <h2 id="标记-清除原理"><a href="#标记-清除原理" class="headerlink" title="标记-清除原理"></a>标记-清除原理</h2><p>“标记-清除” 的核心特征是需要遍历。整体分两步来做，先标记，后清除，他会把所有的对象都遍历一边，如果这个对象还在被引用，那么他就会被标记，没有被标记的都是需要被回收的对象</p>
 <p>引用计数存在一个循环引用的问题，为了解决循环引用，python 的标记清除算法会去检测出有相互引用的对象，然后引用计数都减 1，如果它们的引用计数都变为0，那么这两个对象就是循环引用，并且没被其他对象引用，就是需要被回收的对象</p>
@@ -453,17 +465,24 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2</span><br><span class="line">[Finished in 2.5s]</span><br></pre></td></tr></table></figure>
 <p>这是一段循环引用的代码，a里面引用了 b，b 里面引用了 a，靠原有引用计数机制是无法回收 a 和 b 的，因为创建 a，b 的时候他们计数都为 1，然后 a 引用 b，b 引用 a，他们的计数都加 1，都为 2，此刻再用 del 命令删除 a 和 b，他们的计数只会回到 1，所以不会被引用计数机制回收内存，此刻内存就泄漏了，为了能够回收内存，于是就有了标记-清除的机制</p>
 <p>标记清除由 python 内部算法机制处理，不好在代码层面做展示</p>
-<h2 id="标记清除优缺点"><a href="#标记清除优缺点" class="headerlink" title="标记清除优缺点"></a>标记清除优缺点</h2><p>优点:<br>1.能解决引用计数不能解决的循环引用问题</p>
-<p>缺点:<br>1.需要在特定时间触发，当分配的内存使用超过某个阈值才会触发<br>2.实现原理复杂，需要遍历以对象为节点，引用关系为边的图</p>
+<h2 id="标记清除优缺点"><a href="#标记清除优缺点" class="headerlink" title="标记清除优缺点"></a>标记清除优缺点</h2><p>优点:
+1.能解决引用计数不能解决的循环引用问题</p>
+<p>缺点:
+1.需要在特定时间触发，当分配的内存使用超过某个阈值才会触发
+2.实现原理复杂，需要遍历以对象为节点，引用关系为边的图</p>
 <h1 id="分代收集"><a href="#分代收集" class="headerlink" title="分代收集"></a>分代收集</h1><h2 id="分代收集原理"><a href="#分代收集原理" class="headerlink" title="分代收集原理"></a>分代收集原理</h2><p>核心思想是为了提高垃圾收集的效率，采用”空间换时间的策略”，允许让那些是垃圾可能性比较小的对象存活时间多一点，减少对他进行垃圾回收的频率</p>
 <p>于是将系统中的所有内存块根据其存活时间划分为不同的集合，每一个集合就成为一个”代”，垃圾收集的频率随着”代”的存活时间的增大而减小。也就是说，一个对象经过垃圾回收的次数越多，就代表它活得越长，就越不可能是垃圾，对它进行垃圾回收的频率就应该更低</p>
-<h2 id="分代回收的优缺点"><a href="#分代回收的优缺点" class="headerlink" title="分代回收的优缺点"></a>分代回收的优缺点</h2><p>优点：<br>1.采用空间换时间的策略，提高了内存对象的使用效率</p>
-<p>缺点：<br>1.分代需要消耗多余空间资源，来维护一张代的表</p>
+<h2 id="分代回收的优缺点"><a href="#分代回收的优缺点" class="headerlink" title="分代回收的优缺点"></a>分代回收的优缺点</h2><p>优点：
+1.采用空间换时间的策略，提高了内存对象的使用效率</p>
+<p>缺点：
+1.分代需要消耗多余空间资源，来维护一张代的表</p>
 <h1 id="GC模块模块"><a href="#GC模块模块" class="headerlink" title="GC模块模块"></a>GC模块模块</h1><p>python提供了GC模块，很方便我们对python程序来进行调试，查看它的内存情况，主要围绕GC模块做如下介绍：</p>
 <p>1.GC模块API接口介绍</p>
 <p>2.python的垃圾回收触发机制</p>
 <h2 id="API接口"><a href="#API接口" class="headerlink" title="API接口"></a>API接口</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">gc.garbage</span><br><span class="line"># 列出所有没被回收的对象</span><br><span class="line"></span><br><span class="line">enable() -- Enable automatic garbage collection.</span><br><span class="line"># 开启python垃圾自动回收（默认开启）</span><br><span class="line"></span><br><span class="line">disable() -- Disable automatic garbage collection.</span><br><span class="line"># 关闭python垃圾自动回收</span><br><span class="line"></span><br><span class="line">isenabled() -- Returns true if automatic collection is enabled.</span><br><span class="line"># 查看python垃圾回收机制是否开启</span><br><span class="line"></span><br><span class="line">collect() -- Do a full collection right now.</span><br><span class="line"># 立刻执行python垃圾回收，返回值是此次垃圾回收对象数目</span><br><span class="line"></span><br><span class="line">get_count() -- Return the current collection counts.</span><br><span class="line"># 获取当前自动执行垃圾回收的计数器，返回一个长度为3的列表，根据python的分代收集将对象分为三类，列表1，2，3分别对应1，2，3代实例</span><br><span class="line"></span><br><span class="line">set_debug() -- Set debugging flags.</span><br><span class="line"># 设置 gc 的 debug 模式，开启日志输出，一般是 gc.set_debug(gc.DEBUG_STATS | gc.DEBUG_LEAK)</span><br><span class="line"></span><br><span class="line">get_debug() -- Get debugging flags.</span><br><span class="line">set_threshold() -- Set the collection thresholds.</span><br><span class="line">get_threshold() -- Return the current the collection thresholds.</span><br><span class="line">get_objects() -- Return a list of all objects tracked by the collector.</span><br><span class="line"># 返回被删除的东西的名称</span><br><span class="line"></span><br><span class="line">is_tracked() -- Returns true if a given object is tracked.</span><br><span class="line">get_referrers() -- Return the list of objects that refer to an object.</span><br><span class="line">get_referents() -- Return the list of objects that an object refers to.</span><br></pre></td></tr></table></figure>
-<h2 id="python垃圾回收触发机制"><a href="#python垃圾回收触发机制" class="headerlink" title="python垃圾回收触发机制"></a>python垃圾回收触发机制</h2><p>1.调用 gc.collect()<br>2.当 gc 模块的计数器达到阀值的时候<br>3.程序退出的时候</p>
+<h2 id="python垃圾回收触发机制"><a href="#python垃圾回收触发机制" class="headerlink" title="python垃圾回收触发机制"></a>python垃圾回收触发机制</h2><p>1.调用 gc.collect()
+2.当 gc 模块的计数器达到阀值的时候
+3.程序退出的时候</p>
 <h1 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h1><p>1.注意del（<strong>del</strong>）对GC的的影响</p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>python以引用计数为主，标记清除和分代回收为辅，标记清除是为了解决循环引用对象内存不被释放问题，分代回收是为了提升内存回收效率</p>
 
@@ -542,8 +561,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/28/docs/15356101137634/" rel="next" title="python的垃圾回收机制（GC）">
-                <i class="fa fa-chevron-left"></i> python的垃圾回收机制（GC）
+              <a href="/2017/03/27/nginx原理，配置和使用/" rel="next" title="nginx 原理，配置和使用">
+                <i class="fa fa-chevron-left"></i> nginx 原理，配置和使用
               </a>
             
           </div>
@@ -552,7 +571,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/03/31/docs/15356101141294/" rel="prev" title="tornado+中介者模式+websocket搭建实时聊天服务">
+              <a href="/2017/03/31/tornado-中介者模式-websocket搭建实时聊天服务/" rel="prev" title="tornado+中介者模式+websocket搭建实时聊天服务">
                 tornado+中介者模式+websocket搭建实时聊天服务 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -631,7 +650,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-count">162</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

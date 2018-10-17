@@ -437,7 +437,8 @@
 <h1 id="ssh-空闲时间自动断开"><a href="#ssh-空闲时间自动断开" class="headerlink" title="ssh 空闲时间自动断开"></a>ssh 空闲时间自动断开</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 用以下命令判断是否是否设置了该参数</span><br><span class="line">echo $TMOUT</span><br><span class="line"># 如果输出空或0表示不超时，大于0的数字n表示n秒没有收入则超时</span><br><span class="line"></span><br><span class="line"># 修改方法</span><br><span class="line">vi /etc/profile</span><br><span class="line"># ----------------------------</span><br><span class="line">export TMOUT=900</span><br><span class="line"># ----------------------------</span><br><span class="line"># 900就是15分钟的超时时间，将以上900修改为0就是设置不超时</span><br><span class="line"></span><br><span class="line">source /etc/profile</span><br><span class="line"># 让配置立即生效</span><br></pre></td></tr></table></figure>
 <h1 id="ssh-心跳检测缩短"><a href="#ssh-心跳检测缩短" class="headerlink" title="ssh 心跳检测缩短"></a>ssh 心跳检测缩短</h1><p>解决ssh总是自动断开问题，缩短心跳时间</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/ssh</span><br><span class="line"># 查看sshd_config中关于客户端活动状态的配置</span><br><span class="line">grep ClientAlive sshd_config</span><br><span class="line"># 默认配置如下</span><br><span class="line"># ----------------------------</span><br><span class="line">#ClientAliveInterval 0</span><br><span class="line">#ClientAliveCountMax 3</span><br><span class="line"># ----------------------------</span><br><span class="line"># ClientAliveInterval指定了服务器端向客户端请求消息的时间间隔, 默认是0, 不发送。设置60表示每分钟发送一次, 然后客户端响应, 这样就保持长连接了。</span><br><span class="line"># ClientAliveCountMax表示服务器发出请求后客户端没有响应的次数达到一定值, 就自动断开。正常情况下, 客户端不会不响应，使用默认值3即可。</span><br><span class="line"># 备份原配置文件</span><br><span class="line">cp sshd_config sshd_config.bak</span><br><span class="line"># 启用客户端活动检查，每60秒检查一次，3次不活动断开连接</span><br><span class="line">sed -i &quot;s/#ClientAliveInterval 0/ClientAliveInterval 60/g&quot; sshd_config</span><br><span class="line">sed -i &quot;s/#ClientAliveCountMax 3/ClientAliveCountMax 3/g&quot; sshd_config</span><br><span class="line"># 确认修改</span><br><span class="line">grep ClientAlive sshd_config</span><br><span class="line"># 比较配置文件差异</span><br><span class="line">diff sshd_config sshd_config.bak</span><br><span class="line"># 重新加载ssd配置，让配置生效</span><br><span class="line">service sshd reload</span><br></pre></td></tr></table></figure>
-<h1 id="开启root用户的ssh远程登录"><a href="#开启root用户的ssh远程登录" class="headerlink" title="开启root用户的ssh远程登录"></a>开启root用户的ssh远程登录</h1><p>1.修改 <code>/etc/ssh/sshd_config</code> 文件中的 PermitRootLogin 为 yes<br>2.重启sshd服务</p>
+<h1 id="开启root用户的ssh远程登录"><a href="#开启root用户的ssh远程登录" class="headerlink" title="开启root用户的ssh远程登录"></a>开启root用户的ssh远程登录</h1><p>1.修改 <code>/etc/ssh/sshd_config</code> 文件中的 PermitRootLogin 为 yes
+2.重启sshd服务</p>
 <h1 id="root登陆权限问题"><a href="#root登陆权限问题" class="headerlink" title="root登陆权限问题"></a>root登陆权限问题</h1><p>有时候配置了免密登陆依然登陆不上，因为权限有一点问题，设置 <code>/etc/ssh/sshd_config</code> 文件</p>
 <p>StrictModes no</p>
 <p>设置 ssh 在接收登录请求之前是否检查用户家目录和 rhosts 文件的权限和所有权</p>
@@ -516,8 +517,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/10/docs/15356101139291/" rel="next" title="ssh 免密码本地登陆方案">
-                <i class="fa fa-chevron-left"></i> ssh 免密码本地登陆方案
+              <a href="/2017/02/10/python-Queue-threading模块实现生产者消费者模型/" rel="next" title="python Queue，threading模块实现生产者消费者模型">
+                <i class="fa fa-chevron-left"></i> python Queue，threading模块实现生产者消费者模型
               </a>
             
           </div>
@@ -526,7 +527,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/02/13/docs/15356101141946/" rel="prev" title="mac 实用技巧">
+              <a href="/2017/02/13/mac 实用技巧/" rel="prev" title="mac 实用技巧">
                 mac 实用技巧 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -605,7 +606,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-count">162</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

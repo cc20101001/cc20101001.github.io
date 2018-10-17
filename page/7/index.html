@@ -319,7 +319,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2018/01/05/docs/15356101142118/">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/06/01/mysqlbackup数据库备份初体验/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Bill Hu">
@@ -341,8 +341,8 @@
             
               
                 
-                <a class="post-title-link" href="/2018/01/05/docs/15356101142118/" itemprop="url">
-                  深入理解 docker 镜像构建分层原理
+                <a class="post-title-link" href="/2017/06/01/mysqlbackup数据库备份初体验/" itemprop="url">
+                  mysqlbackup数据库备份初体验
                 </a>
               
             
@@ -358,8 +358,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-05T14:56:47+08:00">
-                2018-01-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-01T18:57:08+08:00">
+                2017-06-01
               </time>
             
 
@@ -381,19 +381,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/" itemprop="url" rel="index">
-                    <span itemprop="name">golang</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
+                  <a href="/categories/数据库/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
                   </a>
                 </span>
 
@@ -410,8 +399,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/01/05/docs/15356101142118/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/01/05/docs/15356101142118/" itemprop="commentCount"></span>
+                <a href="/2017/06/01/mysqlbackup数据库备份初体验/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/01/mysqlbackup数据库备份初体验/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -439,12 +428,15 @@
       
         
           
-          前言存储驱动是 docker 最大的特点之一，我们这篇将从存储驱动开始了解 docker，了解这些后更方便了解docker 后面的分层构建原理以及运行机制
-docker 文件系统相关使用 docker info 命令我们可以查看到 docker 所使用的存储驱动，如 Storage Driver: 
+          前言介绍一款mysql备份工具，meb（mysql enterprise backup），相比命令行导出，该工具在大数据量情况下效率更高，数据备份性能对比图：
+
+数据还原性能对比图：
+
+安装1.去 https://edelivery.oracle.com/osdc/faces/SearchSoftw
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/01/05/docs/15356101142118/#more" rel="contents">
+            <a class="btn" href="/2017/06/01/mysqlbackup数据库备份初体验/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -491,7 +483,7 @@ docker 文件系统相关使用 docker info 命令我们可以查看到 docker �
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/12/28/docs/15356101138529/">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/06/01/wireshark抓包分析get，post请求/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Bill Hu">
@@ -513,8 +505,8 @@ docker 文件系统相关使用 docker info 命令我们可以查看到 docker �
             
               
                 
-                <a class="post-title-link" href="/2017/12/28/docs/15356101138529/" itemprop="url">
-                  fdisk-磁盘分区与分区扩容
+                <a class="post-title-link" href="/2017/06/01/wireshark抓包分析get，post请求/" itemprop="url">
+                  wireshark抓包分析get，post请求
                 </a>
               
             
@@ -530,8 +522,330 @@ docker 文件系统相关使用 docker info 命令我们可以查看到 docker �
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-28T14:55:11+08:00">
-                2017-12-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-01T15:02:08+08:00">
+                2017-06-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web开发通用/" itemprop="url" rel="index">
+                    <span itemprop="name">web开发通用</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/01/wireshark抓包分析get，post请求/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/06/01/wireshark抓包分析get，post请求/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          前言这里介绍一款网络抓包祖师爷级别的产品 wireshark，只要是计算机网络的包，他都可以抓，功能无上限。我们主要用它来抓取 http 的 get 和 post 请求，并分析
+抓包的原理当网卡接收到一个网络报文之后，它会遍历系统中所有已经注册的网络协议，例如以太网协议、x25协议处理模块来尝试进行
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/06/01/wireshark抓包分析get，post请求/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div class="page-footer">
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/05/26/RESTFUL-API详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/26/RESTFUL-API详解/" itemprop="url">
+                  RESTFUL API详解
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-26T16:00:58+08:00">
+                2017-05-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web开发通用/" itemprop="url" rel="index">
+                    <span itemprop="name">web开发通用</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/26/RESTFUL-API详解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/26/RESTFUL-API详解/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          前言现在客户端－服务端模型发展越来越快，客户端支持的的设备也越来越多（平板，浏览器，电脑客户端，手机 app 端，微信端等等），为了方便前后端交互，制定统一的规则，多种 API 规范出现了，RESTFUL API 就是目前最流行的一种，我对 RESTFUL API 做了一些整理，如下
+RESTFUL
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/05/26/RESTFUL-API详解/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div class="page-footer">
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/05/21/系统文件描述符相关/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2017/05/21/系统文件描述符相关/" itemprop="url">
+                  系统文件描述符相关
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-21T18:29:31+08:00">
+                2017-05-21
               </time>
             
 
@@ -560,17 +874,6 @@ docker 文件系统相关使用 docker info 命令我们可以查看到 docker �
 
                 
                 
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/操作系统/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
               
             </span>
           
@@ -582,8 +885,8 @@ docker 文件系统相关使用 docker info 命令我们可以查看到 docker �
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/12/28/docs/15356101138529/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/28/docs/15356101138529/" itemprop="commentCount"></span>
+                <a href="/2017/05/21/系统文件描述符相关/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/21/系统文件描述符相关/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -611,12 +914,14 @@ docker 文件系统相关使用 docker info 命令我们可以查看到 docker �
       
         
           
-          前言最近项目上线，涉及部署升级相关的内容，我们原先的数据量不大加上用的阿里云，所以许多基础设施方面的问题都不用自己来操心，这次项目组使用了第三方厂商的共享存储，所以得自己去处理分区，磁盘相关基础设置，这里主要记录了如何使用 Linux 中的 fdisk 工具对磁盘进行分区管理
-LVM为了方便进行硬盘
+          前言这篇文章用于记录文件描述符相关的一些资料
+查看进程打开多少文件描述符命令： lsof -n | awk &#39;{print $2}&#39;|sort|uniq -c |sort -nr
+可以用 grep 来过滤 pid 查找某个进程打开了多少个文件描述符
+命令： lsof -i tcp:8
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/12/28/docs/15356101138529/#more" rel="contents">
+            <a class="btn" href="/2017/05/21/系统文件描述符相关/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -663,7 +968,7 @@ LVM为了方便进行硬盘
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/12/28/fdisk-磁盘分区与分区扩容/">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/05/20/web服务器性能测试篇/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Bill Hu">
@@ -685,8 +990,8 @@ LVM为了方便进行硬盘
             
               
                 
-                <a class="post-title-link" href="/2017/12/28/fdisk-磁盘分区与分区扩容/" itemprop="url">
-                  fdisk-磁盘分区与分区扩容
+                <a class="post-title-link" href="/2017/05/20/web服务器性能测试篇/" itemprop="url">
+                  web服务器性能测试篇
                 </a>
               
             
@@ -702,8 +1007,8 @@ LVM为了方便进行硬盘
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-28T14:55:11+08:00">
-                2017-12-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-20T10:15:32+08:00">
+                2017-05-20
               </time>
             
 
@@ -713,39 +1018,6 @@ LVM为了方便进行硬盘
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/操作系统/" itemprop="url" rel="index">
-                    <span itemprop="name">操作系统</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/操作系统/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -754,8 +1026,8 @@ LVM为了方便进行硬盘
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/12/28/fdisk-磁盘分区与分区扩容/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/28/fdisk-磁盘分区与分区扩容/" itemprop="commentCount"></span>
+                <a href="/2017/05/20/web服务器性能测试篇/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/20/web服务器性能测试篇/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -783,12 +1055,14 @@ LVM为了方便进行硬盘
       
         
           
-          前言最近项目上线，涉及部署升级相关的内容，我们原先的数据量不大加上用的阿里云，所以许多基础设施方面的问题都不用自己来操心，这次项目组使用了第三方厂商的共享存储，所以得自己去处理分区，磁盘相关基础设置，这里主要记录了如何使用 Linux 中的 fdisk 工具对磁盘进行分区管理
-LVM为了方便进行硬盘
-          ...
+          1.数据库连接数没上去
+2.cpu没上去
+3.很慢
+
+          
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/12/28/fdisk-磁盘分区与分区扩容/#more" rel="contents">
+            <a class="btn" href="/2017/05/20/web服务器性能测试篇/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -835,7 +1109,7 @@ LVM为了方便进行硬盘
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/12/07/docs/15356101138326/">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/05/15/基础算法编程系列之-选择排序/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Bill Hu">
@@ -857,8 +1131,8 @@ LVM为了方便进行硬盘
             
               
                 
-                <a class="post-title-link" href="/2017/12/07/docs/15356101138326/" itemprop="url">
-                  Dockerfile镜像构建
+                <a class="post-title-link" href="/2017/05/15/基础算法编程系列之-选择排序/" itemprop="url">
+                  基础算法编程系列之-选择排序
                 </a>
               
             
@@ -874,8 +1148,8 @@ LVM为了方便进行硬盘
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-07T11:45:28+08:00">
-                2017-12-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-15T20:27:33+08:00">
+                2017-05-15
               </time>
             
 
@@ -897,8 +1171,8 @@ LVM为了方便进行硬盘
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/" itemprop="url" rel="index">
-                    <span itemprop="name">golang</span>
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
                   </a>
                 </span>
 
@@ -908,8 +1182,8 @@ LVM为了方便进行硬盘
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
+                  <a href="/categories/算法/基础算法编程/" itemprop="url" rel="index">
+                    <span itemprop="name">基础算法编程</span>
                   </a>
                 </span>
 
@@ -926,8 +1200,8 @@ LVM为了方便进行硬盘
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/12/07/docs/15356101138326/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/07/docs/15356101138326/" itemprop="commentCount"></span>
+                <a href="/2017/05/15/基础算法编程系列之-选择排序/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/15/基础算法编程系列之-选择排序/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -955,12 +1229,17 @@ LVM为了方便进行硬盘
       
         
           
-          前言如果你想定制自己的 docker 镜像，完成一些基础环境工具包的安装，基础环境设置，这篇文章将会对你有一些帮助。这里介绍了利用 Dockfile 构建 docker 镜像，以及使用 docker commit 方法手工构建镜像。
-镜像构建 Dockerfile 简介手工命令构建 docker 镜
+          选择排序选择排序的核心思想是每轮遍历数列，筛选出数列最小的元素，并和数列最左侧元素（最小侧）互换位置
+算法步骤1.首先从一个未排列的数列中选出最小的那个元素，然后和数列最左侧元素互换位置
+2.数列首元素除外，剩下数列为一个新数列
+3.对新数列进行1的操作
+4.以此类推，直到数列被遍历完
+算法图示
+算
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/12/07/docs/15356101138326/#more" rel="contents">
+            <a class="btn" href="/2017/05/15/基础算法编程系列之-选择排序/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1007,7 +1286,7 @@ LVM为了方便进行硬盘
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/12/07/Dockerfile镜像构建/">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/05/15/基础算法编程系列之-插入排序/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Bill Hu">
@@ -1029,8 +1308,8 @@ LVM为了方便进行硬盘
             
               
                 
-                <a class="post-title-link" href="/2017/12/07/Dockerfile镜像构建/" itemprop="url">
-                  Dockerfile镜像构建
+                <a class="post-title-link" href="/2017/05/15/基础算法编程系列之-插入排序/" itemprop="url">
+                  基础算法编程系列之-插入排序
                 </a>
               
             
@@ -1046,8 +1325,8 @@ LVM为了方便进行硬盘
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-07T11:45:28+08:00">
-                2017-12-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-15T20:27:33+08:00">
+                2017-05-15
               </time>
             
 
@@ -1069,8 +1348,8 @@ LVM为了方便进行硬盘
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/" itemprop="url" rel="index">
-                    <span itemprop="name">golang</span>
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
                   </a>
                 </span>
 
@@ -1080,8 +1359,8 @@ LVM为了方便进行硬盘
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
+                  <a href="/categories/算法/基础算法编程/" itemprop="url" rel="index">
+                    <span itemprop="name">基础算法编程</span>
                   </a>
                 </span>
 
@@ -1098,8 +1377,8 @@ LVM为了方便进行硬盘
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/12/07/Dockerfile镜像构建/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/07/Dockerfile镜像构建/" itemprop="commentCount"></span>
+                <a href="/2017/05/15/基础算法编程系列之-插入排序/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/15/基础算法编程系列之-插入排序/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1127,12 +1406,15 @@ LVM为了方便进行硬盘
       
         
           
-          前言如果你想定制自己的 docker 镜像，完成一些基础环境工具包的安装，基础环境设置，这篇文章将会对你有一些帮助。这里介绍了利用 Dockfile 构建 docker 镜像，以及使用 docker commit 方法手工构建镜像。
-镜像构建 Dockerfile 简介手工命令构建 docker 镜
+          插入排序插入排序中，第一个元素默认为初始有序数列，其它元素称为待插入元素
+算法步骤1.第一个元素为初始有序数列，从第二元素开始为未插入元素，打算插入到第一个有序数列中
+2.未插入元素从有序数列的最大元素开始，依次比较，插入到合适的位置
+算法图示
+算法实例python版本12345678910a = 
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/12/07/Dockerfile镜像构建/#more" rel="contents">
+            <a class="btn" href="/2017/05/15/基础算法编程系列之-插入排序/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1179,7 +1461,7 @@ LVM为了方便进行硬盘
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/12/07/k8s常用命令集/">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/05/15/基础算法编程系列之-时间复杂度和空间复杂度篇/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Bill Hu">
@@ -1201,8 +1483,8 @@ LVM为了方便进行硬盘
             
               
                 
-                <a class="post-title-link" href="/2017/12/07/k8s常用命令集/" itemprop="url">
-                  k8s常用命令集
+                <a class="post-title-link" href="/2017/05/15/基础算法编程系列之-时间复杂度和空间复杂度篇/" itemprop="url">
+                  基础算法编程系列之-时间复杂度和空间复杂度篇
                 </a>
               
             
@@ -1218,8 +1500,8 @@ LVM为了方便进行硬盘
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-07T08:37:25+08:00">
-                2017-12-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-15T20:26:33+08:00">
+                2017-05-15
               </time>
             
 
@@ -1241,8 +1523,8 @@ LVM为了方便进行硬盘
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/" itemprop="url" rel="index">
-                    <span itemprop="name">golang</span>
+                  <a href="/categories/算法/" itemprop="url" rel="index">
+                    <span itemprop="name">算法</span>
                   </a>
                 </span>
 
@@ -1252,8 +1534,8 @@ LVM为了方便进行硬盘
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/k8s/" itemprop="url" rel="index">
-                    <span itemprop="name">k8s</span>
+                  <a href="/categories/算法/基础算法编程/" itemprop="url" rel="index">
+                    <span itemprop="name">基础算法编程</span>
                   </a>
                 </span>
 
@@ -1270,8 +1552,8 @@ LVM为了方便进行硬盘
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/12/07/k8s常用命令集/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/07/k8s常用命令集/" itemprop="commentCount"></span>
+                <a href="/2017/05/15/基础算法编程系列之-时间复杂度和空间复杂度篇/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/15/基础算法编程系列之-时间复杂度和空间复杂度篇/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1299,12 +1581,12 @@ LVM为了方便进行硬盘
       
         
           
-          前言系统架构最近变更比较大，从最初的应用程序裸体部署，到中间的 docker 容器部署，再到现在的 k8s 集群管理，也是一步一个台阶，这里主要记录了一些 k8s 命令集，方便日后回顾，查看
-获取 deploy 信息最新版的k8s 1.9.x deploy 的配置非常的简洁，deploy 替代的 r
+          前言同一问题可用不同算法解决，而算法的质量优劣将影响程序执行效率。算法分析的目的在于比较，选择合适算法，提高程序运行效率。一个算法的好坏主要从时间复杂度和空间复杂度来考虑
+时间频度百度百科：一个算法执行所耗费的时间，从理论上是不能算出来的，必须上机运行测试才能知道。但我们不可能也没有必要对每个算法都
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/12/07/k8s常用命令集/#more" rel="contents">
+            <a class="btn" href="/2017/05/15/基础算法编程系列之-时间复杂度和空间复杂度篇/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1351,7 +1633,7 @@ LVM为了方便进行硬盘
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/12/07/docs/15356101139102/">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/05/15/CSS学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Bill Hu">
@@ -1373,8 +1655,8 @@ LVM为了方便进行硬盘
             
               
                 
-                <a class="post-title-link" href="/2017/12/07/docs/15356101139102/" itemprop="url">
-                  k8s常用命令集
+                <a class="post-title-link" href="/2017/05/15/CSS学习笔记/" itemprop="url">
+                  CSS学习笔记
                 </a>
               
             
@@ -1390,8 +1672,8 @@ LVM为了方便进行硬盘
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-07T08:37:25+08:00">
-                2017-12-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-15T18:17:29+08:00">
+                2017-05-15
               </time>
             
 
@@ -1413,8 +1695,8 @@ LVM为了方便进行硬盘
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/" itemprop="url" rel="index">
-                    <span itemprop="name">golang</span>
+                  <a href="/categories/前端/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
                   </a>
                 </span>
 
@@ -1424,8 +1706,8 @@ LVM为了方便进行硬盘
                 
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/k8s/" itemprop="url" rel="index">
-                    <span itemprop="name">k8s</span>
+                  <a href="/categories/前端/css/" itemprop="url" rel="index">
+                    <span itemprop="name">css</span>
                   </a>
                 </span>
 
@@ -1442,8 +1724,8 @@ LVM为了方便进行硬盘
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/12/07/docs/15356101139102/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/07/docs/15356101139102/" itemprop="commentCount"></span>
+                <a href="/2017/05/15/CSS学习笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/15/CSS学习笔记/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1471,12 +1753,12 @@ LVM为了方便进行硬盘
       
         
           
-          前言系统架构最近变更比较大，从最初的应用程序裸体部署，到中间的 docker 容器部署，再到现在的 k8s 集群管理，也是一步一个台阶，这里主要记录了一些 k8s 命令集，方便日后回顾，查看
-获取 deploy 信息最新版的k8s 1.9.x deploy 的配置非常的简洁，deploy 替代的 r
+          前言大学期间还专门学过CSS，但好长时间没用了，忘记差不多了，最近做一部分前端工作，也刚好重新温习一下，也算是一个更加系统的学习
+CSS简介CSS(Cascading Style Sheets)，翻译为中文是层叠样式表，通俗的说就是给html添加样式的一种编程语言（部分人可能觉得html，css都算
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/12/07/docs/15356101139102/#more" rel="contents">
+            <a class="btn" href="/2017/05/15/CSS学习笔记/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1523,7 +1805,7 @@ LVM为了方便进行硬盘
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/12/07/docs/15356101140353/">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/05/15/基础算法编程系列之-基数排序/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Bill Hu">
@@ -1545,8 +1827,8 @@ LVM为了方便进行硬盘
             
               
                 
-                <a class="post-title-link" href="/2017/12/07/docs/15356101140353/" itemprop="url">
-                  docker常用命令集
+                <a class="post-title-link" href="/2017/05/15/基础算法编程系列之-基数排序/" itemprop="url">
+                  基础算法编程系列之-基数排序
                 </a>
               
             
@@ -1562,8 +1844,8 @@ LVM为了方便进行硬盘
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-07T08:37:14+08:00">
-                2017-12-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-15T02:55:14+08:00">
+                2017-05-15
               </time>
             
 
@@ -1573,39 +1855,6 @@ LVM为了方便进行硬盘
           </span>
 
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/" itemprop="url" rel="index">
-                    <span itemprop="name">golang</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
 
           
             
@@ -1614,8 +1863,8 @@ LVM为了方便进行硬盘
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/12/07/docs/15356101140353/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/07/docs/15356101140353/" itemprop="commentCount"></span>
+                <a href="/2017/05/15/基础算法编程系列之-基数排序/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/05/15/基础算法编程系列之-基数排序/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1643,372 +1892,11 @@ LVM为了方便进行硬盘
       
         
           
-          前言最近公司的系统上了 docker，以后怕是各种应用都会走容器化，这里收集整理了一些 docker 常用命令集，方便日后回顾查看
-查看 docker 容器，版本号信息docker info
-docker version
-docker 启动容器命令之-run启动命令 options 详情如下
-123
-          ...
+          
+          
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2017/12/07/docs/15356101140353/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div class="page-footer">
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/12/07/docker常用命令集/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Bill Hu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/./uploads/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Bill Hu's Note Book">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/12/07/docker常用命令集/" itemprop="url">
-                  docker常用命令集
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-07T08:37:14+08:00">
-                2017-12-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/" itemprop="url" rel="index">
-                    <span itemprop="name">golang</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/golang/docker/" itemprop="url" rel="index">
-                    <span itemprop="name">docker</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/12/07/docker常用命令集/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/12/07/docker常用命令集/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          前言最近公司的系统上了 docker，以后怕是各种应用都会走容器化，这里收集整理了一些 docker 常用命令集，方便日后回顾查看
-查看 docker 容器，版本号信息docker info
-docker version
-docker 启动容器命令之-run启动命令 options 详情如下
-123
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/12/07/docker常用命令集/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div class="page-footer">
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2017/09/28/python模块分析之threading-锁/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Bill Hu">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/./uploads/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Bill Hu's Note Book">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/09/28/python模块分析之threading-锁/" itemprop="url">
-                  python模块分析之threading-锁
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-28T11:22:31+08:00">
-                2017-09-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/python库分析/" itemprop="url" rel="index">
-                    <span itemprop="name">python库分析</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2017/09/28/python模块分析之threading-锁/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2017/09/28/python模块分析之threading-锁/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          前言python的锁和其他语言的锁看起来没啥区别，使用过程如下
-
-找出临界区
-
-加锁
-
-执行业务代码
-
-释放锁
-
-
-threading 封装的 Lock 对象可以和 with 语法一起使用，内置了对上下文的处理，来自动获取锁（acquire）和释放锁（release），而不需要我们去操作什么，非常便
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/09/28/python模块分析之threading-锁/#more" rel="contents">
+            <a class="btn" href="/2017/05/15/基础算法编程系列之-基数排序/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -2050,7 +1938,7 @@ threading 封装的 Lock 对象可以和 with 语法一起使用，内置了对�
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/33/">33</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2093,7 +1981,7 @@ threading 封装的 Lock 对象可以和 with 语法一起使用，内置了对�
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-count">162</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

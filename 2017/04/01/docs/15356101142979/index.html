@@ -436,7 +436,8 @@
       
         <h1 id="python备忘录模式"><a href="#python备忘录模式" class="headerlink" title="python备忘录模式"></a>python备忘录模式</h1><p>备忘录模式是一种软件设计模式：在不破坏封闭的前提下，捕获一个对象的内部状态，并在该对象之外保存这个状态。这样以后就可将该对象恢复到原先保存的状态。通俗的说，就是把一个类的属性临时的保存在另一个地方，并提供一个接口可以还原，比较适用的场景是系统升级，代码回滚。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">__author__ = <span class="string">"hbw"</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">OriginSubject</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.status = <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">create_memo</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> Memo(self.status)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">set_memo</span><span class="params">(self, memo)</span>:</span></span><br><span class="line">        self.status = memo.status</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Memo</span><span class="params">(object)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, status)</span>:</span></span><br><span class="line">        self.status = status</span><br><span class="line"></span><br><span class="line">obj = OriginSubject()</span><br><span class="line"><span class="keyword">print</span> obj.status</span><br><span class="line"></span><br><span class="line">memo = obj.create_memo()</span><br><span class="line"></span><br><span class="line">obj.status = <span class="keyword">True</span></span><br><span class="line"><span class="keyword">print</span> obj.status</span><br><span class="line">obj.set_memo(memo)</span><br><span class="line"><span class="keyword">print</span> obj.status</span><br></pre></td></tr></table></figure>
-<p>运行结果如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">False</span><br><span class="line">True</span><br><span class="line">False</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下:
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">False</span><br><span class="line">True</span><br><span class="line">False</span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
 <p>犹豫备忘录模式比较简单，就不过多陈述了。</p>
 
       
@@ -518,8 +519,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/04/01/设计模式系列-中介者模式/" rel="next" title="设计模式系列-中介者模式">
-                <i class="fa fa-chevron-left"></i> 设计模式系列-中介者模式
+              <a href="/2017/04/01/设计模式系列-备忘录模式/" rel="next" title="设计模式系列-备忘录模式">
+                <i class="fa fa-chevron-left"></i> 设计模式系列-备忘录模式
               </a>
             
           </div>
@@ -528,8 +529,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/04/01/设计模式系列-备忘录模式/" rel="prev" title="设计模式系列-备忘录模式">
-                设计模式系列-备忘录模式 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/04/01/pycharm配置autopep8扩展工具/" rel="prev" title="pycharm配置autopep8扩展工具">
+                pycharm配置autopep8扩展工具 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -607,7 +608,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">323</span>
+              <span class="site-state-item-count">322</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
