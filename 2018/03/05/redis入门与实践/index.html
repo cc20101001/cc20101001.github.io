@@ -446,13 +446,10 @@
 <h2 id="性能测试工具"><a href="#性能测试工具" class="headerlink" title="性能测试工具"></a>性能测试工具</h2><p>redis-benchmark -h localhost -p 6379 -c 100 -n 100000 </p>
 <p>100 个并发连接，100000 个请求，检测 host 为 localhost 端口为 6379 的 redis 服务器性能 </p>
 <p>redis-cli ping pong</p>
-<h2 id="查看-redis-最大连接数"><a href="#查看-redis-最大连接数" class="headerlink" title="查看 redis 最大连接数"></a>查看 redis 最大连接数</h2><p>127.0.0.1:6379&gt; config get maxclients
-1) “maxclients”
-2) “10000”</p>
+<h2 id="查看-redis-最大连接数"><a href="#查看-redis-最大连接数" class="headerlink" title="查看 redis 最大连接数"></a>查看 redis 最大连接数</h2><p>127.0.0.1:6379&gt; config get maxclients<br>1) “maxclients”<br>2) “10000”</p>
 <p>获取当前 redis 最大连接数，为 10000</p>
 <h1 id="常见问题排查"><a href="#常见问题排查" class="headerlink" title="常见问题排查"></a>常见问题排查</h1><h2 id="rdb文件故障"><a href="#rdb文件故障" class="headerlink" title="rdb文件故障"></a>rdb文件故障</h2><p>k8s 环境重新安装，但是发现 redis 起不起来，报错日志如下:</p>
-<p>[42] 27 Jul 07:03:30.511 # Wrong signature trying to load DB from file
-[42] 27 Jul 07:03:30.511 # Fatal error loading the DB: Invalid argument. Exiting.</p>
+<p>[42] 27 Jul 07:03:30.511 # Wrong signature trying to load DB from file<br>[42] 27 Jul 07:03:30.511 # Fatal error loading the DB: Invalid argument. Exiting.</p>
 <p>原因: redis 正在操作数据文件被强制中断，导致 rdb 数据不完整，重新加载失败</p>
 <p>解决办法，删除 redis 中的 rdb 文件，重启 redis，重新初始化数据</p>
 
@@ -618,7 +615,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">161</span>
+              <span class="site-state-item-count">162</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="python,python库分析,rpdb,python调试," />
+  <meta name="keywords" content="python,rpdb,python库分析,python调试," />
 
 
 
@@ -88,7 +88,7 @@
 
 
 <meta name="description" content="前言大家在平时使用python开发过程中，调试问题肯定给你带来不少烦恼，今天主要介绍python里面一个非常好用的调试工具 rpdb，他是基于pdb包装的远程调试工具，我在他的基础上再包装了一下，更智能了，相比python其它调试工具 pdb ， pycharm的远程调试工具 pycharm-debug.egg 等，这款包装后的调试工具有更强大的优势，1.远程调试更稳定，2.根据自己的需要，针对特">
-<meta name="keywords" content="python,python库分析,rpdb,python调试">
+<meta name="keywords" content="python,rpdb,python库分析,python调试">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python库分析之rpdb（python调试神器）">
 <meta property="og:url" content="https://hubinwei.me/2016/12/28/python库分析之rpdb（python调试神器）/index.html">
@@ -438,9 +438,7 @@
 
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>大家在平时使用python开发过程中，调试问题肯定给你带来不少烦恼，今天主要介绍python里面一个非常好用的调试工具 <code>rpdb</code>，他是基于pdb包装的远程调试工具，我在他的基础上再包装了一下，更智能了，相比python其它调试工具 <code>pdb</code> ， pycharm的远程调试工具 <code>pycharm-debug.egg</code> 等，这款包装后的调试工具有更强大的优势，1.远程调试更稳定，2.根据自己的需要，针对特定api动态的打断点，不需要重启服务</p>
-<p><strong>1.首先能够和你的程序进行交互
-2.其次，可以支持telnet提示
-3.调试更稳定（相比pycharm-debug.egg）</strong></p>
+<p><strong>1.首先能够和你的程序进行交互<br>2.其次，可以支持telnet提示<br>3.调试更稳定（相比pycharm-debug.egg）</strong></p>
 <p>废话不多说了，直接看原理和实现吧。</p>
 <h1 id="rpdb"><a href="#rpdb" class="headerlink" title="rpdb"></a>rpdb</h1><p>先献上github地址 <code>https://github.com/tamentis/rpdb</code>，关注度看起来比较冷清，但是的确很好用。</p>
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><code>pip install rpdb</code></p>
@@ -452,7 +450,8 @@
 <p>实际效果图如下：</p>
 <p><img src="http://odh5je629.bkt.clouddn.com/2017041475297screenshot_34.png" alt="2017041475297screenshot_34.png"></p>
 <p>现在可以很方便的用pdb命令进行调试了，</p>
-<h2 id="pdb命令列表"><a href="#pdb命令列表" class="headerlink" title="pdb命令列表"></a>pdb命令列表</h2><table>
+<h2 id="pdb命令列表"><a href="#pdb命令列表" class="headerlink" title="pdb命令列表"></a>pdb命令列表</h2><div class="table-container">
+<table>
 <thead>
 <tr>
 <th>完整命令</th>
@@ -563,6 +562,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h1 id="rpdb的改造"><a href="#rpdb的改造" class="headerlink" title="rpdb的改造"></a>rpdb的改造</h1><p>rpdb如何使用介绍完了，接下来让我们撸起自己的小锤子来改进它！</p>
 <h2 id="需求如下"><a href="#需求如下" class="headerlink" title="需求如下"></a>需求如下</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我想实现一个web服务器的调试功能，通常来说，web服务器的入口只有一个（django，tornado，flask等），由url映射到对应的处理类，我想实现的是在不重启程序的前提下，能够在任意的处理类上动态的打断点。</span><br></pre></td></tr></table></figure>
 <h2 id="碰到的问题以及解决问题的思路"><a href="#碰到的问题以及解决问题的思路" class="headerlink" title="碰到的问题以及解决问题的思路"></a>碰到的问题以及解决问题的思路</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1.有那么多类，每次一个新类添加到里面的时候，你的代码修改量会不会很大?</span><br><span class="line"></span><br><span class="line">解决办法:我们可以利用装饰器模式来处理这一类问题，给每一个类都加上特定的装饰器，这样我们只需要在装饰器里面做判断，是否需要给这个类添加断点函数，如果你想功能更强大，你甚至可以用 `__new__` 函数来控制类的生成。</span><br></pre></td></tr></table></figure>
@@ -637,9 +637,9 @@
           
             <a href="/tags/python/" rel="tag"># python</a>
           
-            <a href="/tags/python库分析/" rel="tag"># python库分析</a>
-          
             <a href="/tags/rpdb/" rel="tag"># rpdb</a>
+          
+            <a href="/tags/python库分析/" rel="tag"># python库分析</a>
           
             <a href="/tags/python调试/" rel="tag"># python调试</a>
           
@@ -743,7 +743,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">161</span>
+              <span class="site-state-item-count">162</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

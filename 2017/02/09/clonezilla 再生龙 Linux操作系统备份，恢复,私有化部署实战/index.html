@@ -478,19 +478,11 @@
 </blockquote>
 <h1 id="clonezilla-再生龙软件介绍"><a href="#clonezilla-再生龙软件介绍" class="headerlink" title="clonezilla 再生龙软件介绍"></a>clonezilla 再生龙软件介绍</h1><blockquote>
 <p>Clonezilla是一个用于Linux，Free-Net-OpenBSD，Mac OS X，Windows以及Minix的分区和磁盘克隆程序。它支持所有主要的文件系统，包括EXT，NTFS，FAT，XFS，JFS和Btrfs，LVM2，以及VMWare的企业集群文件系统VMFS3和VMFS5。Clonezilla支持32位和64位系统，同时支持旧版BIOS和UEFI BIOS，并且同时支持MBR和GPT分区表。它是一个用于完整备份Windows系统和所有安装于上的应用软件的好工具，而我主要用来来做系统克隆，私有化部署。</p>
-</blockquote>
-<blockquote>
 <p>Clonezilla也可以使用dd命令来备份不支持的文件系统，该命令可以复制块而非文件，因而不必在意文件系统。简单点说，就是Clonezilla可以复制任何东西。（关于块的快速说明：磁盘扇区是磁盘上最小的可编址存储单元，而块是由单个或者多个扇区组成的逻辑数据结构。）</p>
-</blockquote>
-<blockquote>
 <p>Clonezilla分为两个版本：Clonezilla Live和Clonezilla Server Edition（SE）。Clonezilla Live对于将单个计算机克隆到本地存储设备或者网络共享来说是一流的。而Clonezilla SE则适合更大的部署，用于一次性快速多点克隆整个网络中的PC。Clonezilla SE是一个神奇的软件，我们将在今后讨论。今天，我们将创建一个Clonezilla Live USB存储棒，克隆某个系统，然后恢复它。</p>
 </blockquote>
-<h1 id="当前操作系统备份方案调查（Linux）"><a href="#当前操作系统备份方案调查（Linux）" class="headerlink" title="当前操作系统备份方案调查（Linux）"></a>当前操作系统备份方案调查（Linux）</h1><p>当前备份方案有：
-1.简单暴力的对虚拟机层面的备份
-2.有对操作系统层面的备份
-3.有更细化的对硬盘或者分区层面的备份</p>
-<p>对于系统克隆，可选的方案有四种
-clonezilla，partimage，ghost4linux，acronis true image</p>
+<h1 id="当前操作系统备份方案调查（Linux）"><a href="#当前操作系统备份方案调查（Linux）" class="headerlink" title="当前操作系统备份方案调查（Linux）"></a>当前操作系统备份方案调查（Linux）</h1><p>当前备份方案有：<br>1.简单暴力的对虚拟机层面的备份<br>2.有对操作系统层面的备份<br>3.有更细化的对硬盘或者分区层面的备份</p>
+<p>对于系统克隆，可选的方案有四种<br>clonezilla，partimage，ghost4linux，acronis true image</p>
 <p>这里主要讨论第一种，再生龙，系统克隆，恢复</p>
 <h1 id="选择-clonezilla-再生龙-作为备份软件的优势"><a href="#选择-clonezilla-再生龙-作为备份软件的优势" class="headerlink" title="选择 clonezilla (再生龙)作为备份软件的优势"></a>选择 clonezilla (再生龙)作为备份软件的优势</h1><p>非常好非常棒，软件免费，不仅支持对整个系统进行克隆，而且也可以克隆单个的分区，支持磁盘格式非常多，支持mbr信息克隆，支持iso镜像打包，支持windows，支持linux，克隆操作灵活，这种灵活性可能更能适应备份者的需要。</p>
 <h1 id="clonezilla-再生龙-备份软件私有化部署实战教程"><a href="#clonezilla-再生龙-备份软件私有化部署实战教程" class="headerlink" title="clonezilla (再生龙)备份软件私有化部署实战教程"></a>clonezilla (再生龙)备份软件私有化部署实战教程</h1><h2 id="测试环境准备"><a href="#测试环境准备" class="headerlink" title="测试环境准备"></a>测试环境准备</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.物理机一台，里面安装了vmware，方便用虚拟机来进行测试</span><br><span class="line"></span><br><span class="line">2.vmware虚拟机三台，A,B,C,其中ABC各有一块20GB的硬盘，A作为原机器，B作为准备目标机器,C主要是为了存储镜像数据</span><br><span class="line"></span><br><span class="line">3.8G U盘一个,用来制作再生龙U盘镜像（如果你只是在虚拟机里面做操作，可以省去制作再生龙U盘镜像）</span><br></pre></td></tr></table></figure>
@@ -498,88 +490,50 @@ clonezilla，partimage，ghost4linux，acronis true image</p>
 <p>下载好了iso镜像我们需要制作一个U盘镜像,方便真实场景下来启动clonezilla（毕竟大多数的真实场景不能做vmware的 cd镜像挂载）</p>
 <p>制作U盘镜像我这里使用的是软碟通UItraISO，把iso镜像文件写入到U盘就可以了</p>
 <h2 id="系统备份"><a href="#系统备份" class="headerlink" title="系统备份"></a>系统备份</h2><p>接下来我们进行核心操作，系统的备份和还原，先看备份</p>
-<p>先准备好A,B,C三台虚拟机，界面如下
-<img src="http://odh5je629.bkt.clouddn.com/20170209339991.png" alt="20170209339991.png"></p>
+<p>先准备好A,B,C三台虚拟机，界面如下<br><img src="http://odh5je629.bkt.clouddn.com/20170209339991.png" alt="20170209339991.png"></p>
 <p>把我们之前制作的U盘进行插到物理机上</p>
 <p>在vmware里面给虚拟机A添加磁盘，然后把我们的U盘添加进去</p>
 <p>修改bios的boot引导项，选择优先走刚才所选的U盘加载（如果是虚拟机环境其实不用插U盘，直接用cd/rom启动镜像，操作更方便），F10保存修改，重启电脑</p>
-<p>现在我们看到了clonezilla的系统启动界面，他提供了许多模式，我们选择默认的第一种,如下图:
-<img src="http://odh5je629.bkt.clouddn.com/20170209426503.png" alt="20170209426503.png"></p>
-<p>clonezilla语音选择
-<img src="http://odh5je629.bkt.clouddn.com/20170209285774.png" alt="20170209285774.png"></p>
-<p>操作系统键盘映射关系，我们选择默认
-<img src="http://odh5je629.bkt.clouddn.com/20170209769505.png" alt="20170209769505.png"></p>
-<p>初次使用，建议不要使用命令行操作，选择默认
-<img src="http://odh5je629.bkt.clouddn.com/20170209769505.png" alt="20170209769505.png"></p>
-<p>选择clonezilla存储镜像路径，这里我建议选择ssh存放，其次为本地硬盘存储，这个硬盘可以是你的usb或者本地硬盘,这里我们默认为ssh存储
-<img src="http://odh5je629.bkt.clouddn.com/20170209184018.png" alt="20170209184018.png"></p>
-<p>配置本机ip信息，这里我们使用dhcp
-<img src="http://odh5je629.bkt.clouddn.com/20170209272069.png" alt="20170209272069.png"></p>
-<p>配置ssh服务器地址(clonezilla的数据默认会存储在这里)
-<img src="http://odh5je629.bkt.clouddn.com/2017020985610.png" alt="2017020985610.png"></p>
-<p>配置ssh服务器登陆端口，我们使用默认的22端口
-<img src="http://odh5je629.bkt.clouddn.com/201702091304411.png" alt="201702091304411.png"></p>
-<p>配置ssh服务器登陆的用户名
-<img src="http://odh5je629.bkt.clouddn.com/201702092876712.png" alt="201702092876712.png"></p>
-<p>配置clonezilla数据存储路径（最好确保ssh服务器上该目录存在且为空）
-<img src="http://odh5je629.bkt.clouddn.com/201702093575913.png" alt="201702093575913.png"></p>
-<p>继续下一步ssh连接并验证ssh登陆信息
-<img src="http://odh5je629.bkt.clouddn.com/201702098888516.png" alt="201702098888516.png"></p>
-<p>挂载ssh远端数据存储目录到本地文件系统
-<img src="http://odh5je629.bkt.clouddn.com/201702098225017.png" alt="201702098225017.png"></p>
-<p>默认的模式已经能够满足我们的需求了，有特殊需求的可以选择专家模式，里面有更多的自定义选项
-<img src="http://odh5je629.bkt.clouddn.com/201702096402718.png" alt="201702096402718.png"></p>
-<p>选择硬盘为镜像文件
-<img src="http://odh5je629.bkt.clouddn.com/201702092765519.png" alt="201702092765519.png"></p>
-<p>数据存储目录命名（他这里并不镜像文件，镜像文件还需要再次打包，后面会继续说）
-<img src="http://odh5je629.bkt.clouddn.com/201702092047520.png" alt="201702092047520.png"></p>
-<p>选择需要克隆的硬盘
-<img src="http://odh5je629.bkt.clouddn.com/201702098921021.png" alt="201702098921021.png"></p>
-<p>默认选项一
-<img src="http://odh5je629.bkt.clouddn.com/201702094046622.png" alt="201702094046622.png"></p>
-<p>默认选项一
-<img src="http://odh5je629.bkt.clouddn.com/201702092342023.png" alt="201702092342023.png"></p>
-<p>默认选项一
-<img src="http://odh5je629.bkt.clouddn.com/201702095956924.png" alt="201702095956924.png"></p>
-<p>默认选项一
-<img src="http://odh5je629.bkt.clouddn.com/2017020980325.png" alt="2017020980325.png"></p>
-<p>按enter继续操作
-<img src="http://odh5je629.bkt.clouddn.com/201702098272026.png" alt="201702098272026.png"></p>
-<p>选择y继续下一步操作
-<img src="http://odh5je629.bkt.clouddn.com/201702099157727.png" alt="201702099157727.png"></p>
-<p>系统在开始克隆了，他会一个分区一个分区的克隆
-<img src="http://odh5je629.bkt.clouddn.com/201702093727128.png" alt="201702093727128.png"></p>
-<p>系统克隆完毕，并且校验通过
-<img src="http://odh5je629.bkt.clouddn.com/201702096101029.png" alt="201702096101029.png"></p>
-<p>克隆完毕，重启系统，克隆教程到此结束
-<img src="http://odh5je629.bkt.clouddn.com/201702099491230.png" alt="201702099491230.png"></p>
-<h2 id="系统还原"><a href="#系统还原" class="headerlink" title="系统还原"></a>系统还原</h2><p>系统还原之前的操作和系统备份是一样的（核心步骤包括ssh验证，ssh目录名设置，普通模式，重新按照系统备份流程走一遍，一直到出现这个界面），选择还原镜像文件到本地硬盘
-<img src="http://odh5je629.bkt.clouddn.com/201702097641432.png" alt="201702097641432.png"></p>
-<p>选择还原的镜像名
-<img src="http://odh5je629.bkt.clouddn.com/201702098273733.png" alt="201702098273733.png"></p>
-<p>选择目标机器的系统盘，数据会恢复到这里，并且建议新的系统盘大小要大于原来系统的系统盘
-<img src="http://odh5je629.bkt.clouddn.com/201702097133234.png" alt="201702097133234.png"></p>
-<p>默认操作下一步
-<img src="http://odh5je629.bkt.clouddn.com/201702091664535.png" alt="201702091664535.png"></p>
-<p>默认操作下一步
-<img src="http://odh5je629.bkt.clouddn.com/201702093289036.png" alt="201702093289036.png"></p>
-<p>系统在开始恢复了
-<img src="http://odh5je629.bkt.clouddn.com/20170209238837.png" alt="20170209238837.png"></p>
-<p>镜像检查，选择y，覆盖原来数据（不可回滚）
-<img src="http://odh5je629.bkt.clouddn.com/20170209959538.png" alt="20170209959538.png"></p>
-<p>同上
-<img src="http://odh5je629.bkt.clouddn.com/201702092922839.png" alt="201702092922839.png"></p>
-<p>同上
-<img src="http://odh5je629.bkt.clouddn.com/201702095401540.png" alt="201702095401540.png"></p>
-<p>系统恢复完毕
-<img src="http://odh5je629.bkt.clouddn.com/201702093927241.png" alt="201702093927241.png"></p>
-<p>新操作系统启动成功
-<img src="http://odh5je629.bkt.clouddn.com/201702096586742.png" alt="201702096586742.png"></p>
+<p>现在我们看到了clonezilla的系统启动界面，他提供了许多模式，我们选择默认的第一种,如下图:<br><img src="http://odh5je629.bkt.clouddn.com/20170209426503.png" alt="20170209426503.png"></p>
+<p>clonezilla语音选择<br><img src="http://odh5je629.bkt.clouddn.com/20170209285774.png" alt="20170209285774.png"></p>
+<p>操作系统键盘映射关系，我们选择默认<br><img src="http://odh5je629.bkt.clouddn.com/20170209769505.png" alt="20170209769505.png"></p>
+<p>初次使用，建议不要使用命令行操作，选择默认<br><img src="http://odh5je629.bkt.clouddn.com/20170209769505.png" alt="20170209769505.png"></p>
+<p>选择clonezilla存储镜像路径，这里我建议选择ssh存放，其次为本地硬盘存储，这个硬盘可以是你的usb或者本地硬盘,这里我们默认为ssh存储<br><img src="http://odh5je629.bkt.clouddn.com/20170209184018.png" alt="20170209184018.png"></p>
+<p>配置本机ip信息，这里我们使用dhcp<br><img src="http://odh5je629.bkt.clouddn.com/20170209272069.png" alt="20170209272069.png"></p>
+<p>配置ssh服务器地址(clonezilla的数据默认会存储在这里)<br><img src="http://odh5je629.bkt.clouddn.com/2017020985610.png" alt="2017020985610.png"></p>
+<p>配置ssh服务器登陆端口，我们使用默认的22端口<br><img src="http://odh5je629.bkt.clouddn.com/201702091304411.png" alt="201702091304411.png"></p>
+<p>配置ssh服务器登陆的用户名<br><img src="http://odh5je629.bkt.clouddn.com/201702092876712.png" alt="201702092876712.png"></p>
+<p>配置clonezilla数据存储路径（最好确保ssh服务器上该目录存在且为空）<br><img src="http://odh5je629.bkt.clouddn.com/201702093575913.png" alt="201702093575913.png"></p>
+<p>继续下一步ssh连接并验证ssh登陆信息<br><img src="http://odh5je629.bkt.clouddn.com/201702098888516.png" alt="201702098888516.png"></p>
+<p>挂载ssh远端数据存储目录到本地文件系统<br><img src="http://odh5je629.bkt.clouddn.com/201702098225017.png" alt="201702098225017.png"></p>
+<p>默认的模式已经能够满足我们的需求了，有特殊需求的可以选择专家模式，里面有更多的自定义选项<br><img src="http://odh5je629.bkt.clouddn.com/201702096402718.png" alt="201702096402718.png"></p>
+<p>选择硬盘为镜像文件<br><img src="http://odh5je629.bkt.clouddn.com/201702092765519.png" alt="201702092765519.png"></p>
+<p>数据存储目录命名（他这里并不镜像文件，镜像文件还需要再次打包，后面会继续说）<br><img src="http://odh5je629.bkt.clouddn.com/201702092047520.png" alt="201702092047520.png"></p>
+<p>选择需要克隆的硬盘<br><img src="http://odh5je629.bkt.clouddn.com/201702098921021.png" alt="201702098921021.png"></p>
+<p>默认选项一<br><img src="http://odh5je629.bkt.clouddn.com/201702094046622.png" alt="201702094046622.png"></p>
+<p>默认选项一<br><img src="http://odh5je629.bkt.clouddn.com/201702092342023.png" alt="201702092342023.png"></p>
+<p>默认选项一<br><img src="http://odh5je629.bkt.clouddn.com/201702095956924.png" alt="201702095956924.png"></p>
+<p>默认选项一<br><img src="http://odh5je629.bkt.clouddn.com/2017020980325.png" alt="2017020980325.png"></p>
+<p>按enter继续操作<br><img src="http://odh5je629.bkt.clouddn.com/201702098272026.png" alt="201702098272026.png"></p>
+<p>选择y继续下一步操作<br><img src="http://odh5je629.bkt.clouddn.com/201702099157727.png" alt="201702099157727.png"></p>
+<p>系统在开始克隆了，他会一个分区一个分区的克隆<br><img src="http://odh5je629.bkt.clouddn.com/201702093727128.png" alt="201702093727128.png"></p>
+<p>系统克隆完毕，并且校验通过<br><img src="http://odh5je629.bkt.clouddn.com/201702096101029.png" alt="201702096101029.png"></p>
+<p>克隆完毕，重启系统，克隆教程到此结束<br><img src="http://odh5je629.bkt.clouddn.com/201702099491230.png" alt="201702099491230.png"></p>
+<h2 id="系统还原"><a href="#系统还原" class="headerlink" title="系统还原"></a>系统还原</h2><p>系统还原之前的操作和系统备份是一样的（核心步骤包括ssh验证，ssh目录名设置，普通模式，重新按照系统备份流程走一遍，一直到出现这个界面），选择还原镜像文件到本地硬盘<br><img src="http://odh5je629.bkt.clouddn.com/201702097641432.png" alt="201702097641432.png"></p>
+<p>选择还原的镜像名<br><img src="http://odh5je629.bkt.clouddn.com/201702098273733.png" alt="201702098273733.png"></p>
+<p>选择目标机器的系统盘，数据会恢复到这里，并且建议新的系统盘大小要大于原来系统的系统盘<br><img src="http://odh5je629.bkt.clouddn.com/201702097133234.png" alt="201702097133234.png"></p>
+<p>默认操作下一步<br><img src="http://odh5je629.bkt.clouddn.com/201702091664535.png" alt="201702091664535.png"></p>
+<p>默认操作下一步<br><img src="http://odh5je629.bkt.clouddn.com/201702093289036.png" alt="201702093289036.png"></p>
+<p>系统在开始恢复了<br><img src="http://odh5je629.bkt.clouddn.com/20170209238837.png" alt="20170209238837.png"></p>
+<p>镜像检查，选择y，覆盖原来数据（不可回滚）<br><img src="http://odh5je629.bkt.clouddn.com/20170209959538.png" alt="20170209959538.png"></p>
+<p>同上<br><img src="http://odh5je629.bkt.clouddn.com/201702092922839.png" alt="201702092922839.png"></p>
+<p>同上<br><img src="http://odh5je629.bkt.clouddn.com/201702095401540.png" alt="201702095401540.png"></p>
+<p>系统恢复完毕<br><img src="http://odh5je629.bkt.clouddn.com/201702093927241.png" alt="201702093927241.png"></p>
+<p>新操作系统启动成功<br><img src="http://odh5je629.bkt.clouddn.com/201702096586742.png" alt="201702096586742.png"></p>
 <h1 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h1><p>因为只是做硬盘层面的恢复，所以最好做一下硬件的检测，比如网卡信息可能需要手工配置一下，修改下ip或者mac地址啥的</p>
 <p>引导丢失系统会默认有grub工具，可以用于恢复</p>
 <p>软件版本号一定要对上，先确认好该用32位的还是64位的</p>
-<p>有时候我们觉得使用文件系统太麻烦，可以直接把所有的资料打包位一个iso镜像，选择产生恢复专用的再生龙，只需要在新机器安装这个镜像，就可以把系统打包过去，非常方便
-<img src="http://odh5je629.bkt.clouddn.com/201702097298432.png" alt="201702097298432.png"></p>
+<p>有时候我们觉得使用文件系统太麻烦，可以直接把所有的资料打包位一个iso镜像，选择产生恢复专用的再生龙，只需要在新机器安装这个镜像，就可以把系统打包过去，非常方便<br><img src="http://odh5je629.bkt.clouddn.com/201702097298432.png" alt="201702097298432.png"></p>
 <h1 id="相关文档"><a href="#相关文档" class="headerlink" title="相关文档"></a>相关文档</h1><p><a href="http://www.clonezilla.org/" target="_blank" rel="noopener">再生龙官方网站</a></p>
 
       
@@ -758,7 +712,7 @@ clonezilla，partimage，ghost4linux，acronis true image</p>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">161</span>
+              <span class="site-state-item-count">162</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

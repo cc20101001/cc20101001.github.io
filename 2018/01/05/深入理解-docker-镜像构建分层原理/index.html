@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="go,docker,云平台,k8s,golang," />
+  <meta name="keywords" content="go,docker,云平台,golang,k8s," />
 
 
 
@@ -88,7 +88,7 @@
 
 
 <meta name="description" content="前言存储驱动是 docker 最大的特点之一，我们这篇将从存储驱动开始了解 docker，了解这些后更方便了解docker 后面的分层构建原理以及运行机制 docker 文件系统相关使用 docker info 命令我们可以查看到 docker 所使用的存储驱动，如 Storage Driver: aufs，则使用的就是联合文件系统 除了 aufs，docker 还支持 overlay2，btrf">
-<meta name="keywords" content="go,docker,云平台,k8s,golang">
+<meta name="keywords" content="go,docker,云平台,golang,k8s">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深入理解 docker 镜像构建分层原理">
 <meta property="og:url" content="https://hubinwei.me/2018/01/05/深入理解-docker-镜像构建分层原理/index.html">
@@ -460,7 +460,7 @@
 <p>docker create 给指定镜像添加一个可读写层，构建一个新容器</p>
 <p>docker run 给指定容器分配独立的进程空间，并且把容器里面的进程运行起来</p>
 <h1 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h1><p>/var/lib/docker/aufs/mnt 这个目录是容器相对应的读写层，/var/lib/docker/volumes </p>
-<p>/var/lib/docker/containers/&lt;container_id&gt; 对应的初始化层</p>
+<p>/var/lib/docker/containers/<container_id> 对应的初始化层</container_id></p>
 <p>/var/lib/docker/aufs/layers 镜像层信息，只读层和读写层都在这里，现在新版本的 docker 和 id 没有对应关系了，我还没找到好的对应方法</p>
 <p>/var/lib/docker/aufs/diff 镜像存储的真实文件和目录</p>
 <h1 id="小实验"><a href="#小实验" class="headerlink" title="小实验"></a>小实验</h1><p>1.在容器内部创建文件，看能否在 aufs 的 diff 中找到该文件</p>
@@ -532,9 +532,9 @@
           
             <a href="/tags/云平台/" rel="tag"># 云平台</a>
           
-            <a href="/tags/k8s/" rel="tag"># k8s</a>
-          
             <a href="/tags/golang/" rel="tag"># golang</a>
+          
+            <a href="/tags/k8s/" rel="tag"># k8s</a>
           
         </div>
       
@@ -636,7 +636,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">161</span>
+              <span class="site-state-item-count">162</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

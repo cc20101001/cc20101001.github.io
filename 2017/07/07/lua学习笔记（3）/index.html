@@ -440,6 +440,7 @@
 <h2 id="简单模式"><a href="#简单模式" class="headerlink" title="简单模式"></a>简单模式</h2><p>针对简单模式先给一份代码，如下：</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">file = <span class="built_in">io</span>.<span class="built_in">open</span>(<span class="string">"1.lua"</span>, <span class="string">"r"</span>)</span><br><span class="line"><span class="built_in">io</span>.<span class="built_in">input</span>(file)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">io</span>.<span class="built_in">read</span>())</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">io</span>.<span class="built_in">read</span>())</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">io</span>.<span class="built_in">read</span>())</span><br><span class="line"><span class="built_in">io</span>.<span class="built_in">close</span>(file)</span><br><span class="line"></span><br><span class="line">file = <span class="built_in">io</span>.<span class="built_in">open</span>(<span class="string">"ret.txt"</span>, <span class="string">"a"</span>)</span><br><span class="line"><span class="built_in">io</span>.<span class="built_in">output</span>(file)</span><br><span class="line"><span class="built_in">io</span>.<span class="built_in">write</span>(<span class="string">"test data"</span>)</span><br><span class="line"><span class="built_in">io</span>.<span class="built_in">close</span>(file)</span><br></pre></td></tr></table></figure>
 <p>这个样例分别完成了lua简单模式下文件io的读取和保存，其中io.open还有许多其他的模式，列表如下：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -482,7 +483,9 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>lua的io库还提供了一些内置函数，如下</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -509,6 +512,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h2 id="完全模式"><a href="#完全模式" class="headerlink" title="完全模式"></a>完全模式</h2><p>针对完全模式，再给一份代码，这种代码调用方式感觉更原生</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 以只读方式打开文件</span></span><br><span class="line">file = <span class="built_in">io</span>.<span class="built_in">open</span>(<span class="string">"test.lua"</span>, <span class="string">"r"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 输出文件第一行</span></span><br><span class="line"><span class="built_in">print</span>(file:<span class="built_in">read</span>())</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 关闭打开的文件</span></span><br><span class="line">file:<span class="built_in">close</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 以附加的方式打开只写文件</span></span><br><span class="line">file = <span class="built_in">io</span>.<span class="built_in">open</span>(<span class="string">"test.lua"</span>, <span class="string">"a"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 在文件最后一行添加 Lua 注释</span></span><br><span class="line">file:<span class="built_in">write</span>(<span class="string">"--test"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 关闭打开的文件</span></span><br><span class="line">file:<span class="built_in">close</span>()</span><br></pre></td></tr></table></figure>
 <h1 id="lua错误处理"><a href="#lua错误处理" class="headerlink" title="lua错误处理"></a>lua错误处理</h1><p>常见的错误类型有，1.语法错误，2.运行错误</p>
@@ -675,7 +679,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">161</span>
+              <span class="site-state-item-count">162</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

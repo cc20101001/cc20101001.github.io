@@ -426,7 +426,8 @@
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>正则表达式不是 python 所独有的，而是所有编程语言有相关模块支持的，但是它们的基本思想是相同的，本篇文章将主要围绕 python 进行正则表达式的学习</p>
 <p>在 python1.5 之前 python 用的 Emacs 风格的正则表达式，在1.5引入了 re 模块，使用 perl 风格的正则表达式，你可以把正则表达式看作一门小型，专业度非常高的编程语言，他有内置的字符集和语法，专门来对字符串进行处理</p>
 <h1 id="普通字符"><a href="#普通字符" class="headerlink" title="普通字符"></a>普通字符</h1><p>在正则表达式里面都是用提供的字符去和待求值字符串进行比较，我主要围绕我们提供的字符进行分析</p>
-<h2 id="一般字符"><a href="#一般字符" class="headerlink" title="一般字符"></a>一般字符</h2><table>
+<h2 id="一般字符"><a href="#一般字符" class="headerlink" title="一般字符"></a>一般字符</h2><div class="table-container">
+<table>
 <thead>
 <tr>
 <th>语法</th>
@@ -462,7 +463,9 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h2 id="预定义字符集"><a href="#预定义字符集" class="headerlink" title="预定义字符集"></a>预定义字符集</h2><p>这个字符集是我们使用最多的一些字符集，在字符集[…]中也可以使用</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -487,7 +490,7 @@
 </tr>
 <tr>
 <td>\D</td>
-<td>非数字[^\d]</td>
+<td>非数字<sup><a href="#fn_\d" id="reffn_\d">\d</a></sup></td>
 <td>a\Dc</td>
 <td>abc</td>
 </tr>
@@ -499,7 +502,7 @@
 </tr>
 <tr>
 <td>\W</td>
-<td>非字母且非数字[^\w]</td>
+<td>非字母且非数字<sup><a href="#fn_\w" id="reffn_\w">\w</a></sup></td>
 <td>a\Wc</td>
 <td>a*c</td>
 </tr>
@@ -511,7 +514,7 @@
 </tr>
 <tr>
 <td>\S</td>
-<td>非空白字符[^\s]</td>
+<td>非空白字符<sup><a href="#fn_\s" id="reffn_\s">\s</a></sup></td>
 <td>a\Sc</td>
 <td>abc</td>
 </tr>
@@ -547,7 +550,9 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h2 id="数量词"><a href="#数量词" class="headerlink" title="数量词"></a>数量词</h2><p>可以写在字符之后或者字符集之后，用来表示字符被匹配的次数</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -590,7 +595,9 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h2 id="边界匹配"><a href="#边界匹配" class="headerlink" title="边界匹配"></a>边界匹配</h2><p>这次字符主要表示设定开头，并不消耗字符</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -631,11 +638,13 @@
 </tr>
 <tr>
 <td>\B</td>
-<td>[^\b]</td>
+<td><sup><a href="#fn_\b" id="reffn_\b">\b</a></sup></td>
 </tr>
 </tbody>
 </table>
+</div>
 <h2 id="逻辑，分组"><a href="#逻辑，分组" class="headerlink" title="逻辑，分组"></a>逻辑，分组</h2><p>这个代表了正则表达式的逻辑运算和分组策略</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -663,6 +672,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h2 id="特殊构造"><a href="#特殊构造" class="headerlink" title="特殊构造"></a>特殊构造</h2>
       
     </div>
@@ -826,7 +836,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">161</span>
+              <span class="site-state-item-count">162</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
