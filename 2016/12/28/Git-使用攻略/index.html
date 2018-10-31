@@ -432,8 +432,8 @@
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
 <p>我们经常提到git，github，说到git协议，到底都是一些什么呢？其中git是一种用作版本控制的工具，通俗地说就是用来管理代码的工具，github是一个网站，用来存放代码的，而git协议则是git工具私有的协议，用作传输代码。这里来撸一撸git相关的原理和命令。</p>
 </blockquote>
-<h1 id="git支持的协议汇总和比较"><a href="#git支持的协议汇总和比较" class="headerlink" title="git支持的协议汇总和比较"></a>git支持的协议汇总和比较</h1><p>我们目前使用的git支持的主要协议有SSH、GIT、HTTP、HTTPS、FTP、FTPS、RSYNC及本地协议，其中本文注意围绕ssh协议进行总结，因为ssh协议是目前应用起来最简单，也最广泛的协议。<br>协议规范如下:</p>
-<div class="table-container">
+<h1 id="git支持的协议汇总和比较"><a href="#git支持的协议汇总和比较" class="headerlink" title="git支持的协议汇总和比较"></a>git支持的协议汇总和比较</h1><p>我们目前使用的git支持的主要协议有SSH、GIT、HTTP、HTTPS、FTP、FTPS、RSYNC及本地协议，其中本文注意围绕ssh协议进行总结，因为ssh协议是目前应用起来最简单，也最广泛的协议。
+协议规范如下:</p>
 <table>
 <thead>
 <tr>
@@ -484,8 +484,8 @@
 </tr>
 </tbody>
 </table>
-</div>
-<p>具体各种协议的优势和差别可以参考链接:<br><a href="https://git-scm.com/book/zh/v2/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">https://git-scm.com/book/zh/v2/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-%E5%8D%8F%E8%AE%AE</a></p>
+<p>具体各种协议的优势和差别可以参考链接:
+<a href="https://git-scm.com/book/zh/v2/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">https://git-scm.com/book/zh/v2/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-%E5%8D%8F%E8%AE%AE</a></p>
 <h1 id="git的ssh登录相关"><a href="#git的ssh登录相关" class="headerlink" title="git的ssh登录相关"></a>git的ssh登录相关</h1><h2 id="git查看本地key情况"><a href="#git查看本地key情况" class="headerlink" title="git查看本地key情况"></a>git查看本地key情况</h2><p><code>cd  ~/.ssh</code> 然后 <code>ls</code> 可以查看是否有密钥文件</p>
 <p>如果你的非对称加密算法用的是rsa，那么你的git默认目录下会有两个文件</p>
 <p>id_rsa 和 id_rsa.pub</p>
@@ -495,7 +495,7 @@
 <h2 id="git修改本地key密码"><a href="#git修改本地key密码" class="headerlink" title="git修改本地key密码"></a>git修改本地key密码</h2><p><code>ssh-keygen -p</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Enter file in which the key is (/root/.ssh/id_rsa): /root/.ssh/id_rsa</span><br><span class="line">Enter old passphrase: </span><br><span class="line">Key has comment &apos;/root/.ssh/id_rsa&apos;</span><br><span class="line">Enter new passphrase (empty for no passphrase): </span><br><span class="line">Enter same passphrase again: </span><br><span class="line">Your identification has been saved with the new passphrase.</span><br></pre></td></tr></table></figure>
 <h2 id="git生成公钥，密钥"><a href="#git生成公钥，密钥" class="headerlink" title="git生成公钥，密钥"></a>git生成公钥，密钥</h2><p>生成公钥 并保存在~/.ssh／id_rsa.pub</p>
-<p>ssh-keygen -t rsa -b 4096 -C “hbw123@qq.com”  </p>
+<p>ssh-keygen -t rsa -b 4096 -C “<a href="mailto:hbw123@qq.com" target="_blank" rel="noopener">hbw123@qq.com</a>“  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">代码参数含义： </span><br><span class="line">-t指定密钥类型，默认是rsa，可以省略。 </span><br><span class="line">-C设置注释文字，比如邮箱。 </span><br><span class="line">-f指定密钥文件存储文件名。</span><br></pre></td></tr></table></figure>
 <p>就会生成id_rsa和id_rsa.pub两个密钥文件</p>
 <p>复制.pub文件中的公钥字符串并保存在服务端</p>
@@ -507,7 +507,8 @@
 <h1 id="git命令图"><a href="#git命令图" class="headerlink" title="git命令图"></a>git命令图</h1><p><img src="http://odh5je629.bkt.clouddn.com/201708036568git.png" alt="201708036568git.png"></p>
 <h1 id="新建代码库"><a href="#新建代码库" class="headerlink" title="新建代码库"></a>新建代码库</h1><h2 id="创建裸版本源"><a href="#创建裸版本源" class="headerlink" title="创建裸版本源"></a>创建裸版本源</h2><p><code>git init --bare ./</code> 在当前目录创建一个本地git源</p>
 <h2 id="项目克隆"><a href="#项目克隆" class="headerlink" title="项目克隆"></a>项目克隆</h2><p>git的克隆现在用的比较多的有两种，一种是ssh克隆，一种是https克隆，如下:</p>
-<p><img src="http://odh5je629.bkt.clouddn.com/2017031325025screenshot_18.png" alt="2017031325025screenshot_18.png"><br><img src="http://odh5je629.bkt.clouddn.com/2017031357944screenshot_19.png" alt="2017031357944screenshot_19.png"></p>
+<p><img src="http://odh5je629.bkt.clouddn.com/2017031325025screenshot_18.png" alt="2017031325025screenshot_18.png">
+<img src="http://odh5je629.bkt.clouddn.com/2017031357944screenshot_19.png" alt="2017031357944screenshot_19.png"></p>
 <p>推荐使用ssh，速度快，功能强大。</p>
 <p>更多git协议可以看之前的 git支持的协议汇总</p>
 <h1 id="分支命令"><a href="#分支命令" class="headerlink" title="分支命令"></a>分支命令</h1><h2 id="查看本地分支"><a href="#查看本地分支" class="headerlink" title="查看本地分支"></a>查看本地分支</h2><p><code>git branch</code> 查看git的某个分支(只包含本地分支)</p>
@@ -520,31 +521,33 @@
 <h2 id="强制拉取远端master到本地，覆盖本地分支"><a href="#强制拉取远端master到本地，覆盖本地分支" class="headerlink" title="强制拉取远端master到本地，覆盖本地分支"></a>强制拉取远端master到本地，覆盖本地分支</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard origin/master</span><br><span class="line">git pull</span><br><span class="line"></span><br><span class="line">or</span><br><span class="line"> 	</span><br><span class="line">git reset --hard</span><br><span class="line">git pull</span><br></pre></td></tr></table></figure>
 <h1 id="查看信息"><a href="#查看信息" class="headerlink" title="查看信息"></a>查看信息</h1><h2 id="显示有变更的文件"><a href="#显示有变更的文件" class="headerlink" title="显示有变更的文件"></a>显示有变更的文件</h2><p>$ git status</p>
 <h2 id="显示当前分支的版本历史"><a href="#显示当前分支的版本历史" class="headerlink" title="显示当前分支的版本历史"></a>显示当前分支的版本历史</h2><p>$ git log</p>
-<h2 id="显示commit历史，以及每次commit发生变更的文件"><a href="#显示commit历史，以及每次commit发生变更的文件" class="headerlink" title="显示commit历史，以及每次commit发生变更的文件"></a>显示commit历史，以及每次commit发生变更的文件</h2><p>$ git log —stat</p>
+<h2 id="显示commit历史，以及每次commit发生变更的文件"><a href="#显示commit历史，以及每次commit发生变更的文件" class="headerlink" title="显示commit历史，以及每次commit发生变更的文件"></a>显示commit历史，以及每次commit发生变更的文件</h2><p>$ git log –stat</p>
 <h2 id="搜索提交历史，根据关键词"><a href="#搜索提交历史，根据关键词" class="headerlink" title="搜索提交历史，根据关键词"></a>搜索提交历史，根据关键词</h2><p>$ git log -S [keyword]</p>
-<h2 id="显示某个commit之后的所有变动，每个commit占据一行"><a href="#显示某个commit之后的所有变动，每个commit占据一行" class="headerlink" title="显示某个commit之后的所有变动，每个commit占据一行"></a>显示某个commit之后的所有变动，每个commit占据一行</h2><p>$ git log [tag] HEAD —pretty=format:%s</p>
-<h2 id="显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件"><a href="#显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件" class="headerlink" title="显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件"></a>显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件</h2><p>$ git log [tag] HEAD —grep feature</p>
-<h2 id="显示某个文件的版本历史，包括文件改名"><a href="#显示某个文件的版本历史，包括文件改名" class="headerlink" title="显示某个文件的版本历史，包括文件改名"></a>显示某个文件的版本历史，包括文件改名</h2><p>$ git log —follow [file]<br>$ git whatchanged [file]</p>
+<h2 id="显示某个commit之后的所有变动，每个commit占据一行"><a href="#显示某个commit之后的所有变动，每个commit占据一行" class="headerlink" title="显示某个commit之后的所有变动，每个commit占据一行"></a>显示某个commit之后的所有变动，每个commit占据一行</h2><p>$ git log [tag] HEAD –pretty=format:%s</p>
+<h2 id="显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件"><a href="#显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件" class="headerlink" title="显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件"></a>显示某个commit之后的所有变动，其”提交说明”必须符合搜索条件</h2><p>$ git log [tag] HEAD –grep feature</p>
+<h2 id="显示某个文件的版本历史，包括文件改名"><a href="#显示某个文件的版本历史，包括文件改名" class="headerlink" title="显示某个文件的版本历史，包括文件改名"></a>显示某个文件的版本历史，包括文件改名</h2><p>$ git log –follow [file]
+$ git whatchanged [file]</p>
 <h2 id="显示指定文件相关的每一次diff"><a href="#显示指定文件相关的每一次diff" class="headerlink" title="显示指定文件相关的每一次diff"></a>显示指定文件相关的每一次diff</h2><p>$ git log -p [file]</p>
-<h2 id="显示过去5次提交"><a href="#显示过去5次提交" class="headerlink" title="显示过去5次提交"></a>显示过去5次提交</h2><p>$ git log -5 —pretty —oneline</p>
+<h2 id="显示过去5次提交"><a href="#显示过去5次提交" class="headerlink" title="显示过去5次提交"></a>显示过去5次提交</h2><p>$ git log -5 –pretty –oneline</p>
 <h2 id="显示所有提交过的用户，按提交次数排序"><a href="#显示所有提交过的用户，按提交次数排序" class="headerlink" title="显示所有提交过的用户，按提交次数排序"></a>显示所有提交过的用户，按提交次数排序</h2><p>$ git shortlog -sn</p>
 <h2 id="显示指定文件是什么人在什么时间修改过"><a href="#显示指定文件是什么人在什么时间修改过" class="headerlink" title="显示指定文件是什么人在什么时间修改过"></a>显示指定文件是什么人在什么时间修改过</h2><p>$ git blame [file]</p>
 <h2 id="显示暂存区和工作区的差异"><a href="#显示暂存区和工作区的差异" class="headerlink" title="显示暂存区和工作区的差异"></a>显示暂存区和工作区的差异</h2><p>$ git diff</p>
-<h2 id="显示暂存区和上一个commit的差异"><a href="#显示暂存区和上一个commit的差异" class="headerlink" title="显示暂存区和上一个commit的差异"></a>显示暂存区和上一个commit的差异</h2><p>$ git diff —cached [file]</p>
+<h2 id="显示暂存区和上一个commit的差异"><a href="#显示暂存区和上一个commit的差异" class="headerlink" title="显示暂存区和上一个commit的差异"></a>显示暂存区和上一个commit的差异</h2><p>$ git diff –cached [file]</p>
 <h2 id="显示工作区与当前分支最新commit之间的差异"><a href="#显示工作区与当前分支最新commit之间的差异" class="headerlink" title="显示工作区与当前分支最新commit之间的差异"></a>显示工作区与当前分支最新commit之间的差异</h2><p>$ git diff HEAD</p>
 <h2 id="显示两次提交之间的差异"><a href="#显示两次提交之间的差异" class="headerlink" title="显示两次提交之间的差异"></a>显示两次提交之间的差异</h2><p>$ git diff [first-branch]…[second-branch]</p>
-<h2 id="显示今天你写了多少行代码"><a href="#显示今天你写了多少行代码" class="headerlink" title="显示今天你写了多少行代码"></a>显示今天你写了多少行代码</h2><p>$ git diff —shortstat “@{0 day ago}”</p>
+<h2 id="显示今天你写了多少行代码"><a href="#显示今天你写了多少行代码" class="headerlink" title="显示今天你写了多少行代码"></a>显示今天你写了多少行代码</h2><p>$ git diff –shortstat “@{0 day ago}”</p>
 <h2 id="显示某次提交的元数据和内容变化"><a href="#显示某次提交的元数据和内容变化" class="headerlink" title="显示某次提交的元数据和内容变化"></a>显示某次提交的元数据和内容变化</h2><p>$ git show [commit]</p>
-<h2 id="显示某次提交发生变化的文件"><a href="#显示某次提交发生变化的文件" class="headerlink" title="显示某次提交发生变化的文件"></a>显示某次提交发生变化的文件</h2><p>$ git show —name-only [commit]</p>
+<h2 id="显示某次提交发生变化的文件"><a href="#显示某次提交发生变化的文件" class="headerlink" title="显示某次提交发生变化的文件"></a>显示某次提交发生变化的文件</h2><p>$ git show –name-only [commit]</p>
 <h2 id="显示某次提交时，某个文件的内容"><a href="#显示某次提交时，某个文件的内容" class="headerlink" title="显示某次提交时，某个文件的内容"></a>显示某次提交时，某个文件的内容</h2><p>$ git show [commit]:[filename]</p>
 <h2 id="显示当前分支的最近几次提交"><a href="#显示当前分支的最近几次提交" class="headerlink" title="显示当前分支的最近几次提交"></a>显示当前分支的最近几次提交</h2><p>$ git reflog</p>
 <h1 id="git配置"><a href="#git配置" class="headerlink" title="git配置"></a>git配置</h1><h2 id="查看git全局配置信息"><a href="#查看git全局配置信息" class="headerlink" title="查看git全局配置信息"></a>查看git全局配置信息</h2><p><code>git config -l</code></p>
-<p>如果需要对这些信息进行修改，可以用git config —global 再加git操作指令来进行操作</p>
+<p>如果需要对这些信息进行修改，可以用git config –global 再加git操作指令来进行操作</p>
 <h2 id="修改git配置文件（可以修改源啊啥的）"><a href="#修改git配置文件（可以修改源啊啥的）" class="headerlink" title="修改git配置文件（可以修改源啊啥的）"></a>修改git配置文件（可以修改源啊啥的）</h2><p>相当于编辑git工程下的 <code>.git/config</code> 文件</p>
 <p><code>git config -e</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> 1 [core]                                                                      </span><br><span class="line"> 2     repositoryformatversion = 0</span><br><span class="line"> 3     filemode = true</span><br><span class="line"> 4     bare = false</span><br><span class="line"> 5     logallrefupdates = true</span><br><span class="line"> 6     ignorecase = true</span><br><span class="line"> 7     precomposeunicode = true</span><br><span class="line"> 8 [remote &quot;origin&quot;]</span><br><span class="line"> 9     url = https://cc201010011@bitbucket.org/pythonqw/pythonep.git</span><br><span class="line">10     fetch = +refs/heads/*:refs/remotes/origin/*</span><br><span class="line">11 [branch &quot;master&quot;]</span><br><span class="line">12     remote = origin</span><br><span class="line">13     merge = refs/heads/master</span><br></pre></td></tr></table></figure>
 <p>其中 <code>url = https://cc201010011@bitbucket.org/pythonqw/pythonep.git</code> 就是这个git的源属性，我们可以通过修改url来达到修改源的目的</p>
-<h2 id="设置提交代码时的用户信息"><a href="#设置提交代码时的用户信息" class="headerlink" title="设置提交代码时的用户信息"></a>设置提交代码时的用户信息</h2><p>git config [—global] user.name “[name]”<br>git config [—global] user.email “[email address]”</p>
+<h2 id="设置提交代码时的用户信息"><a href="#设置提交代码时的用户信息" class="headerlink" title="设置提交代码时的用户信息"></a>设置提交代码时的用户信息</h2><p>git config [–global] user.name “[name]”
+git config [–global] user.email “[email address]”</p>
 <h2 id="git设置代理"><a href="#git设置代理" class="headerlink" title="git设置代理"></a>git设置代理</h2><blockquote>
 <p>今天github被Q了，导致没法访问，没法clone代码，好消息是git的http和https协议支持代理功能，坏消息是ssh协议不支持代理，啊，凑合着用吧，http，https代理设置如下：</p>
 </blockquote>
@@ -552,7 +555,9 @@
 <h2 id="git缓存大小设置"><a href="#git缓存大小设置" class="headerlink" title="git缓存大小设置"></a>git缓存大小设置</h2><p>这里更改git缓存大小为500MB</p>
 <p><code>git config http.postBuffer 524288000</code></p>
 <h1 id="冲突与合并"><a href="#冲突与合并" class="headerlink" title="冲突与合并"></a>冲突与合并</h1><h2 id="mac下的git合并工具diffmerge"><a href="#mac下的git合并工具diffmerge" class="headerlink" title="mac下的git合并工具diffmerge"></a>mac下的git合并工具diffmerge</h2><p>场景是mac环境下的sourcetree配置diffmerge</p>
-<p>1.按照sourcetree<br>2.按照diffmerge<br>3.在sourcetree选择diffmerge做为冲突解决工具</p>
+<p>1.按照sourcetree
+2.按照diffmerge
+3.在sourcetree选择diffmerge做为冲突解决工具</p>
 <p><img src="http://odh5je629.bkt.clouddn.com/2017031796568screenshot_20.png" alt="2017031796568screenshot_20.png"></p>
 <h2 id="git解决冲突"><a href="#git解决冲突" class="headerlink" title="git解决冲突"></a>git解决冲突</h2><p><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> 标记冲突开始，后面跟的是当前分支中的内容</p>
 <p>HEAD指向当前分支末梢的提交</p>

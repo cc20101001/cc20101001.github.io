@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="go,docker,云平台,golang,k8s," />
+  <meta name="keywords" content="go,docker,云平台,k8s,golang," />
 
 
 
@@ -88,7 +88,7 @@
 
 
 <meta name="description" content="前言系统架构最近变更比较大，从最初的应用程序裸体部署，到中间的 docker 容器部署，再到现在的 k8s 集群管理，也是一步一个台阶，这里主要记录了一些 k8s 命令集，方便日后回顾，查看 获取 deploy 信息最新版的k8s 1.9.x deploy 的配置非常的简洁，deploy 替代的 rc 作为副本控制器，更加方便，获取所有的 deploy 信息 kubectl get deploy">
-<meta name="keywords" content="go,docker,云平台,golang,k8s">
+<meta name="keywords" content="go,docker,云平台,k8s,golang">
 <meta property="og:type" content="article">
 <meta property="og:title" content="k8s常用命令集">
 <meta property="og:url" content="https://hubinwei.me/2017/12/07/k8s常用命令集/index.html">
@@ -436,9 +436,9 @@
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>系统架构最近变更比较大，从最初的应用程序裸体部署，到中间的 docker 容器部署，再到现在的 k8s 集群管理，也是一步一个台阶，这里主要记录了一些 k8s 命令集，方便日后回顾，查看</p>
 <h1 id="获取-deploy-信息"><a href="#获取-deploy-信息" class="headerlink" title="获取 deploy 信息"></a>获取 deploy 信息</h1><p>最新版的k8s 1.9.x deploy 的配置非常的简洁，deploy 替代的 rc 作为副本控制器，更加方便，获取所有的 deploy 信息</p>
-<p>kubectl get deploy —all-namespaces</p>
+<p>kubectl get deploy –all-namespaces</p>
 <h1 id="获取所有命名空间的的pod"><a href="#获取所有命名空间的的pod" class="headerlink" title="获取所有命名空间的的pod"></a>获取所有命名空间的的pod</h1><p>如果机器环境很多，我们需要给每一套环境分配一个命名空间，默认 kube-system 是 k8s 系统默认命名空间，获取所有命名空间 pod 的命令如下</p>
-<p>kubectl get pod —all-namespaces</p>
+<p>kubectl get pod –all-namespaces</p>
 <h1 id="获取-services-的对外统一接口"><a href="#获取-services-的对外统一接口" class="headerlink" title="获取 services 的对外统一接口"></a>获取 services 的对外统一接口</h1><p>k8s 对容器化编排的核心是 pod，pod 如果想对外网提供服务，需要一层 service 的包装，好处是做了一层负载均衡，一个 service 后面可以挂多个 pod</p>
 <p>kubectl get services</p>
 <h1 id="获取-pod-提供服务的web接口"><a href="#获取-pod-提供服务的web接口" class="headerlink" title="获取 pod 提供服务的web接口"></a>获取 pod 提供服务的web接口</h1><p>endpoints 是 pod 提供服务的接口</p>
@@ -446,7 +446,7 @@
 <h1 id="设置-kubectl-运行环境-context"><a href="#设置-kubectl-运行环境-context" class="headerlink" title="设置 kubectl 运行环境 context"></a>设置 kubectl 运行环境 context</h1><p>kubectl config use-context minikube</p>
 <p>kubectl config use-context docker-for-desktop</p>
 <h1 id="pod删除"><a href="#pod删除" class="headerlink" title="pod删除"></a>pod删除</h1><p>强制删除某些状态异常的pod（状态为Terminating），系统默认杀掉pod的延时执行时间是30s，这里设置为立刻执行</p>
-<p>kubectl get pod | grep Terminating | awk ‘{print $1}’| xargs -n1 -I {} kubectl delete pod {} —grace-period=0 —force</p>
+<p>kubectl get pod | grep Terminating | awk ‘{print $1}’| xargs -n1 -I {} kubectl delete pod {} –grace-period=0 –force</p>
 <h1 id="configmap"><a href="#configmap" class="headerlink" title="configmap"></a>configmap</h1><p>这里放置了 k8s 的一些配置信息，可以把他当作 k8s 的环境变量设置地方，一处配置，多处调用</p>
 <h1 id="ingress，ingress-controller，nginx"><a href="#ingress，ingress-controller，nginx" class="headerlink" title="ingress，ingress-controller，nginx"></a>ingress，ingress-controller，nginx</h1><p>k8s 如果想对外提供服务，是以 ingress 的形式提供的</p>
 <h1 id="查看日志"><a href="#查看日志" class="headerlink" title="查看日志"></a>查看日志</h1><h2 id="根据标签筛选pod，查看所有信息"><a href="#根据标签筛选pod，查看所有信息" class="headerlink" title="根据标签筛选pod，查看所有信息"></a>根据标签筛选pod，查看所有信息</h2><p>kubectl logs -lqcloud-app=hcm-celery-other -n release</p>
@@ -519,9 +519,9 @@
           
             <a href="/tags/云平台/" rel="tag"># 云平台</a>
           
-            <a href="/tags/golang/" rel="tag"># golang</a>
-          
             <a href="/tags/k8s/" rel="tag"># k8s</a>
+          
+            <a href="/tags/golang/" rel="tag"># golang</a>
           
         </div>
       

@@ -87,13 +87,13 @@
 
 
 
-<meta name="description" content="OSI七层模型要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：     层数 七层模型 五层模型 四层模型 样例     7 应用层 应用层 应用层 http，smtp协议等   6 表示层   ssl/tls   5 会话层">
+<meta name="description" content="OSI七层模型要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：    层数 七层模型 五层模型 四层模型 样例     7 应用层 应用层 应用层 http，smtp协议等   6 表示层   ssl/tls   5 会话层">
 <meta name="keywords" content="tcp三次握手,udp协议分析,OSI七层模型">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TCP，UDP协议学习">
 <meta property="og:url" content="https://hubinwei.me/2016/12/28/TCP，UDP协议学习/index.html">
 <meta property="og:site_name" content="Bill Hu&#39;s Note Book">
-<meta property="og:description" content="OSI七层模型要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：     层数 七层模型 五层模型 四层模型 样例     7 应用层 应用层 应用层 http，smtp协议等   6 表示层   ssl/tls   5 会话层">
+<meta property="og:description" content="OSI七层模型要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：    层数 七层模型 五层模型 四层模型 样例     7 应用层 应用层 应用层 http，smtp协议等   6 表示层   ssl/tls   5 会话层">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170728786221228431-ec18b4f285e64dc1.png">
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20180424152455754682060.jpg">
@@ -107,7 +107,7 @@
 <meta property="og:updated_time" content="2018-07-27T00:45:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TCP，UDP协议学习">
-<meta name="twitter:description" content="OSI七层模型要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：     层数 七层模型 五层模型 四层模型 样例     7 应用层 应用层 应用层 http，smtp协议等   6 表示层   ssl/tls   5 会话层">
+<meta name="twitter:description" content="OSI七层模型要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：    层数 七层模型 五层模型 四层模型 样例     7 应用层 应用层 应用层 http，smtp协议等   6 表示层   ssl/tls   5 会话层">
 <meta name="twitter:image" content="http://odh5je629.bkt.clouddn.com/20170728786221228431-ec18b4f285e64dc1.png">
 
 
@@ -434,7 +434,6 @@
 
       
         <h1 id="OSI七层模型"><a href="#OSI七层模型" class="headerlink" title="OSI七层模型"></a>OSI七层模型</h1><p>要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：</p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -497,7 +496,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p>五层模型分别所干的活如下</p>
 <p><img src="http://odh5je629.bkt.clouddn.com/20170728786221228431-ec18b4f285e64dc1.png" alt="20170728786221228431-ec18b4f285e64dc1.png"></p>
 <p>其实 TCP/IP 协议族并没有严格的遵守 OSI，TCP/IP 的分层并不能很好的对应到OSI模型中</p>
@@ -507,7 +505,6 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.准确可靠</span><br><span class="line">2.连接有耗时</span><br><span class="line">3.不可广播</span><br><span class="line">4.传输数据无大小限制</span><br><span class="line">5.先发先至</span><br></pre></td></tr></table></figure>
 <p>我将从TCP报文格式，端口状态，TCP三次握手，TCP四次挥手，四个方面来进行分析</p>
 <h2 id="TCP报文分析"><a href="#TCP报文分析" class="headerlink" title="TCP报文分析"></a>TCP报文分析</h2><h3 id="报文格式分析"><a href="#报文格式分析" class="headerlink" title="报文格式分析"></a>报文格式分析</h3><p><img src="http://odh5je629.bkt.clouddn.com/2017072880432.pic_hd.png" alt="2017072880432.pic_hd.png"></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -566,9 +563,7 @@
 </tr>
 </tbody>
 </table>
-</div>
 <h3 id="编码位列表说明"><a href="#编码位列表说明" class="headerlink" title="编码位列表说明"></a>编码位列表说明</h3><p>主要用到的编码位列表如下：</p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -603,12 +598,10 @@
 </tr>
 </tbody>
 </table>
-</div>
 <h3 id="wireshark抓包演示"><a href="#wireshark抓包演示" class="headerlink" title="wireshark抓包演示"></a>wireshark抓包演示</h3><p>再附上一张我用wireshark抓到的TCP数据报文图</p>
 <p><img src="http://odh5je629.bkt.clouddn.com/2017072814590screenshot_105.png" alt="2017072814590screenshot_105.png"></p>
 <p>一目了然了，请求头总长度为40字节，其中options长度为20字节，其余的总长度为固定的20字节</p>
-<h2 id="TCP端口状态说明"><a href="#TCP端口状态说明" class="headerlink" title="TCP端口状态说明"></a>TCP端口状态说明</h2><div class="table-container">
-<table>
+<h2 id="TCP端口状态说明"><a href="#TCP端口状态说明" class="headerlink" title="TCP端口状态说明"></a>TCP端口状态说明</h2><table>
 <thead>
 <tr>
 <th>状态名称</th>
@@ -666,7 +659,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p>这是一张经典的TCP端口转化状态图</p>
 <p><img src="http://odh5je629.bkt.clouddn.com/20170728186671415592-175d325475f07bc0.png" alt="20170728186671415592-175d325475f07bc0.png"></p>
 <h2 id="TCP三次握手"><a href="#TCP三次握手" class="headerlink" title="TCP三次握手"></a>TCP三次握手</h2><p>TCP的三次握手是为了通过发包，收包确认客户端，服务端的网络状态，建立稳定的TCP连接，建立连接之后只要客户端服务端没有主动断开，连接会一直存在，故为长连接</p>
@@ -777,8 +769,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/12/28/python框架学习之requests/" rel="next" title="python框架学习之requests">
-                <i class="fa fa-chevron-left"></i> python框架学习之requests
+              <a href="/2016/12/28/python库分析之socket编程和系统调用/" rel="next" title="python库分析之socket编程和系统调用">
+                <i class="fa fa-chevron-left"></i> python库分析之socket编程和系统调用
               </a>
             
           </div>
@@ -787,8 +779,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/12/28/python库分析之socket编程和系统调用/" rel="prev" title="python库分析之socket编程和系统调用">
-                python库分析之socket编程和系统调用 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/01/09/python便携式web服务器/" rel="prev" title="python便携式web服务器">
+                python便携式web服务器 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

@@ -434,7 +434,6 @@
 <p>2.邮件服务器用阿里的企业邮箱为例。</p>
 <h1 id="域名解析基础知识"><a href="#域名解析基础知识" class="headerlink" title="域名解析基础知识"></a>域名解析基础知识</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">A记录:设定域名或者子域名指向，保证域名指向对应的主机重要设置；</span><br><span class="line"></span><br><span class="line">1.做A记录时， 对应值必须是IP地址</span><br><span class="line">2.主机名必须填写，用@可以表示主机名为空</span><br><span class="line">3.泛域名解析，请在主机名处输入*，增加A记录即可</span><br><span class="line"></span><br><span class="line">MX记录:设定域名的邮件交换记录，是指定该域名对应的邮箱服务器的重要设置。</span><br><span class="line">CNAME记录:即：别名记录。这种记录允许您将多个名字映射到同一台计算机</span><br><span class="line">TXT记录:TXT是一种文本记录，仅用于描述域名记录信息，对解析无实质影响。v=spf1 ip4:61.139.126.5 ~all</span><br><span class="line">AAAA记录:是用来将域名解析到IPv6地址的DNS记录。用户可以将一个域名解析到IPv6地址上，也可以将子域名解析到IPv6地址上</span><br><span class="line">SRV记录:它是DNS服务器的数据库中支持的一种资源记录的类型，它记录了哪台计算机提供了哪个服务这么一个简单的信息。格式为：优先级 权重 端口 主机名,例如：0 5 5060 server.example.com.</span><br><span class="line">什么是SPF:发信者策略架构,是为了防范垃圾邮件而提出来的一种DNS记录,它是一种TXT类型的记录，主要用于防止伪造邮件发送者</span><br><span class="line">什么是TTL:TTL是指解析生效时间（单位秒），但仅影响解析记录修改的生效时间，添加是实时生效的，最低不允许低于200秒。</span><br><span class="line">提示:如果您顶级域名使用了CNAME记录(比如:west263.com(cname到:vip.myhostadmin.net), 有可能会导致该域名使用的海外邮局无法接收邮件.您只需要将域名顶级域名修改使用A记录解析到对应ip地址即可.</span><br></pre></td></tr></table></figure>
 <h1 id="一级域名解析"><a href="#一级域名解析" class="headerlink" title="一级域名解析"></a>一级域名解析</h1><p>一级域名解析比较中规中矩，我们只需要在里面做三种记录，列表如下：</p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -466,9 +465,7 @@
 </tr>
 </tbody>
 </table>
-</div>
 <h1 id="二级域名解析"><a href="#二级域名解析" class="headerlink" title="二级域名解析"></a>二级域名解析</h1><p>二级域名解也要在里面做三种记录，最大的区别是在主机名的处理上，列表如下：</p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -500,7 +497,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <h1 id="mx解析记录查询"><a href="#mx解析记录查询" class="headerlink" title="mx解析记录查询"></a>mx解析记录查询</h1><h2 id="用python里面的dns库来获取mx记录"><a href="#用python里面的dns库来获取mx记录" class="headerlink" title="用python里面的dns库来获取mx记录"></a>用python里面的dns库来获取mx记录</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> dns.resolver</span><br><span class="line"></span><br><span class="line">answers = dns.resolver.query(<span class="string">'hubinwei.me'</span>, <span class="string">'MX'</span>)</span><br><span class="line"><span class="keyword">for</span> rdata <span class="keyword">in</span> answers:</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'Host'</span>, rdata.exchange, <span class="string">'has preference'</span>, rdata.preference</span><br></pre></td></tr></table></figure>
 <p>输出结果如下:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Host mxn.mxhichina.com. has preference 5</span><br><span class="line">Host mxw.mxhichina.com. has preference 10</span><br><span class="line">[Finished in 0.2s]</span><br></pre></td></tr></table></figure>
@@ -508,7 +504,7 @@
 <h2 id="通过命令行来获取mx记录"><a href="#通过命令行来获取mx记录" class="headerlink" title="通过命令行来获取mx记录"></a>通过命令行来获取mx记录</h2><p>命令如下: <code>nslookup -q=mx 163.com</code></p>
 <p>效果图如下:</p>
 <p><img src="http://odh5je629.bkt.clouddn.com/201704276742screenshot_47.png" alt="201704276742screenshot_47.png"></p>
-<h1 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h1><p>spf 记录还是很重要的，专门用来弥补 <code>smtp</code> 协议的缺陷，被广泛应用在反垃圾邮件机制里面，如果你的邮件系统没有设置spf记录，别人可以冒充任何邮件服务器给你发送邮件（是的，你没听错，你收到的10000@qq.com邮件，很可能就是一封垃圾邮件，某司公司邮件就支持冒充，我可不是瞎说的）</p>
+<h1 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h1><p>spf 记录还是很重要的，专门用来弥补 <code>smtp</code> 协议的缺陷，被广泛应用在反垃圾邮件机制里面，如果你的邮件系统没有设置spf记录，别人可以冒充任何邮件服务器给你发送邮件（是的，你没听错，你收到的<a href="mailto:10000@qq.com" target="_blank" rel="noopener">10000@qq.com</a>邮件，很可能就是一封垃圾邮件，某司公司邮件就支持冒充，我可不是瞎说的）</p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>我们对域名做邮件服务解析需要添加三种记录</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">一是mail指向记录（可以是A记录也可以是 `CNAME` 记录），不管几级域名，它都是mail开头</span><br><span class="line">二是绑定 `mx` 记录</span><br><span class="line">三是添加 `txt` 记录，其中 `txt` 记录主要是为了添加 `spf` 记录，用来弥补smtp协议的缺陷，反垃圾邮件。</span><br></pre></td></tr></table></figure>
 <h1 id="相关参考"><a href="#相关参考" class="headerlink" title="相关参考"></a>相关参考</h1><p>SPF记录，更多信息参见：<a href="http://www.renfei.org/blog/introduction-to-spf.html" target="_blank" rel="noopener">spf记录详解</a></p>

@@ -436,7 +436,10 @@
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>我们平时在使用pip的时候经常安装一些库非常慢，加速pip下载的方式有两种，一种是启用代理加速，另一种是修改pip源，启用代理方式很简单，这里主要说第二种方法</p>
 <h1 id="pip-安装"><a href="#pip-安装" class="headerlink" title="pip 安装"></a>pip 安装</h1><h2 id="安装-setuptools"><a href="#安装-setuptools" class="headerlink" title="安装 setuptools"></a>安装 setuptools</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">step1: wget http://peak.telecommunity.com/dist/ez_setup.py</span><br><span class="line">step2: python ez_setup.py</span><br></pre></td></tr></table></figure>
-<h2 id="安装pip"><a href="#安装pip" class="headerlink" title="安装pip"></a>安装pip</h2><p><code>wget https://files.pythonhosted.org/packages/ae/e8/2340d46ecadb1692a1e455f13f75e596d4eab3d11a57446f08259dee8f02/pip-10.0.1.tar.gz</code><br><code>tar -zxvf pip-10.0.1.tar.gz</code><br><code>cd pip-10.0.1</code><br><code>python setup.py install</code></p>
+<h2 id="安装pip"><a href="#安装pip" class="headerlink" title="安装pip"></a>安装pip</h2><p><code>wget https://files.pythonhosted.org/packages/ae/e8/2340d46ecadb1692a1e455f13f75e596d4eab3d11a57446f08259dee8f02/pip-10.0.1.tar.gz</code>
+<code>tar -zxvf pip-10.0.1.tar.gz</code>
+<code>cd pip-10.0.1</code>
+<code>python setup.py install</code></p>
 <h2 id="更新pip"><a href="#更新pip" class="headerlink" title="更新pip"></a>更新pip</h2><p><code>pip install --upgrade pip</code></p>
 <h2 id="更新setuptools"><a href="#更新setuptools" class="headerlink" title="更新setuptools"></a>更新setuptools</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install --upgrade setuptools</span><br><span class="line">pip install --upgrade distribute</span><br></pre></td></tr></table></figure>
 <h2 id="pip，setuptools套件式安装"><a href="#pip，setuptools套件式安装" class="headerlink" title="pip，setuptools套件式安装"></a>pip，setuptools套件式安装</h2><p>这里我提供一个更简单的办法来安装pip和setuptools</p>

@@ -87,13 +87,13 @@
 
 
 
-<meta name="description" content="前言 本文主要收集总结解释了什么是阻塞式IO，非阻塞式IO，以及IO多路复用模型，信号驱动型IO，异步IO。需要先弄清楚这些基本概念，建议先预习一下:  应用程序，用户空间，内核，内核空间进程切换进程的阻塞文件描述符缓存 I/O 基本概念应用程序，用户空间，内核，内核空间现在操作系统都是采用虚拟存储器(内存)，对32位操作系统而言，它的寻址空间（虚拟存储空间也叫内存大小）为4G（2的32次方）。">
+<meta name="description" content="前言 本文主要收集总结解释了什么是阻塞式IO，非阻塞式IO，以及IO多路复用模型，信号驱动型IO，异步IO。需要先弄清楚这些基本概念，建议先预习一下:  应用程序，用户空间，内核，内核空间 进程切换 进程的阻塞 文件描述符 缓存 I/O 基本概念应用程序，用户空间，内核，内核空间现在操作系统都是采用虚拟存储器(内存)，对32位操作系统而言，它的寻址空间（虚拟存储空间也叫内存大小）为4G（2的32次">
 <meta name="keywords" content="Linux,io模式,文件描述符,进程切换,操作系统">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux io模式解读">
 <meta property="og:url" content="https://hubinwei.me/2017/03/15/Linux-io模式解读/index.html">
 <meta property="og:site_name" content="Bill Hu&#39;s Note Book">
-<meta property="og:description" content="前言 本文主要收集总结解释了什么是阻塞式IO，非阻塞式IO，以及IO多路复用模型，信号驱动型IO，异步IO。需要先弄清楚这些基本概念，建议先预习一下:  应用程序，用户空间，内核，内核空间进程切换进程的阻塞文件描述符缓存 I/O 基本概念应用程序，用户空间，内核，内核空间现在操作系统都是采用虚拟存储器(内存)，对32位操作系统而言，它的寻址空间（虚拟存储空间也叫内存大小）为4G（2的32次方）。">
+<meta property="og:description" content="前言 本文主要收集总结解释了什么是阻塞式IO，非阻塞式IO，以及IO多路复用模型，信号驱动型IO，异步IO。需要先弄清楚这些基本概念，建议先预习一下:  应用程序，用户空间，内核，内核空间 进程切换 进程的阻塞 文件描述符 缓存 I/O 基本概念应用程序，用户空间，内核，内核空间现在操作系统都是采用虚拟存储器(内存)，对32位操作系统而言，它的寻址空间（虚拟存储空间也叫内存大小）为4G（2的32次">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017060843813zusai.png">
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017060854699feizuse.png">
@@ -104,7 +104,7 @@
 <meta property="og:updated_time" content="2017-08-08T01:52:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux io模式解读">
-<meta name="twitter:description" content="前言 本文主要收集总结解释了什么是阻塞式IO，非阻塞式IO，以及IO多路复用模型，信号驱动型IO，异步IO。需要先弄清楚这些基本概念，建议先预习一下:  应用程序，用户空间，内核，内核空间进程切换进程的阻塞文件描述符缓存 I/O 基本概念应用程序，用户空间，内核，内核空间现在操作系统都是采用虚拟存储器(内存)，对32位操作系统而言，它的寻址空间（虚拟存储空间也叫内存大小）为4G（2的32次方）。">
+<meta name="twitter:description" content="前言 本文主要收集总结解释了什么是阻塞式IO，非阻塞式IO，以及IO多路复用模型，信号驱动型IO，异步IO。需要先弄清楚这些基本概念，建议先预习一下:  应用程序，用户空间，内核，内核空间 进程切换 进程的阻塞 文件描述符 缓存 I/O 基本概念应用程序，用户空间，内核，内核空间现在操作系统都是采用虚拟存储器(内存)，对32位操作系统而言，它的寻址空间（虚拟存储空间也叫内存大小）为4G（2的32次">
 <meta name="twitter:image" content="http://odh5je629.bkt.clouddn.com/2017060843813zusai.png">
 
 
@@ -433,7 +433,11 @@
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
 <p>本文主要收集总结解释了什么是阻塞式IO，非阻塞式IO，以及IO多路复用模型，信号驱动型IO，异步IO。需要先弄清楚这些基本概念，建议先预习一下:</p>
 </blockquote>
-<p><strong>应用程序，用户空间，内核，内核空间</strong><br><strong>进程切换</strong><br><strong>进程的阻塞</strong><br><strong>文件描述符</strong><br><strong>缓存 I/O</strong></p>
+<p><strong>应用程序，用户空间，内核，内核空间</strong>
+<strong>进程切换</strong>
+<strong>进程的阻塞</strong>
+<strong>文件描述符</strong>
+<strong>缓存 I/O</strong></p>
 <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="应用程序，用户空间，内核，内核空间"><a href="#应用程序，用户空间，内核，内核空间" class="headerlink" title="应用程序，用户空间，内核，内核空间"></a>应用程序，用户空间，内核，内核空间</h2><p>现在操作系统都是采用虚拟存储器(内存)，对32位操作系统而言，它的寻址空间（虚拟存储空间也叫内存大小）为4G（2的32次方）。</p>
 <p>为了保证用户进程不能直接操作内核（kernel），保证内核的安全，操心系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用（普通应用程序），称为用户空间。</p>
 <p>操作系统的核心是内核，独立于普通的应用程序，他可以：</p>
@@ -453,7 +457,8 @@
 <h2 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h2><p>文件描述符（File descriptor）是计算机科学中的一个术语，是一个用于表述指向文件的引用的抽象化概念。</p>
 <p>文件描述符在形式上是一个非负整数。实际上，它是一个索引值，指向内核为每一个进程所维护的该进程打开文件的记录表。当程序打开一个现有文件或者创建一个新文件时，内核向进程返回一个文件描述符。在程序设计中，一些涉及底层的程序编写往往会围绕着文件描述符展开。但是文件描述符这一概念往往只适用于UNIX、Linux这样的操作系统。</p>
 <h2 id="缓存I-O"><a href="#缓存I-O" class="headerlink" title="缓存I/O"></a>缓存I/O</h2><p>缓存 I/O 又被称作标准 I/O，大多数文件系统的默认 I/O 操作都是缓存 I/O。在 Linux 的缓存 I/O 机制中，操作系统会将 I/O 的数据缓存在文件系统的页缓存（ page cache ）中，也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓冲区拷贝到应用程序的地址空间。</p>
-<p>缓存 I/O 的缺点：<br>数据在传输过程中需要在应用程序地址空间和内核进行多次数据拷贝操作，这些数据拷贝操作所带来的 CPU 以及内存开销是非常大的。</p>
+<p>缓存 I/O 的缺点：
+数据在传输过程中需要在应用程序地址空间和内核进行多次数据拷贝操作，这些数据拷贝操作所带来的 CPU 以及内存开销是非常大的。</p>
 <h1 id="io模型介绍"><a href="#io模型介绍" class="headerlink" title="io模型介绍"></a>io模型介绍</h1><p>io模型的归类我们把它分为两种，<code>阻塞式io与非阻塞式io</code> 与 <code>同步io与异步io</code>，接下来我们会根据两点</p>
 <p>1.内核准备数据过程中用户进程是否会被阻塞（阻塞非阻塞）</p>
 <p>2.内核数据准备好后从内核态拷贝到用户态过程中用户进程是否会被阻塞（同步或异步）</p>

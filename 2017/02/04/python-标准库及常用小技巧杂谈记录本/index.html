@@ -453,7 +453,8 @@
 <p>time.clock() 这个需要注意，在不同的系统上含义不同。在UNIX系统上，它返回的是“进程时间”，它是用秒表示的浮点数（时间戳）。而在WINDOWS中，第一次调用，返回的是进程运行的实际时间。而第二次之后的调用是自第一次调用以后到现在的运行时间。（实际上是以WIN32上QueryPerformanceCounter()为基础，它比毫秒表示更为精确）</p>
 <p>time.time() 返回当前时间的时间戳</p>
 <p>time.localtime([secs])：将一个时间戳转换为当前时区的struct_time</p>
-<p>time.localtime(1304575584.1361799)<br>time.struct_time(tm_year=2011, tm_mon=5, tm_mday=5, tm_hour=14, tm_min=6, tm_sec=24, tm_wday=3, tm_yday=125, tm_isdst=0)</p>
+<p>time.localtime(1304575584.1361799)
+time.struct_time(tm_year=2011, tm_mon=5, tm_mday=5, tm_hour=14, tm_min=6, tm_sec=24, tm_wday=3, tm_yday=125, tm_isdst=0)</p>
 <h1 id="datetime-模块"><a href="#datetime-模块" class="headerlink" title="datetime 模块"></a>datetime 模块</h1><p>在 python 中，我们经常需要用到时间比较，python 的 datetime 模块可以很方便帮我们解决问题</p>
 <p>t_1 = (datetime.datetime.now() + datetime.timedelta(seconds=10)).strftime(“%Y-%m-%d %H:%M:%S”)</p>
 <p>t_2 = datetime.datetime.now().strftime(“%Y-%m-%d %H:%M:%S”)</p>

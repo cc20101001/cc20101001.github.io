@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="go,docker,云平台,golang,k8s,消息队列,滚动更新,部署," />
+  <meta name="keywords" content="go,docker,云平台,k8s,golang,消息队列,滚动更新,部署," />
 
 
 
@@ -87,18 +87,18 @@
 
 
 
-<meta name="description" content="前言这是一篇关于 https 证书说明的文章，并结合 k8s 部署，详细介绍了证书原理和使用方法 ssl 证书相关名词说明根证书我们通常所说的 CA 证书，也是根证书，生成其他证书都依赖于根证书（多做了一次非对称数据加密） 证书命名证书文件命名非常不规范，大家太随意了，所以只根据文件名有时候根本无法区分到底谁是谁。我们可以根据文件里面的内容直接进行区分 ——-END CERTIFICATE——-">
-<meta name="keywords" content="go,docker,云平台,golang,k8s,消息队列,滚动更新,部署">
+<meta name="description" content="前言这是一篇关于 https 证书说明的文章，并结合 k8s 部署，详细介绍了证书原理和使用方法 ssl 证书相关名词说明根证书我们通常所说的 CA 证书，也是根证书，生成其他证书都依赖于根证书（多做了一次非对称数据加密） 证书命名证书文件命名非常不规范，大家太随意了，所以只根据文件名有时候根本无法区分到底谁是谁。我们可以根据文件里面的内容直接进行区分 —–END CERTIFICATE—– 证书">
+<meta name="keywords" content="go,docker,云平台,k8s,golang,消息队列,滚动更新,部署">
 <meta property="og:type" content="article">
 <meta property="og:title" content="架构之路-k8s https证书配置，授权，认证">
 <meta property="og:url" content="https://hubinwei.me/2018/07/10/架构之路-k8s https证书配置，授权，认证/index.html">
 <meta property="og:site_name" content="Bill Hu&#39;s Note Book">
-<meta property="og:description" content="前言这是一篇关于 https 证书说明的文章，并结合 k8s 部署，详细介绍了证书原理和使用方法 ssl 证书相关名词说明根证书我们通常所说的 CA 证书，也是根证书，生成其他证书都依赖于根证书（多做了一次非对称数据加密） 证书命名证书文件命名非常不规范，大家太随意了，所以只根据文件名有时候根本无法区分到底谁是谁。我们可以根据文件里面的内容直接进行区分 ——-END CERTIFICATE——-">
+<meta property="og:description" content="前言这是一篇关于 https 证书说明的文章，并结合 k8s 部署，详细介绍了证书原理和使用方法 ssl 证书相关名词说明根证书我们通常所说的 CA 证书，也是根证书，生成其他证书都依赖于根证书（多做了一次非对称数据加密） 证书命名证书文件命名非常不规范，大家太随意了，所以只根据文件名有时候根本无法区分到底谁是谁。我们可以根据文件里面的内容直接进行区分 —–END CERTIFICATE—– 证书">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2018-07-31T01:07:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="架构之路-k8s https证书配置，授权，认证">
-<meta name="twitter:description" content="前言这是一篇关于 https 证书说明的文章，并结合 k8s 部署，详细介绍了证书原理和使用方法 ssl 证书相关名词说明根证书我们通常所说的 CA 证书，也是根证书，生成其他证书都依赖于根证书（多做了一次非对称数据加密） 证书命名证书文件命名非常不规范，大家太随意了，所以只根据文件名有时候根本无法区分到底谁是谁。我们可以根据文件里面的内容直接进行区分 ——-END CERTIFICATE——-">
+<meta name="twitter:description" content="前言这是一篇关于 https 证书说明的文章，并结合 k8s 部署，详细介绍了证书原理和使用方法 ssl 证书相关名词说明根证书我们通常所说的 CA 证书，也是根证书，生成其他证书都依赖于根证书（多做了一次非对称数据加密） 证书命名证书文件命名非常不规范，大家太随意了，所以只根据文件名有时候根本无法区分到底谁是谁。我们可以根据文件里面的内容直接进行区分 —–END CERTIFICATE—– 证书">
 
 
 
@@ -437,9 +437,9 @@
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这是一篇关于 https 证书说明的文章，并结合 k8s 部署，详细介绍了证书原理和使用方法</p>
 <h1 id="ssl-证书相关名词说明"><a href="#ssl-证书相关名词说明" class="headerlink" title="ssl 证书相关名词说明"></a>ssl 证书相关名词说明</h1><h2 id="根证书"><a href="#根证书" class="headerlink" title="根证书"></a>根证书</h2><p>我们通常所说的 CA 证书，也是根证书，生成其他证书都依赖于根证书（多做了一次非对称数据加密）</p>
 <h2 id="证书命名"><a href="#证书命名" class="headerlink" title="证书命名"></a>证书命名</h2><p>证书文件命名非常不规范，大家太随意了，所以只根据文件名有时候根本无法区分到底谁是谁。我们可以根据文件里面的内容直接进行区分</p>
-<p>——-END CERTIFICATE——- 证书</p>
-<p>——-END RSA PRIVATE KEY——-   私钥</p>
-<p>——-END CERTIFICATE REQUEST——-   证书请求文件</p>
+<p>—–END CERTIFICATE—– 证书</p>
+<p>—–END RSA PRIVATE KEY—–   私钥</p>
+<p>—–END CERTIFICATE REQUEST—–   证书请求文件</p>
 <h2 id="私钥"><a href="#私钥" class="headerlink" title="私钥"></a>私钥</h2><p>私钥是最核心最关键的，也是隐私度最高的</p>
 <h2 id="证书请求文件"><a href="#证书请求文件" class="headerlink" title="证书请求文件"></a>证书请求文件</h2><p>证书请求文件分三份</p>
 <h2 id="公钥"><a href="#公钥" class="headerlink" title="公钥"></a>公钥</h2><p>包含证书中，随证书一起发送给客户端，服务端一般不需要单独生存</p>
@@ -522,9 +522,9 @@
           
             <a href="/tags/云平台/" rel="tag"># 云平台</a>
           
-            <a href="/tags/golang/" rel="tag"># golang</a>
-          
             <a href="/tags/k8s/" rel="tag"># k8s</a>
+          
+            <a href="/tags/golang/" rel="tag"># golang</a>
           
             <a href="/tags/消息队列/" rel="tag"># 消息队列</a>
           

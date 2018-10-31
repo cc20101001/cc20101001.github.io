@@ -447,7 +447,8 @@
 <p><img src="http://odh5je629.bkt.clouddn.com/2017032188864screenshot_23.png" alt="2017032188864screenshot_23.png"></p>
 <p><img src="http://odh5je629.bkt.clouddn.com/2017032190458screenshot_22.png" alt="2017032190458screenshot_22.png"></p>
 <p>其中：</p>
-<p>GOPATH: 日常开发的根目录<br>GOBIN: 是 GOPATH 下的 bin 目录，存放一些二进制文件</p>
+<p>GOPATH: 日常开发的根目录
+GOBIN: 是 GOPATH 下的 bin 目录，存放一些二进制文件</p>
 <p>且需要将 gobin 目录添加到 path 路径下，生成的可执行文件就可以直接运行了</p>
 <p>source 命令重新加载环境变量，使它生效 <code>source ~/.bash_profile</code></p>
 <p>最后 <code>go env</code> 命令就可以看到配置的路径了</p>
@@ -461,7 +462,8 @@
 <p>你也可以自己使用命令行来运行这个程序 <code>go run xxx.go</code>，他会自己编译并运行</p>
 <h1 id="Go程序交叉编译"><a href="#Go程序交叉编译" class="headerlink" title="Go程序交叉编译"></a>Go程序交叉编译</h1><p>我们编写的这个 helloworld 程序现在只能在 macos 环境下运行，如果我们希望它运行在 Linux ，需要进行交叉编译，golang 的交叉编译非常简单，命令格式: <code>CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build gofile.go</code></p>
 <p>其中</p>
-<p>GOOS：目标可执行程序运行操作系统，支持 darwin（macos），freebsd，linux，windows<br>GOARCH：目标可执行程序操作系统构架，包括 386，amd64，arm</p>
+<p>GOOS：目标可执行程序运行操作系统，支持 darwin（macos），freebsd，linux，windows
+GOARCH：目标可执行程序操作系统构架，包括 386，amd64，arm</p>
 <h2 id="Macos-编译-Windows-和-Linux-程序"><a href="#Macos-编译-Windows-和-Linux-程序" class="headerlink" title="Macos 编译 Windows 和 Linux 程序"></a>Macos 编译 Windows 和 Linux 程序</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build gofile.go</span><br><span class="line">CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build gofile.go</span><br></pre></td></tr></table></figure>
 <h2 id="Linux-编译-Macos-和-Windows-程序"><a href="#Linux-编译-Macos-和-Windows-程序" class="headerlink" title="Linux 编译 Macos 和 Windows 程序"></a>Linux 编译 Macos 和 Windows 程序</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build gofile.go</span><br><span class="line">CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build gofile.go</span><br></pre></td></tr></table></figure>
 <h2 id="Windows-编译-Macos-和-Linux-程序"><a href="#Windows-编译-Macos-和-Linux-程序" class="headerlink" title="Windows 编译 Macos 和 Linux 程序"></a>Windows 编译 Macos 和 Linux 程序</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build gofile.go</span><br><span class="line">CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build gofile.go</span><br></pre></td></tr></table></figure>

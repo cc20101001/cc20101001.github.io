@@ -445,8 +445,7 @@
 <p>这篇文章主要通过介绍 python 中 socket 库的用法来了解socket</p>
 <h1 id="套接字说明"><a href="#套接字说明" class="headerlink" title="套接字说明"></a>套接字说明</h1><p>套接字可以简单的理解为传输层的编程接口，提供给应用层来直接调用网络层的TCP和UDP协议等服务，甚至自定义网络层协议。通过socket可以区分不同的应用程序和传输层的对应关系，实现网络通信的数据传输和并发服务</p>
 <h2 id="套接字格式"><a href="#套接字格式" class="headerlink" title="套接字格式"></a>套接字格式</h2><p>socket(family, type[,protocal]) 使用给定的套接族，套接字类型，协议编号（默认为0）来创建套接字</p>
-<h2 id="套接族类型"><a href="#套接族类型" class="headerlink" title="套接族类型"></a>套接族类型</h2><div class="table-container">
-<table>
+<h2 id="套接族类型"><a href="#套接族类型" class="headerlink" title="套接族类型"></a>套接族类型</h2><table>
 <thead>
 <tr>
 <th>套接族类型</th>
@@ -472,9 +471,7 @@
 </tr>
 </tbody>
 </table>
-</div>
-<h2 id="套接字类型"><a href="#套接字类型" class="headerlink" title="套接字类型"></a>套接字类型</h2><div class="table-container">
-<table>
+<h2 id="套接字类型"><a href="#套接字类型" class="headerlink" title="套接字类型"></a>套接字类型</h2><table>
 <thead>
 <tr>
 <th>套接字类型</th>
@@ -505,7 +502,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <h2 id="socket通信图详解"><a href="#socket通信图详解" class="headerlink" title="socket通信图详解"></a>socket通信图详解</h2><p><img src="http://odh5je629.bkt.clouddn.com/2017072599171taojiezi.png" alt="2017072599171taojiezi.png"></p>
 <p>最核心的还是定义socket对象，绑定socket端口，设置监听队列大小，建立服务端盒客户端的socket连接，接受传输数据，返回响应数据</p>
 <h2 id="socket服务端tcp编程"><a href="#socket服务端tcp编程" class="headerlink" title="socket服务端tcp编程"></a>socket服务端tcp编程</h2><p>这里我想使用 socket.SOCK_STREAM + socket.AF_UNIX 的通信方式</p>
@@ -516,13 +512,29 @@
 <h1 id="socket-客户端udp编程"><a href="#socket-客户端udp编程" class="headerlink" title="socket 客户端udp编程"></a>socket 客户端udp编程</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line">__author__ = <span class="string">"hbw"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line">IP = <span class="string">"127.0.0.1"</span></span><br><span class="line">PORT = <span class="number">6002</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 系统调用1 获取客户端句柄</span></span><br><span class="line">udp_socket_client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 系统调用2 发送数据</span></span><br><span class="line">udp_socket_client.sendto(<span class="string">"123123"</span>, (IP, PORT))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 系统调用3 关闭句柄</span></span><br><span class="line">udp_socket_client.close()</span><br></pre></td></tr></table></figure>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>socket非常重要，是传输层的编程接口，是现在许多web系统的基石</p>
 <p>tcp 发起端涉及到的四个系统调用</p>
-<p>1.拿到句柄<br>2.建立连接<br>3.发送通知<br>4.拿到会话句柄<br>5.收到消息<br>6.发送消息<br>7.关闭句柄</p>
+<p>1.拿到句柄
+2.建立连接
+3.发送通知
+4.拿到会话句柄
+5.收到消息
+6.发送消息
+7.关闭句柄</p>
 <p>tcp 接收端涉及到的系统调用</p>
-<p>1.拿到句柄<br>2.绑定端口<br>3.监听队列<br>4.接收消息<br>5.关闭句柄</p>
+<p>1.拿到句柄
+2.绑定端口
+3.监听队列
+4.接收消息
+5.关闭句柄</p>
 <p>udp 发起端涉及到的系统调用</p>
-<p>1.获取句柄<br>2.绑定端口<br>3.端口监听<br>4.获取数据<br>5.关闭句柄</p>
+<p>1.获取句柄
+2.绑定端口
+3.端口监听
+4.获取数据
+5.关闭句柄</p>
 <p>udp 接收端涉及到的系统调用</p>
-<p>1.获取客户端句柄<br>2.发送数据<br>3.关闭句柄</p>
+<p>1.获取客户端句柄
+2.发送数据
+3.关闭句柄</p>
 <h2 id="socket-断开连接场景"><a href="#socket-断开连接场景" class="headerlink" title="socket 断开连接场景"></a>socket 断开连接场景</h2><p>通常我们在服务端用 recv 数据的长度来判定客户端数据是否发送完毕，如果发送完了就 close 掉服务端的socket，但如果是客户端先 close，服务端就会出现 CLOSE_WAIT 状态，没法 close</p>
 <p>tcp服务端需要获取两次句柄，但是udp只需要获取一次句柄，因为tcp服务端还需要支持给客户端发送消息，所以需要单独获取句柄</p>
 <h1 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h1><p>1.tcp 和 udp 的区别</p>
@@ -604,8 +616,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/12/28/TCP，UDP协议学习/" rel="next" title="TCP，UDP协议学习">
-                <i class="fa fa-chevron-left"></i> TCP，UDP协议学习
+              <a href="/2016/12/28/python框架学习之requests/" rel="next" title="python框架学习之requests">
+                <i class="fa fa-chevron-left"></i> python框架学习之requests
               </a>
             
           </div>
@@ -614,8 +626,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/01/09/python便携式web服务器/" rel="prev" title="python便携式web服务器">
-                python便携式web服务器 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/12/28/TCP，UDP协议学习/" rel="prev" title="TCP，UDP协议学习">
+                TCP，UDP协议学习 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

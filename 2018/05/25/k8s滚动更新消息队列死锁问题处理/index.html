@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="go,docker,云平台,golang,k8s,消息队列,滚动更新,部署," />
+  <meta name="keywords" content="go,docker,云平台,k8s,golang,消息队列,滚动更新,部署," />
 
 
 
@@ -88,7 +88,7 @@
 
 
 <meta name="description" content="前言公司系统上 k8s 后需要滚动升级，但此时我们消息队列中的任务还在跑，并且依赖于 redis 锁，强制更新系统后 redis 锁并未释放，导致系统更新完后任务阻塞，咋整？ 好消息是 k8s 在滚动更新的时候会给 pod 中容器发送一个 SIGTERM 信号，我们可以通过捕获该信号后释放 redis 锁，接下来我们将演示如何在容器中捕获这一信号，并进行实测 解决思路1.搭建一个本地的 k8s 集">
-<meta name="keywords" content="go,docker,云平台,golang,k8s,消息队列,滚动更新,部署">
+<meta name="keywords" content="go,docker,云平台,k8s,golang,消息队列,滚动更新,部署">
 <meta property="og:type" content="article">
 <meta property="og:title" content="k8s滚动更新消息队列死锁问题处理">
 <meta property="og:url" content="https://hubinwei.me/2018/05/25/k8s滚动更新消息队列死锁问题处理/index.html">
@@ -517,9 +517,9 @@
           
             <a href="/tags/云平台/" rel="tag"># 云平台</a>
           
-            <a href="/tags/golang/" rel="tag"># golang</a>
-          
             <a href="/tags/k8s/" rel="tag"># k8s</a>
+          
+            <a href="/tags/golang/" rel="tag"># golang</a>
           
             <a href="/tags/消息队列/" rel="tag"># 消息队列</a>
           
