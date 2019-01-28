@@ -104,7 +104,7 @@
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017072823090screenshot_106.png">
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017072873238screenshot_107.png">
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/20170728492371228431-3c18c75153d70036.png">
-<meta property="og:updated_time" content="2018-07-27T00:45:55.000Z">
+<meta property="og:updated_time" content="2018-12-21T09:47:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TCP，UDP协议学习">
 <meta name="twitter:description" content="OSI七层模型要了解TCP，UDP协议，我们复习一下OSI的七层模型吧，OSI七层模型是万能的国际标准化组织(ISO)提出的一个试图使各种计算机在世界范围内互连的理想标准，但实际开发中，我们接触和了解最多的只有五层模型。具体分类如下表：    层数 七层模型 五层模型 四层模型 样例     7 应用层 应用层 应用层 http，smtp协议等   6 表示层   ssl/tls   5 会话层">
@@ -691,7 +691,7 @@
 <h2 id="UDP报文分析"><a href="#UDP报文分析" class="headerlink" title="UDP报文分析"></a>UDP报文分析</h2><p><img src="http://odh5je629.bkt.clouddn.com/20170728492371228431-3c18c75153d70036.png" alt="20170728492371228431-3c18c75153d70036.png"></p>
 <h1 id="实际应用场景"><a href="#实际应用场景" class="headerlink" title="实际应用场景"></a>实际应用场景</h1><h2 id="TCP应用场景"><a href="#TCP应用场景" class="headerlink" title="TCP应用场景"></a>TCP应用场景</h2><p>效率要求相对低，但对准确性要求相对高的场景。因为传输中需要对数据确认、重发、排序等操作，相比之下效率没有UDP高。举几个例子：文件传输（准确高要求高、但是速度可以相对慢）、接受邮件、远程登录。</p>
 <h2 id="UDP应用场景"><a href="#UDP应用场景" class="headerlink" title="UDP应用场景"></a>UDP应用场景</h2><p>效率要求相对高，对准确性要求相对低的场景。举几个例子：QQ聊天、在线视频、网络语音电话（即时通讯，速度要求高，但是出现偶尔断续不是太大问题，并且此处完全不可以使用重发机制）、广播通信（广播、多播）</p>
-<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>我通常是这么理解的 socket 是对 tcp/ip 协议的一层封装，ssl/tls 协议是安全传输层加密协议，是确保数据传输安全的</p>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>我通常是这么理解的 socket 是对 tcp/ip 协议的一层封装，ssl/tls 协议是安全传输层加密协议，是确保数据传输安全的，是对 socket 的加密处理，其实 ssl/tls 和 https 是没有强关联关系的，有一个东西叫 SSLSOCKET 可以了解一下</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://www.jianshu.com/p/0af43703f416" target="_blank" rel="noopener">http://www.jianshu.com/p/0af43703f416</a></p>
 
       
@@ -769,8 +769,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/12/28/python库分析之socket编程和系统调用/" rel="next" title="python库分析之socket编程和系统调用">
-                <i class="fa fa-chevron-left"></i> python库分析之socket编程和系统调用
+              <a href="/2016/12/28/python框架学习之requests/" rel="next" title="python框架学习之requests">
+                <i class="fa fa-chevron-left"></i> python框架学习之requests
               </a>
             
           </div>
@@ -779,8 +779,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/01/09/python便携式web服务器/" rel="prev" title="python便携式web服务器">
-                python便携式web服务器 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/12/28/python库分析之socket编程和系统调用/" rel="prev" title="python库分析之socket编程和系统调用">
+                python库分析之socket编程和系统调用 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -986,7 +986,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

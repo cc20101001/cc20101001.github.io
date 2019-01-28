@@ -87,22 +87,22 @@
 
 
 
-<meta name="description" content="前言OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版，本文对OAuth2.0的设计思想和运行流程，做一个简明通俗的解释，主要参考材料RFC 6749 应用场景实际系统集成过程中经常会涉及到和第三方应用做集成，于是涉及到一个验权的问题，比如知乎的网站需要访问微信的API服务器获取某个人的个人信息数据，那么问题来了，微信服务器如何给知乎网">
+<meta name="description" content="前言OAuth 是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是 2.0 版，本文对 OAuth2.0 的设计思想和运行流程，做一个简明通俗的解释，主要参考材料 RFC 6749 应用场景实际系统集成过程中经常会涉及到和第三方应用做集成，于是涉及到一个验权的问题，比如知乎的网站需要访问微信的API服务器获取某个人的个人信息数据，那么问题来了，微信服务器">
 <meta name="keywords" content="OAuth2.0,http授权,统一认证系统">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OAuth2.0学习笔记，实战分析">
 <meta property="og:url" content="https://hubinwei.me/2017/06/16/OAuth2-0学习笔记，实战分析/index.html">
 <meta property="og:site_name" content="Bill Hu&#39;s Note Book">
-<meta property="og:description" content="前言OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版，本文对OAuth2.0的设计思想和运行流程，做一个简明通俗的解释，主要参考材料RFC 6749 应用场景实际系统集成过程中经常会涉及到和第三方应用做集成，于是涉及到一个验权的问题，比如知乎的网站需要访问微信的API服务器获取某个人的个人信息数据，那么问题来了，微信服务器如何给知乎网">
+<meta property="og:description" content="前言OAuth 是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是 2.0 版，本文对 OAuth2.0 的设计思想和运行流程，做一个简明通俗的解释，主要参考材料 RFC 6749 应用场景实际系统集成过程中经常会涉及到和第三方应用做集成，于是涉及到一个验权的问题，比如知乎的网站需要访问微信的API服务器获取某个人的个人信息数据，那么问题来了，微信服务器">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017061612861oauth.png">
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017061633317screenshot_70.png">
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017061620830screenshot_71.png">
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017061697212screenshot_69.png">
-<meta property="og:updated_time" content="2018-01-24T04:24:04.000Z">
+<meta property="og:updated_time" content="2019-01-07T11:52:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OAuth2.0学习笔记，实战分析">
-<meta name="twitter:description" content="前言OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版，本文对OAuth2.0的设计思想和运行流程，做一个简明通俗的解释，主要参考材料RFC 6749 应用场景实际系统集成过程中经常会涉及到和第三方应用做集成，于是涉及到一个验权的问题，比如知乎的网站需要访问微信的API服务器获取某个人的个人信息数据，那么问题来了，微信服务器如何给知乎网">
+<meta name="twitter:description" content="前言OAuth 是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是 2.0 版，本文对 OAuth2.0 的设计思想和运行流程，做一个简明通俗的解释，主要参考材料 RFC 6749 应用场景实际系统集成过程中经常会涉及到和第三方应用做集成，于是涉及到一个验权的问题，比如知乎的网站需要访问微信的API服务器获取某个人的个人信息数据，那么问题来了，微信服务器">
 <meta name="twitter:image" content="http://odh5je629.bkt.clouddn.com/2017061612861oauth.png">
 
 
@@ -428,7 +428,7 @@
       
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>OAuth是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是2.0版，本文对OAuth2.0的设计思想和运行流程，做一个简明通俗的解释，主要参考材料<a href="http://www.rfcreader.com/#rfc6749" target="_blank" rel="noopener">RFC 6749</a></p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>OAuth 是一个关于授权（authorization）的开放网络标准，在全世界得到广泛应用，目前的版本是 2.0 版，本文对 OAuth2.0 的设计思想和运行流程，做一个简明通俗的解释，主要参考材料 <a href="http://www.rfcreader.com/#rfc6749" target="_blank" rel="noopener">RFC 6749</a></p>
 <h1 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h1><p>实际系统集成过程中经常会涉及到和第三方应用做集成，于是涉及到一个验权的问题，比如知乎的网站需要访问微信的API服务器获取某个人的个人信息数据，那么问题来了，微信服务器如何给知乎网站授权呢？</p>
 <p>传统方案是用户将自己微信的用户名和密码告诉知乎网站，让知乎去登录微信服务器，这样非常麻烦，并且存在诸多问题，如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.知乎为了后续更多的业务，会保留微信的用户名和密码，这样存在安全隐患</span><br><span class="line">2.微信必须提供一个接口支持帐号密码方式的登录</span><br><span class="line">3.帐号密码方式登录，很难限权</span><br><span class="line">4.用户如果修改密码，需要同步修改知乎的密码</span><br></pre></td></tr></table></figure>
@@ -769,7 +769,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
