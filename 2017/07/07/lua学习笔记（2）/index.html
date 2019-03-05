@@ -87,19 +87,19 @@
 
 
 
-<meta name="description" content="前言这个系列主要介绍lua语言学习，某些地方也会和同为脚本语言的python进行对比，第二节里主要介绍 1.lua的模块，包的概念 2.加载机制，调用C模块 3.元表 4.协程 lua模块与包lua的模块是由变量、函数等已知元素组成的table，因此创建一个模块很简单，就是创建一个table，然后把需要导出的常量、函数放入其中，样例如下： 12345678910111213141516171819">
+<meta name="description" content="前言这个系列主要介绍lua语言学习，某些地方也会和同为脚本语言的python进行对比，第二节里主要介绍 1.lua的模块，包的概念 2.加载机制，调用C模块 3.元表 4.协程 lua 模块与包lua的模块是由变量、函数等已知元素组成的table，因此创建一个模块很简单，就是创建一个table，然后把需要导出的常量、函数放入其中，样例如下： 1234567891011121314151617181">
 <meta name="keywords" content="lua,lua学习笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="lua学习笔记（2）">
 <meta property="og:url" content="https://hubinwei.me/2017/07/07/lua学习笔记（2）/index.html">
 <meta property="og:site_name" content="Bill Hu&#39;s Note Book">
-<meta property="og:description" content="前言这个系列主要介绍lua语言学习，某些地方也会和同为脚本语言的python进行对比，第二节里主要介绍 1.lua的模块，包的概念 2.加载机制，调用C模块 3.元表 4.协程 lua模块与包lua的模块是由变量、函数等已知元素组成的table，因此创建一个模块很简单，就是创建一个table，然后把需要导出的常量、函数放入其中，样例如下： 12345678910111213141516171819">
+<meta property="og:description" content="前言这个系列主要介绍lua语言学习，某些地方也会和同为脚本语言的python进行对比，第二节里主要介绍 1.lua的模块，包的概念 2.加载机制，调用C模块 3.元表 4.协程 lua 模块与包lua的模块是由变量、函数等已知元素组成的table，因此创建一个模块很简单，就是创建一个table，然后把需要导出的常量、函数放入其中，样例如下： 1234567891011121314151617181">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://odh5je629.bkt.clouddn.com/2017070789278coroutine.png">
-<meta property="og:updated_time" content="2018-08-07T04:29:44.000Z">
+<meta property="og:updated_time" content="2019-02-16T09:35:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="lua学习笔记（2）">
-<meta name="twitter:description" content="前言这个系列主要介绍lua语言学习，某些地方也会和同为脚本语言的python进行对比，第二节里主要介绍 1.lua的模块，包的概念 2.加载机制，调用C模块 3.元表 4.协程 lua模块与包lua的模块是由变量、函数等已知元素组成的table，因此创建一个模块很简单，就是创建一个table，然后把需要导出的常量、函数放入其中，样例如下： 12345678910111213141516171819">
+<meta name="twitter:description" content="前言这个系列主要介绍lua语言学习，某些地方也会和同为脚本语言的python进行对比，第二节里主要介绍 1.lua的模块，包的概念 2.加载机制，调用C模块 3.元表 4.协程 lua 模块与包lua的模块是由变量、函数等已知元素组成的table，因此创建一个模块很简单，就是创建一个table，然后把需要导出的常量、函数放入其中，样例如下： 1234567891011121314151617181">
 <meta name="twitter:image" content="http://odh5je629.bkt.clouddn.com/2017070789278coroutine.png">
 
 
@@ -441,7 +441,7 @@
 <p>2.加载机制，调用C模块</p>
 <p>3.元表</p>
 <p>4.协程</p>
-<h1 id="lua模块与包"><a href="#lua模块与包" class="headerlink" title="lua模块与包"></a>lua模块与包</h1><p>lua的模块是由变量、函数等已知元素组成的table，因此创建一个模块很简单，就是创建一个table，然后把需要导出的常量、函数放入其中，样例如下：</p>
+<h1 id="lua-模块与包"><a href="#lua-模块与包" class="headerlink" title="lua 模块与包"></a>lua 模块与包</h1><p>lua的模块是由变量、函数等已知元素组成的table，因此创建一个模块很简单，就是创建一个table，然后把需要导出的常量、函数放入其中，样例如下：</p>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">#myModule.lua</span><br><span class="line">myModule1 = &#123;&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">-- 定义一个常量</span></span><br><span class="line">myModule1.constant = <span class="string">"这是一个常量"</span></span><br><span class="line">myModule1.age = <span class="number">19</span></span><br><span class="line"><span class="comment">-- 定义一个函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myModule1.func1</span><span class="params">()</span></span></span><br><span class="line">    <span class="built_in">io</span>.<span class="built_in">write</span>(<span class="string">"这是一个公有函数！\n"</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">local</span> <span class="function"><span class="keyword">function</span> <span class="title">func2</span><span class="params">()</span></span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">"这是一个私有函数！"</span>)</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myModule1.func3</span><span class="params">()</span></span></span><br><span class="line">    func2()</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">return</span> myModule1</span><br></pre></td></tr></table></figure>
 <figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#<span class="number">4.</span>lua</span><br><span class="line"><span class="keyword">local</span> testMoudle =  <span class="built_in">require</span>(<span class="string">"my1_Module"</span>)</span><br><span class="line"><span class="built_in">print</span>(testModule)</span><br><span class="line"><span class="built_in">print</span>(testMoudle.age)</span><br><span class="line">testMoudle.func3()</span><br><span class="line"><span class="comment">-- testMoudle.fun_1();</span></span><br></pre></td></tr></table></figure>
 <p>可以看出</p>
@@ -529,7 +529,7 @@
 </tbody>
 </table>
 <h1 id="call元方法"><a href="#call元方法" class="headerlink" title="__call元方法"></a>__call元方法</h1><p><strong>call元方法和</strong>newindex，__index是同种性质的属性，但他是在lua调用一个值时调用</p>
-<h1 id="tostring元方法"><a href="#tostring元方法" class="headerlink" title="__tostring元方法"></a>__tostring元方法</h1><p>__tostring元方法用于修改表的输出行为</p>
+<h1 id="tostring-元方法"><a href="#tostring-元方法" class="headerlink" title="__tostring 元方法"></a>__tostring 元方法</h1><p>__tostring元方法用于修改表的输出行为</p>
 <h1 id="lua中的协程（coroutine）"><a href="#lua中的协程（coroutine）" class="headerlink" title="lua中的协程（coroutine）"></a>lua中的协程（coroutine）</h1><p>lua协程和线程比较类似，它拥有独立的堆栈，独立的局部变量，独立的指令指针，同时又与其它协程共享全局变量和其它大部分东西</p>
 <p>协程和线程的主要区别在于，一个具有多个线程的程序可以同时运行几个线程，而协程是一个程序里面可能有多个协程，他们都在一个线程里面，需要彼此协同工作，在指定的时刻只有一个协程在运行，并且这个协程只要在明确的被要求挂起的时候才会被挂起，让其它协程继续运行。也有点类似同步的多线程，等待同一个线程锁</p>
 <p>lua协程的基本语法</p>
@@ -734,7 +734,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">163</span>
+              <span class="site-state-item-count">167</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -751,7 +751,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">262</span>
+                <span class="site-state-item-count">266</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -841,7 +841,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lua模块与包"><span class="nav-number">2.</span> <span class="nav-text">lua模块与包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#加载机制"><span class="nav-number">2.1.</span> <span class="nav-text">加载机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加载调用C库"><span class="nav-number">2.2.</span> <span class="nav-text">加载调用C库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#元表（metatable）"><span class="nav-number">3.</span> <span class="nav-text">元表（metatable）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置-index"><span class="nav-number">3.1.</span> <span class="nav-text">设置__index</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置-newindex"><span class="nav-number">3.2.</span> <span class="nav-text">设置__newindex</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为表添加操作符"><span class="nav-number">4.</span> <span class="nav-text">为表添加操作符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#call元方法"><span class="nav-number">5.</span> <span class="nav-text">__call元方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tostring元方法"><span class="nav-number">6.</span> <span class="nav-text">__tostring元方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lua中的协程（coroutine）"><span class="nav-number">7.</span> <span class="nav-text">lua中的协程（coroutine）</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lua-模块与包"><span class="nav-number">2.</span> <span class="nav-text">lua 模块与包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#加载机制"><span class="nav-number">2.1.</span> <span class="nav-text">加载机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加载调用C库"><span class="nav-number">2.2.</span> <span class="nav-text">加载调用C库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#元表（metatable）"><span class="nav-number">3.</span> <span class="nav-text">元表（metatable）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置-index"><span class="nav-number">3.1.</span> <span class="nav-text">设置__index</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置-newindex"><span class="nav-number">3.2.</span> <span class="nav-text">设置__newindex</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#为表添加操作符"><span class="nav-number">4.</span> <span class="nav-text">为表添加操作符</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#call元方法"><span class="nav-number">5.</span> <span class="nav-text">__call元方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tostring-元方法"><span class="nav-number">6.</span> <span class="nav-text">__tostring 元方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lua中的协程（coroutine）"><span class="nav-number">7.</span> <span class="nav-text">lua中的协程（coroutine）</span></a></li></ol></div>
             
           </div>
         </section>

@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="python,python解释,解释器," />
+  <meta name="keywords" content="python,解释器,python解释," />
 
 
 
@@ -88,14 +88,14 @@
 
 
 <meta name="description" content="前言民间流传一种说法，python 是一门解释性语言，其实是错的，因为他有 pyc 文件类似 java 的 .class 文件，同时有编译性语言和解释性语言的特点 解释型语言的定义： 1解释型语言的程序不需要在运行前编译，在运行程序的时候才翻译，专门的解释器负责在每个语句执行的时候解释程序代码。这样解释型语言每执行一次就要翻译一次，效率比较低 python 虽然不是出生名门，但本质和 java，c">
-<meta name="keywords" content="python,python解释,解释器">
+<meta name="keywords" content="python,解释器,python解释">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python编译文件相关">
 <meta property="og:url" content="https://hubinwei.me/2017/06/06/python编译文件相关/index.html">
 <meta property="og:site_name" content="Bill Hu&#39;s Note Book">
 <meta property="og:description" content="前言民间流传一种说法，python 是一门解释性语言，其实是错的，因为他有 pyc 文件类似 java 的 .class 文件，同时有编译性语言和解释性语言的特点 解释型语言的定义： 1解释型语言的程序不需要在运行前编译，在运行程序的时候才翻译，专门的解释器负责在每个语句执行的时候解释程序代码。这样解释型语言每执行一次就要翻译一次，效率比较低 python 虽然不是出生名门，但本质和 java，c">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-09T08:32:20.000Z">
+<meta property="og:updated_time" content="2019-02-20T02:49:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python编译文件相关">
 <meta name="twitter:description" content="前言民间流传一种说法，python 是一门解释性语言，其实是错的，因为他有 pyc 文件类似 java 的 .class 文件，同时有编译性语言和解释性语言的特点 解释型语言的定义： 1解释型语言的程序不需要在运行前编译，在运行程序的时候才翻译，专门的解释器负责在每个语句执行的时候解释程序代码。这样解释型语言每执行一次就要翻译一次，效率比较低 python 虽然不是出生名门，但本质和 java，c">
@@ -444,7 +444,7 @@
 <p>3.什么是 pyc，pyo 文件</p>
 <p>4.python 虚拟机简介</p>
 <p>5.python 解释器列表</p>
-<h1 id="什么是字节码"><a href="#什么是字节码" class="headerlink" title="什么是字节码"></a>什么是字节码</h1><p>python运行时候，python 解释器会先把 .py 源代码编译为字节码，然后再把字节码丢到 python 虚拟机里面翻译为机器能识别的机器码并运行。在这里 python 的字节码由多个 PyCodeObject （字节码对象）组成，对应的是一段 c 代码（实际上也是一段指令集）</p>
+<h1 id="什么是字节码"><a href="#什么是字节码" class="headerlink" title="什么是字节码"></a>什么是字节码</h1><p>python运行时候，python 解释器会先把 .py 源代码编译为字节码，然后再把字节码丢到 python 虚拟机里面翻译为机器能识别的机器码并运行。在这里 python 的字节码由多个 PyCodeObject （字节码对象）生成，对应的是一段 c 代码（实际上也是一段指令集）</p>
 <h1 id="什么是PyCodeObject"><a href="#什么是PyCodeObject" class="headerlink" title="什么是PyCodeObject"></a>什么是PyCodeObject</h1><p>python 编译器在对 .py 源代码编译过程中，对代码块（code block）会编译为 PyCodeObject 对象，那在 python 里面哪些可以算作一个代码块呢？函数，类，模块，都可以当做一个代码块，当编译源文件的时候，这些代码块都会生成与之相对应的 PyCodeObject 对象，并存储在内存中</p>
 <h1 id="什么是pyc，pyo文件文件"><a href="#什么是pyc，pyo文件文件" class="headerlink" title="什么是pyc，pyo文件文件"></a>什么是pyc，pyo文件文件</h1><p><code>.pyc</code> 或者 <code>.pyo</code> 后缀文件就是字节码（由多个PyCodeObject组成）在磁盘上的表现形式（程序执行完后会存字节码在本地磁盘），方便下次运行直接加载PyCodeObject，免得重新编译</p>
 <p>需要 <code>.pyc</code> 文件有两个理由</p>
@@ -455,12 +455,12 @@
 <p>当然也可以用python程序里调用编译模块来编译，如下:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> py_compile </span><br><span class="line">py_compile.compile(<span class="string">'path'</span>) //path是包括.py文件名的路径，如果是个目录就解释该目录下所有文件</span><br></pre></td></tr></table></figure>
 <p>pyo是优化后的字节码文件 <code>python -O 源文件</code> 即可将源程序编译为pyo文件</p>
-<h1 id="python虚拟机简介"><a href="#python虚拟机简介" class="headerlink" title="python虚拟机简介"></a>python虚拟机简介</h1><p>python虚拟机主要作用就是翻译python编译器编译出来的字节码为机器能识别的机器码，然后供计算机运行，实际上。（实际上python里面的编译器和虚拟机是同一库文件）</p>
-<h1 id="python解释器列表"><a href="#python解释器列表" class="headerlink" title="python解释器列表"></a>python解释器列表</h1><p>由于整个Python语言从规范到解释器都是开源的，所以理论上，只要水平够高，任何人都可以编写Python编译器来执行Python代码（当然难度很大）。事实上，确实存在多种Python解释器，官方目前推荐的是CPYTHON</p>
-<h2 id="CPython"><a href="#CPython" class="headerlink" title="CPython"></a>CPython</h2><p>当我们从Python官方网站下载并安装好Python 2.7后，我们就直接获得了一个官方版本的解释器：CPython。这个解释器是用C语言开发的，所以叫CPython。在命令行下运行python就是启动CPython解释器</p>
-<p>CPython是使用最广的Python解释器。教程的所有代码也都在CPython下执行</p>
-<h2 id="IPython"><a href="#IPython" class="headerlink" title="IPython"></a>IPython</h2><p>IPython是基于CPython之上的一个交互式解释器，也就是说，IPython只是在交互方式上有所增强，但是执行Python代码的功能和CPython是完全一样的。好比很多国产浏览器虽然外观不同，但内核其实都是调用了IE</p>
-<p>CPython用&gt;&gt;&gt;作为提示符，而IPython用In [序号]:作为提示符</p>
+<h1 id="python虚拟机简介"><a href="#python虚拟机简介" class="headerlink" title="python虚拟机简介"></a>python虚拟机简介</h1><p>python虚拟机主要作用就是翻译 python 编译器编译出来的字节码为机器能识别的机器码，然后供计算机运行，实际上。（实际上python里面的编译器和虚拟机是同一库文件）</p>
+<h1 id="python解释器列表"><a href="#python解释器列表" class="headerlink" title="python解释器列表"></a>python解释器列表</h1><p>由于整个Python语言从规范到解释器都是开源的，所以理论上，只要水平够高，任何人都可以编写 Python编译器来执行 Python代码（当然难度很大）。事实上，确实存在多种 Python 解释器，官方目前推荐的是CPYTHON</p>
+<h2 id="CPython"><a href="#CPython" class="headerlink" title="CPython"></a>CPython</h2><p>当我们从 Python 官方网站下载并安装好 Python 2.7后，我们就直接获得了一个官方版本的解释器：CPython。这个解释器是用 C 语言开发的，所以叫 CPython。在命令行下运行 python 就是启动 CPython 解释器</p>
+<p>CPython 是使用最广的 Python 解释器。教程的所有代码也都在 CPython 下执行</p>
+<h2 id="IPython"><a href="#IPython" class="headerlink" title="IPython"></a>IPython</h2><p>IPython 是基于 CPython 之上的一个交互式解释器，也就是说，IPython 只是在交互方式上有所增强，但是执行 Python 代码的功能和 CPython 是一样的（些许差别，比如代码块定义就不同）。好比很多国产浏览器虽然外观不同，但内核其实都是调用了IE</p>
+<p>CPython 用&gt;&gt;&gt;作为提示符，而IPython用In [序号]:作为提示符</p>
 <h2 id="PyPy"><a href="#PyPy" class="headerlink" title="PyPy"></a>PyPy</h2><p>PyPy是另一个Python解释器，它的目标是执行速度。PyPy采用JIT技术，对Python代码进行动态编译（注意不是解释），所以可以显著提高Python代码的执行速度</p>
 <p>绝大部分Python代码都可以在PyPy下运行，但是PyPy和CPython有一些是不同的，这就导致相同的Python代码在两种解释器下执行可能会有不同的结果。如果你的代码要放到PyPy下执行，就需要了解PyPy和CPython的不同点</p>
 <h2 id="Jython"><a href="#Jython" class="headerlink" title="Jython"></a>Jython</h2><p>Jython是运行在Java平台上的Python解释器，可以直接把Python代码解释成Java字节码执行</p>
@@ -527,9 +527,9 @@
           
             <a href="/tags/python/" rel="tag"># python</a>
           
-            <a href="/tags/python解释/" rel="tag"># python解释</a>
-          
             <a href="/tags/解释器/" rel="tag"># 解释器</a>
+          
+            <a href="/tags/python解释/" rel="tag"># python解释</a>
           
         </div>
       
@@ -631,7 +631,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">163</span>
+              <span class="site-state-item-count">167</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -648,7 +648,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">262</span>
+                <span class="site-state-item-count">266</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

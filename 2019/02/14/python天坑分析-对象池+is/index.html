@@ -1,0 +1,956 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python 解释器,解释器,对象池," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前言这只是一篇技术研究性质的文章，想知道为什么 python 解释器输出结果和我的预期不一样。先贴一段简单代码，引出问题 1234567&amp;gt;&amp;gt;&amp;gt; a = 100&amp;gt;&amp;gt;&amp;gt; b = 100&amp;gt;&amp;gt;&amp;gt; a is b (True)&amp;gt;&amp;gt;&amp;gt; a = 257&amp;gt;&amp;gt;&amp;gt; b = 257&amp;gt;&amp;gt;&amp;gt; a is b (False">
+<meta name="keywords" content="python 解释器,解释器,对象池">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python天坑分析-对象池+is">
+<meta property="og:url" content="https://hubinwei.me/2019/02/14/python天坑分析-对象池+is/index.html">
+<meta property="og:site_name" content="Bill Hu&#39;s Note Book">
+<meta property="og:description" content="前言这只是一篇技术研究性质的文章，想知道为什么 python 解释器输出结果和我的预期不一样。先贴一段简单代码，引出问题 1234567&amp;gt;&amp;gt;&amp;gt; a = 100&amp;gt;&amp;gt;&amp;gt; b = 100&amp;gt;&amp;gt;&amp;gt; a is b (True)&amp;gt;&amp;gt;&amp;gt; a = 257&amp;gt;&amp;gt;&amp;gt; b = 257&amp;gt;&amp;gt;&amp;gt; a is b (False">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-25T08:52:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python天坑分析-对象池+is">
+<meta name="twitter:description" content="前言这只是一篇技术研究性质的文章，想知道为什么 python 解释器输出结果和我的预期不一样。先贴一段简单代码，引出问题 1234567&amp;gt;&amp;gt;&amp;gt; a = 100&amp;gt;&amp;gt;&amp;gt; b = 100&amp;gt;&amp;gt;&amp;gt; a is b (True)&amp;gt;&amp;gt;&amp;gt; a = 257&amp;gt;&amp;gt;&amp;gt; b = 257&amp;gt;&amp;gt;&amp;gt; a is b (False">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"right","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: 'X8UXWEF1OZ',
+      apiKey: '6ada974c4db4b944c60fca181e334b2b',
+      indexName: 'cc20101001',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键字","hits_empty":"没有找到和 ${query} 相关的结果","hits_stats":"${hits} 条相关记录，共耗时 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hubinwei.me/2019/02/14/python天坑分析-对象池+is/"/>
+
+
+
+
+
+  <title> python天坑分析-对象池+is | Bill Hu's Note Book </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Bill Hu's Note Book</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">学由心生，大道至简</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-projects">
+          <a href="/categories/开源项目" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github-alt"></i> <br />
+            
+            我的开源项目
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://hubinwei.me/2019/02/14/python天坑分析-对象池+is/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Bill Hu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/./uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Bill Hu's Note Book">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                python天坑分析-对象池+is
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-14T16:32:36+08:00">
+                2019-02-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/解释器相关/" itemprop="url" rel="index">
+                    <span itemprop="name">解释器相关</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/02/14/python天坑分析-对象池+is/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/02/14/python天坑分析-对象池+is/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这只是一篇技术研究性质的文章，想知道为什么 python 解释器输出结果和我的预期不一样。先贴一段简单代码，引出问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">100</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="number">100</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b (<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">257</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="number">257</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b (<span class="keyword">False</span>)</span><br></pre></td></tr></table></figure>
+<p>为什么会不一样？我尝试过做过一些反编译，从字节码层面去找到原因，无奈看不出任何区别，又参考过一些文章，写了一些测试样例，才找到原因，是 python 的对象池机制导致的</p>
+<h1 id="懒人版"><a href="#懒人版" class="headerlink" title="懒人版"></a>懒人版</h1><p>1、写代码的时候尽量不要用 is 关键词去做比较，除了 is None 场景和 bool 值判断场景</p>
+<p>2、在字节码层面查不出原因</p>
+<p>3、引起区别的原因在于解释器层面，需要去看 python 解释器源码，他里面引入了对象池机制来做部分数据的缓存，对象池触发机制有一定限制，导致结果和我们预期的有冲突</p>
+<p>4、python 交互模式，不同行处在不同的代码块，而在 ide 中，如 <code>sublime</code> 或者 <code>pycharm</code> 这样的两行代码并不会定义在不同代码块中，因此在 python 交互模式中更容易重现该问题</p>
+<h1 id="勤劳版"><a href="#勤劳版" class="headerlink" title="勤劳版"></a>勤劳版</h1><p>要想解决这个问题，最好提前了解一下 python 中 is 关键字，字节码，代码块，相关的概念</p>
+<h2 id="关于-is-关键字"><a href="#关于-is-关键字" class="headerlink" title="关于 is 关键字"></a>关于 is 关键字</h2><p>python 中的 is 关键词实际上比较的是他的内存地址是否一样，而 <code>==</code> 比较的是他两个值是否一样，内存地址我们可以用 python 内建函数 id() 获取</p>
+<h2 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h2><p><a href="https://docs.python.org/2.7/reference/executionmodel.html" target="_blank" rel="noopener">代码块官方解释</a></p>
+<blockquote>
+<p>A block is a piece of Python program text that is executed as a unit. The following are blocks: a module, a function body, and a class definition. Each command typed interactively is a block. A script file (a file given as standard input to the interpreter or specified on the interpreter command line the first argument) is a code block. A script command (a command specified on the interpreter command line with the ‘-c’ option) is a code block. The file read by the built-in function execfile() is a code block. The string argument passed to the built-in function eval() and to the exec statement is a code block. The expression read and evaluated by the built-in function input() is a code block.</p>
+</blockquote>
+<blockquote>
+<p>A code block is executed in an execution frame. A frame contains some administrative information (used for debugging) and determines where and how execution continues after the code block’s execution has completed.</p>
+</blockquote>
+<p>python 在执行前会把 <code>.py</code> 文件编译为字节码 <code>.pyc</code> 文件，然后再由 python 解释器去执行，实际上 <code>.pyc</code> 中存储的就是代码块的内容，也就是多个 <code>PyObject</code> 对象，对象池的触发机制我喜欢按照代码块去划分，同一个代码块中什么情况下触发，不同代码块中什么情况下触发</p>
+<h3 id="python-交互模式中的代码块"><a href="#python-交互模式中的代码块" class="headerlink" title="python 交互模式中的代码块"></a>python 交互模式中的代码块</h3><p>上面的代码当我们用 pycharm 或者 sumblime 执行是完全不同的结果，这里涉及到 python  交互模式和其他 ide 对代码块定义不一样，官方文档在代码块解释中有说明，这段代码解释了交互模式下，同一个代码块才可以触发大整数池机制</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">257</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="number">257</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">257</span>;b = <span class="number">257</span>;print(a <span class="keyword">is</span> b)</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<p>在 python 交互模式中按照上面方式分别定义，a，b，被定义到不同代码块，第二种定义方式 a，b 被定义到了同一个代码块，结果为啥不一样会在后面说明</p>
+<h3 id="ide-中的代码块"><a href="#ide-中的代码块" class="headerlink" title="ide 中的代码块"></a>ide 中的代码块</h3><p>后面为了方便 coding，样例代码多数都是在 ide 中编写，执行，这段代码展示了不同代码块情况下，触发了小整数对象池机制，不能触发大整数对象池机制</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">200</span></span><br><span class="line">print(a <span class="keyword">is</span> <span class="number">200</span>) <span class="comment"># True</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">myfunc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> a <span class="keyword">is</span> <span class="number">200</span></span><br><span class="line"></span><br><span class="line">print(myfunc()) <span class="comment"># True</span></span><br><span class="line"></span><br><span class="line">a = <span class="number">257</span></span><br><span class="line">print(a <span class="keyword">is</span> <span class="number">257</span>) <span class="comment"># True</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">myfunc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> a <span class="keyword">is</span> <span class="number">257</span></span><br><span class="line"></span><br><span class="line">print(myfunc()) <span class="comment"># False</span></span><br></pre></td></tr></table></figure>
+<p>官方文档中说明了，函数，类，模块，都可以当做一个代码块，因为定义的额变量 a 是在函数外部，因此就涉及到了多个代码块</p>
+<h3 id="对代码块中的内容好奇一下"><a href="#对代码块中的内容好奇一下" class="headerlink" title="对代码块中的内容好奇一下"></a>对代码块中的内容好奇一下</h3><p>一个代码块对应的其实就是一个 PyCodeObject 对象，这个对象有多个属性，如常量，变量，想看到代码块中的详细内容，有办法</p>
+<p><a href="https://github.com/yukunxie/PythonCodeObjectParser/blob/master/codeparser.py" target="_blank" rel="noopener">PyCodeObject 对象查看工具</a></p>
+<p>依赖这个工具，我们可以看到 PyCodeObject 对象的一些属性，有几个常量分别是哪些，索引号多少，有哪些变量，被引用的次数，这里展开说就扯远了，专门说字节码和 PyCodeObject 的联系，对解决了解当前问题没啥帮助</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">codeobject</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">co_consts</span> <span class="attr">count</span>=<span class="string">"6"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">idx</span>=<span class="string">"0"</span>&gt;</span>-1<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">idx</span>=<span class="string">"1"</span>&gt;</span>None<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">idx</span>=<span class="string">"2"</span>&gt;</span>256<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">idx</span>=<span class="string">"3"</span>&gt;</span>255<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">idx</span>=<span class="string">"4"</span>&gt;</span>1<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">idx</span>=<span class="string">"5"</span>&gt;</span>256<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">co_consts</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">co_names</span> <span class="attr">count</span>=<span class="string">"4"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span> <span class="attr">idx</span>=<span class="string">"0"</span>&gt;</span>sys<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span> <span class="attr">idx</span>=<span class="string">"1"</span>&gt;</span>dis<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span> <span class="attr">idx</span>=<span class="string">"2"</span>&gt;</span>y<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span> <span class="attr">idx</span>=<span class="string">"3"</span>&gt;</span>x<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">co_names</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">co_varnames</span> <span class="attr">count</span>=<span class="string">"0"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">co_filename</span>&gt;</span>memory_check.py<span class="tag">&lt;/<span class="name">co_filename</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">co_ename</span>&gt;</span>&amp;lt;module&amp;gt;<span class="tag">&lt;/<span class="name">co_ename</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">co_nlocals</span>&gt;</span>0<span class="tag">&lt;/<span class="name">co_nlocals</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">co_stacksize</span>&gt;</span>2<span class="tag">&lt;/<span class="name">co_stacksize</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">co_argcount</span>&gt;</span>0<span class="tag">&lt;/<span class="name">co_argcount</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">codeobject</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="误入歧途之字节码层面审查问题"><a href="#误入歧途之字节码层面审查问题" class="headerlink" title="误入歧途之字节码层面审查问题"></a>误入歧途之字节码层面审查问题</h2><p>最初我想用 python 自带的 dis 模块在字节码层面去看这个问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">200</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">myfunc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> a <span class="keyword">is</span> <span class="number">200</span></span><br><span class="line"></span><br><span class="line">print(myfunc())</span><br><span class="line">dis.dis(myfunc)</span><br><span class="line"></span><br><span class="line">a = <span class="number">257</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">myfunc</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> a <span class="keyword">is</span> <span class="number">257</span></span><br><span class="line"></span><br><span class="line">print(myfunc())</span><br><span class="line">dis.dis(myfunc)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"> <span class="number">19</span>           <span class="number">0</span> LOAD_GLOBAL              <span class="number">0</span> (a)</span><br><span class="line">              <span class="number">3</span> LOAD_CONST               <span class="number">1</span> (<span class="number">200</span>)</span><br><span class="line">              <span class="number">6</span> COMPARE_OP               <span class="number">8</span> (<span class="keyword">is</span>)</span><br><span class="line">              <span class="number">9</span> RETURN_VALUE        </span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"> <span class="number">26</span>           <span class="number">0</span> LOAD_GLOBAL              <span class="number">0</span> (a)</span><br><span class="line">              <span class="number">3</span> LOAD_CONST               <span class="number">1</span> (<span class="number">257</span>)</span><br><span class="line">              <span class="number">6</span> COMPARE_OP               <span class="number">8</span> (<span class="keyword">is</span>)</span><br><span class="line">              <span class="number">9</span> RETURN_VALUE</span><br></pre></td></tr></table></figure>
+<p>通过 dis 模块，同样的字节码，只有 LOAD_CONST 值不一样，但是他们的执行结果缺不一样，知道问题没那么简单了，需要从解释器层面去找问题了</p>
+<h2 id="对象池相关数据类型对象池触发机制"><a href="#对象池相关数据类型对象池触发机制" class="headerlink" title="对象池相关数据类型对象池触发机制"></a>对象池相关数据类型对象池触发机制</h2><p>翻了一下书，查了一些资料，为了节约系统资源，python 里面有一个对象池机制，方便一些变量值的重复使用，因为我本地 python 版本为 <code>2.7.10</code>，专门去下载了一个对应的源码包，方便分析问题，不同版本代码有些许区别</p>
+<h3 id="整数类型"><a href="#整数类型" class="headerlink" title="整数类型"></a>整数类型</h3><h4 id="小整数类型"><a href="#小整数类型" class="headerlink" title="小整数类型"></a>小整数类型</h4><p>小整数池在 python 语言运行初始化的时候会初始化，然后常驻内存 [-5, 257)</p>
+<p><a href="https://docs.python.org/2/c-api/int.html" target="_blank" rel="noopener">小整数类型官方说明文档</a></p>
+<p>官方文档描述如下:</p>
+<blockquote>
+<p>PyObject* PyInt_FromLong(long ival)
+Return value: New reference.
+Create a new integer object with a value of ival.</p>
+</blockquote>
+<blockquote>
+<p>The current implementation keeps an array of integer objects for all integers between -5 and 256, when you create an int in that range you actually just get back a reference to the existing object. </p>
+</blockquote>
+<blockquote>
+<p>So it should be possible to change the value of 1. </p>
+</blockquote>
+<blockquote>
+<p>I suspect the behaviour of Python in this case is undefined. :-)</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义了两个宏，实际上也就是两个临界值了</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> NSMALLPOSINTS</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NSMALLPOSINTS           257</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> NSMALLNEGINTS</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NSMALLNEGINTS           5</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//定义了一个长度为 NSMALLNEGINTS + NSMALLPOSINTS 的数组 small_ints</span></span><br><span class="line"><span class="keyword">static</span> PyLongObject small_ints[NSMALLNEGINTS + NSMALLPOSINTS];</span><br><span class="line"></span><br><span class="line">PyObject *</span><br><span class="line">PyInt_FromLong(<span class="keyword">long</span> ival)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">register</span> PyIntObject *v;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> NSMALLNEGINTS + NSMALLPOSINTS &gt; 0</span></span><br><span class="line">    <span class="keyword">if</span> (-NSMALLNEGINTS &lt;= ival &amp;&amp; ival &lt; NSMALLPOSINTS) &#123;</span><br><span class="line">        <span class="comment">//从数据中获取数据</span></span><br><span class="line">        v = small_ints[ival + NSMALLNEGINTS];</span><br><span class="line">        Py_INCREF(v);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> COUNT_ALLOCS</span></span><br><span class="line">        <span class="keyword">if</span> (ival &gt;= <span class="number">0</span>)</span><br><span class="line">            quick_int_allocs++;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            quick_neg_int_allocs++;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">        <span class="keyword">return</span> (PyObject *) v;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    <span class="keyword">if</span> (free_list == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((free_list = fill_free_list()) == <span class="literal">NULL</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* Inline PyObject_New */</span></span><br><span class="line">    v = free_list;</span><br><span class="line">    free_list = (PyIntObject *)Py_TYPE(v);</span><br><span class="line">    PyObject_INIT(v, &amp;PyInt_Type);</span><br><span class="line">    v-&gt;ob_ival = ival;</span><br><span class="line">    <span class="keyword">return</span> (PyObject *) v;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//如果大小是 [-5, 257) 之间直接去数组中获取已有对象</span></span><br></pre></td></tr></table></figure>
+<h5 id="小整数类型对象池的触发机制"><a href="#小整数类型对象池的触发机制" class="headerlink" title="小整数类型对象池的触发机制"></a>小整数类型对象池的触发机制</h5><p>1、同一个代码块，不同代码块，整数大小介于 [-5, 257) 才会触发</p>
+<h4 id="大整数类型"><a href="#大整数类型" class="headerlink" title="大整数类型"></a>大整数类型</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">y = <span class="number">256</span></span><br><span class="line">x = <span class="number">255</span> + <span class="number">1</span></span><br><span class="line">print(x <span class="keyword">is</span> y) <span class="comment"># True</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">y = <span class="number">257</span></span><br><span class="line">x = <span class="number">256</span> + <span class="number">1</span></span><br><span class="line">print(x <span class="keyword">is</span> y) <span class="comment"># False</span></span><br></pre></td></tr></table></figure>
+<h5 id="大整数类型对象池的触发机制"><a href="#大整数类型对象池的触发机制" class="headerlink" title="大整数类型对象池的触发机制"></a>大整数类型对象池的触发机制</h5><p>1、同一个代码块中，不涉及到运算，才触发</p>
+<h3 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">"abc"</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="string">"abc"</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">"hello world"</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="string">"hello world"</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'test'</span> * <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="string">'test'</span> * <span class="number">5</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">True</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'test'</span> * <span class="number">6</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="string">'test'</span> * <span class="number">6</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<p>乘数 &gt;=2 时：</p>
+<h5 id="字符串类型对象池的触发机制"><a href="#字符串类型对象池的触发机制" class="headerlink" title="字符串类型对象池的触发机制"></a>字符串类型对象池的触发机制</h5><p>1、不同代码块中要触发字符串类型对象池机制，不能含有空格等特殊字符串（特殊字符串只有下划线）</p>
+<p>2、同一个代码块中都会触发</p>
+<p>3、字符串 + * 运算符 数字等于 1 时，触发</p>
+<p>4、字符串 + * 运算符 数字大于 1 时，包含数字，字幕，下划线，且总长度小于等于 20 才触发</p>
+<p>这里实际上总结的并不详细，我只是随便举了几个例子，也没必要去纠结总结所有情况，了解一下就好</p>
+<h1 id="其他相关"><a href="#其他相关" class="headerlink" title="其他相关"></a>其他相关</h1><h2 id="手工编译-python"><a href="#手工编译-python" class="headerlink" title="手工编译 python"></a>手工编译 python</h2><p>甚至可以在 python 源码中加上一些 print 函数，然后编译，再运行，可以更直观的看到效果</p>
+<h2 id="手工触发对象池机制"><a href="#手工触发对象池机制" class="headerlink" title="手工触发对象池机制"></a>手工触发对象池机制</h2><p>在 python3 中引入了 intern 模块，可以手工触发对象池机制，让某些字符串常驻内存，看起来只对字符串适用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> sys <span class="keyword">import</span> intern</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">"hello world"</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="string">"hello world"</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">False</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = intern(<span class="string">"hello world"</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = intern(<span class="string">"hello world"</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a <span class="keyword">is</span> b</span><br><span class="line"><span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>1、对象池触发机制过于复杂，我不想去挑战记住那么多规则，所以舍弃使用 is，只有 bool，None 的情况下试用 is 来做判断</p>
+<p>2、针对网上的一些说法进行了汇总，一些不正确、很片面的说法进行了更正，部分核心说明都在官网或者源码处找到了对应出处</p>
+<p>3、尝试从字节码层面去查看问题，虽然失败了，但过程还是蛮有趣</p>
+
+      
+    </div>
+
+    <div class="page-footer">
+      
+        <div style="text-align:center;color: #ccc;font-size:14px;">------ 本文结束 ------</div>
+        <br/>
+        <div class="post-copyright">
+           <br>
+           <p><span style="font-weight:blod">版权声明:</span><a href="/">本文来自 Bill Hu's Note Book ，未经允许，禁止转载，如有问题，请提交评论，谢谢。</a></p>
+           <p><span>文章标题:</span><a href="/2019/02/14/python天坑分析-对象池+is/">python天坑分析-对象池+is</a></p>
+           <p><span>文章作者:</span><a href="/" title="访问 Bill Hu's Note Book">Bill Hu</a></p>
+           <p><span>原始链接:</span><a href="/2019/02/14/python天坑分析-对象池+is/" title="python天坑分析-对象池+is">https://hubinwei.me/2019/02/14/python天坑分析-对象池+is/</a></p>
+           <img src="https://hubinwei.me/uploads/20170801.png" ><br/>
+        </div>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div><br>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/uploads/wechat-reward-image.jpg" alt="Bill Hu WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/uploads/alipay-reward-image.jpg" alt="Bill Hu Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python-解释器/" rel="tag"># python 解释器</a>
+          
+            <a href="/tags/解释器/" rel="tag"># 解释器</a>
+          
+            <a href="/tags/对象池/" rel="tag"># 对象池</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/11/web服务器路由方法初初探/" rel="next" title="web 服务器路由初探">
+                <i class="fa fa-chevron-left"></i> web 服务器路由初探
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/18/python反编译初探/" rel="prev" title="python反编译初探">
+                python反编译初探 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/./uploads/avatar.jpg"
+               alt="Bill Hu" />
+          <p class="site-author-name" itemprop="name">Bill Hu</p>
+           
+              <p class="site-description motion-element" itemprop="description">学由心生，大道至简</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">167</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">266</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/cc20101001" target="_blank" title="github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/1772548870/" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/BillHu_me/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.openstack.cn/" title="openstack中国" target="_blank">openstack中国</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://studygolang.com/" title="golang中文社区" target="_blank">golang中文社区</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://golang.org/" title="golang官网" target="_blank">golang官网</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://news.ycombinator.com/" title="hacknews" target="_blank">hacknews</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#懒人版"><span class="nav-number">2.</span> <span class="nav-text">懒人版</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#勤劳版"><span class="nav-number">3.</span> <span class="nav-text">勤劳版</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于-is-关键字"><span class="nav-number">3.1.</span> <span class="nav-text">关于 is 关键字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码块"><span class="nav-number">3.2.</span> <span class="nav-text">代码块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#python-交互模式中的代码块"><span class="nav-number">3.2.1.</span> <span class="nav-text">python 交互模式中的代码块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ide-中的代码块"><span class="nav-number">3.2.2.</span> <span class="nav-text">ide 中的代码块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对代码块中的内容好奇一下"><span class="nav-number">3.2.3.</span> <span class="nav-text">对代码块中的内容好奇一下</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#误入歧途之字节码层面审查问题"><span class="nav-number">3.3.</span> <span class="nav-text">误入歧途之字节码层面审查问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对象池相关数据类型对象池触发机制"><span class="nav-number">3.4.</span> <span class="nav-text">对象池相关数据类型对象池触发机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#整数类型"><span class="nav-number">3.4.1.</span> <span class="nav-text">整数类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#小整数类型"><span class="nav-number">3.4.1.1.</span> <span class="nav-text">小整数类型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#小整数类型对象池的触发机制"><span class="nav-number">3.4.1.1.1.</span> <span class="nav-text">小整数类型对象池的触发机制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#大整数类型"><span class="nav-number">3.4.1.2.</span> <span class="nav-text">大整数类型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#大整数类型对象池的触发机制"><span class="nav-number">3.4.1.2.1.</span> <span class="nav-text">大整数类型对象池的触发机制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串类型"><span class="nav-number">3.4.2.</span> <span class="nav-text">字符串类型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#字符串类型对象池的触发机制"><span class="nav-number">3.4.2.0.1.</span> <span class="nav-text">字符串类型对象池的触发机制</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他相关"><span class="nav-number">4.</span> <span class="nav-text">其他相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#手工编译-python"><span class="nav-number">4.1.</span> <span class="nav-text">手工编译 python</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手工触发对象池机制"><span class="nav-number">4.2.</span> <span class="nav-text">手工触发对象池机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <!-- <span class="author" itemprop="copyrightHolder">Bill Hu
+    <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1260188874'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/stat.php%3Fid%3D1260188874%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+  </span> -->
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+    <script type="text/javascript">
+      var disqus_shortname = 'hubinwei';
+      var disqus_identifier = '2019/02/14/python天坑分析-对象池+is/';
+
+      var disqus_title = "python天坑分析-对象池+is";
+
+
+      function run_disqus_script(disqus_script) {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      }
+
+      run_disqus_script('count.js');
+
+      
+        var disqus_config = function () {
+            this.page.url = disqus_url;
+            this.page.identifier = disqus_identifier;
+            this.page.title = disqus_title;
+        };
+        run_disqus_script('embed.js');
+      
+
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.0"></script>
+
+
+
+  
+  
+</body>
+</html>
