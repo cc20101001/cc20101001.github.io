@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="Bill Hu&#39;s Note Book">
 <meta property="og:description" content="前言最近公司的系统上了 docker，以后怕是各种应用都会走容器化，这里收集整理了一些 docker 常用命令集，方便日后回顾查看 查看 docker 容器，版本号信息docker info docker version docker 启动容器命令之-run启动命令 options 详情如下 12345678910111213141516171819202122232425262728293031">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-07-05T01:20:18.000Z">
+<meta property="og:updated_time" content="2019-08-27T08:12:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker常用命令集">
 <meta name="twitter:description" content="前言最近公司的系统上了 docker，以后怕是各种应用都会走容器化，这里收集整理了一些 docker 常用命令集，方便日后回顾查看 查看 docker 容器，版本号信息docker info docker version docker 启动容器命令之-run启动命令 options 详情如下 12345678910111213141516171819202122232425262728293031">
@@ -474,7 +474,7 @@
 <h1 id="docker-启动容器命令之-build"><a href="#docker-启动容器命令之-build" class="headerlink" title="docker 启动容器命令之-build"></a>docker 启动容器命令之-build</h1><p>详细请看 Dockerfile 镜像构建</p>
 <h1 id="docker-登陆镜像库"><a href="#docker-登陆镜像库" class="headerlink" title="docker 登陆镜像库"></a>docker 登陆镜像库</h1><p>docker login -u test -p test xxx.dockhub.com</p>
 <h1 id="docker-for-mac-的一些吐槽"><a href="#docker-for-mac-的一些吐槽" class="headerlink" title="docker for mac 的一些吐槽"></a>docker for mac 的一些吐槽</h1><p>docker for mac 虽然方便了 macos 用户使用 docker，但还是不够完美</p>
-<p>1.docker 底层的一些东西，如镜像，容器，分层等信息，都放到了虚拟机中，查看起来不方便，还需要连接到 HyperKit <code>screen ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty</code></p>
+<p>1.docker 底层的一些东西，如镜像，容器，分层等信息，都放到了虚拟机中，查看起来不方便，还需要连接到 HyperKit <code>screen ~/Library**/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/tty</code></p>
 <p>ubuntu 容器数据放在了 /var/lib/docker 目录</p>
 <p>2.你自己制作了一个 docker 容器，里面有 print 输出函数，在 macos 环境里面的显示有点问题（连接到 HyperKit 中也没法显示），也可能是我环境问题</p>
 <h1 id="docker-ps"><a href="#docker-ps" class="headerlink" title="docker ps"></a>docker ps</h1><p>docker ps 列出了所有运行态容器，隐藏了非运行态容器，如果想查看所有容器，需要用 <code>docker ps -a</code> 指令</p>
@@ -648,7 +648,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">167</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -656,7 +656,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -665,7 +665,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">266</span>
+                <span class="site-state-item-count">275</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

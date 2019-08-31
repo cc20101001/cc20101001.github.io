@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="python,代码之美,编码,解码," />
+  <meta name="keywords" content="python,编码,解码,代码之美," />
 
 
 
@@ -87,18 +87,18 @@
 
 
 
-<meta name="description" content="前言 python2的编码解码问题是python程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助  简介要弄清楚python2.x编码解码问题，核心需要弄清楚五个概念: 1.什么是编码 2.系统编码 3.python内部编码 4.文件编码 5.python内部转码机制 什么是编码大家约定一套规则，解决如何用字节来表示字符的问题，这就是编码。最早的规则是 ASCII码">
-<meta name="keywords" content="python,代码之美,编码,解码">
+<meta name="description" content="前言 python2 的编码解码问题是 python 程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助  简介要弄清楚 python2.x 编码解码问题，核心需要弄清楚五个概念: 1.什么是编码 2.系统编码 3.python 解释器编码 4.文件编码 5.python 内部转码机制 6.python 中的编码检测方法 什么是编码大家约定一套规则，解决如何用字节来表">
+<meta name="keywords" content="python,编码,解码,代码之美">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python2.x 编码，解码实战解说">
 <meta property="og:url" content="https://hubinwei.me/2017/01/12/python2.x-编码，解码实战解说/index.html">
 <meta property="og:site_name" content="Bill Hu&#39;s Note Book">
-<meta property="og:description" content="前言 python2的编码解码问题是python程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助  简介要弄清楚python2.x编码解码问题，核心需要弄清楚五个概念: 1.什么是编码 2.系统编码 3.python内部编码 4.文件编码 5.python内部转码机制 什么是编码大家约定一套规则，解决如何用字节来表示字符的问题，这就是编码。最早的规则是 ASCII码">
+<meta property="og:description" content="前言 python2 的编码解码问题是 python 程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助  简介要弄清楚 python2.x 编码解码问题，核心需要弄清楚五个概念: 1.什么是编码 2.系统编码 3.python 解释器编码 4.文件编码 5.python 内部转码机制 6.python 中的编码检测方法 什么是编码大家约定一套规则，解决如何用字节来表">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-29T03:59:58.000Z">
+<meta property="og:updated_time" content="2019-07-12T08:27:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python2.x 编码，解码实战解说">
-<meta name="twitter:description" content="前言 python2的编码解码问题是python程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助  简介要弄清楚python2.x编码解码问题，核心需要弄清楚五个概念: 1.什么是编码 2.系统编码 3.python内部编码 4.文件编码 5.python内部转码机制 什么是编码大家约定一套规则，解决如何用字节来表示字符的问题，这就是编码。最早的规则是 ASCII码">
+<meta name="twitter:description" content="前言 python2 的编码解码问题是 python 程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助  简介要弄清楚 python2.x 编码解码问题，核心需要弄清楚五个概念: 1.什么是编码 2.系统编码 3.python 解释器编码 4.文件编码 5.python 内部转码机制 6.python 中的编码检测方法 什么是编码大家约定一套规则，解决如何用字节来表">
 
 
 
@@ -435,48 +435,51 @@
 
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
-<p>python2的编码解码问题是python程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助</p>
+<p>python2 的编码解码问题是 python 程序员一道无法抹灭的痛，今天我将从实战为主的角度帮大家撸一撸，希望对大家有点帮助</p>
 </blockquote>
-<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>要弄清楚python2.x编码解码问题，核心需要弄清楚五个概念:</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>要弄清楚 python2.x 编码解码问题，核心需要弄清楚五个概念:</p>
 <p>1.什么是编码</p>
 <p>2.系统编码</p>
-<p>3.python内部编码</p>
+<p>3.python 解释器编码</p>
 <p>4.文件编码</p>
-<p>5.python内部转码机制</p>
-<h1 id="什么是编码"><a href="#什么是编码" class="headerlink" title="什么是编码"></a>什么是编码</h1><p>大家约定一套规则，解决如何用字节来表示字符的问题，这就是编码。最早的规则是 ASCII码，ASCII码有7位码和8位码两种形式，分别可以表示128和256种字符，在python里面正好也有两种数据结构和字节，字符相对应，分别是str和u”213123”(字符的编码有许多种)。</p>
-<h1 id="系统编码"><a href="#系统编码" class="headerlink" title="系统编码"></a>系统编码</h1><p>在windows里面默认编码是gbk，在linux里面默认编码是utf-8，你也可以用命令 <code>locale</code> 来查看系统默认的一些编码。我们python里面里面的字符串如果想要在操作系统的终端输出显示正确的话需要提前转换为操作系统相对应的编码，他才会显示为可读的字符串（有汉字时）。</p>
-<h1 id="python解释器编码"><a href="#python解释器编码" class="headerlink" title="python解释器编码"></a>python解释器编码</h1><p>python解释器默认编码方式是ascii，我们可以用sys模块的 <code>getdefaultencoding()</code> 方法来获取</p>
+<p>5.python 内部转码机制</p>
+<p>6.python 中的编码检测方法</p>
+<h1 id="什么是编码"><a href="#什么是编码" class="headerlink" title="什么是编码"></a>什么是编码</h1><p>大家约定一套规则，解决如何用字节来表示字符的问题，这就是编码。最早的规范是 ASCII 码，ASCII 码有7位码和8位码两种形式，分别可以表示 128 和 256 种字符，因为只能满足当时英文世界的需要，后面又有了其他各种编码，如 utf-8，unicode，gbk 等</p>
+<h1 id="系统编码"><a href="#系统编码" class="headerlink" title="系统编码"></a>系统编码</h1><p>在 windows 里面默认编码是 gbk，在 linux 里面默认编码是 utf-8，你也可以用命令 <code>locale</code> 来查看系统默认的一些编码。我们 python 里面里面的字符串如果想要在操作系统的终端输出显示正确的话需要提前转换为操作系统相对应的编码，他才会显示为可读的字符串（有汉字时才这样，英文和数字默认 ASCII 编码和其他编码一般都支持，所以什么编码都可以正常显示），unicode 除外，他可以自动转换为系统当前控制台编码然后输出</p>
+<h1 id="python-解释器编码"><a href="#python-解释器编码" class="headerlink" title="python 解释器编码"></a>python 解释器编码</h1><h2 id="解释器默认编码"><a href="#解释器默认编码" class="headerlink" title="解释器默认编码"></a>解释器默认编码</h2><p>python 解释器默认编码方式是 ASCII 编码，我们可以用 sys 模块的 <code>getdefaultencoding()</code> 方法来获取</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">print</span> sys.getdefaultencoding()</span><br></pre></td></tr></table></figure>
 <p>输出结果: </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ascii</span><br><span class="line">[Finished in 0.0s]</span><br></pre></td></tr></table></figure>
-<p>修改python解释器编码方式(默认是ascii)，注意python2.7里面需要reload <code>sys</code> 模块</p>
+<h2 id="修改-python-解释器默认编码方式"><a href="#修改-python-解释器默认编码方式" class="headerlink" title="修改 python 解释器默认编码方式"></a>修改 python 解释器默认编码方式</h2><p>python3 不适用，默认都是 unicode 编码，注意 python2.7 里面需要 reload <code>sys</code> 模块，修改默认编码里面用到了 <code>sys.setdefaultencoding(name)</code> 函数，函数说明的官网链接 <code>https://docs.python.org/2/library/sys.html#sys.setdefaultencoding</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sys.setdefaultencoding(name)</span><br><span class="line">Set the current default string encoding used by the Unicode implementation. If name does not match any available encoding, LookupError is raised. This function is only intended to be used by the site module implementation and, where needed, by sitecustomize. Once used by the site module, it is removed from the sys module’s namespace.</span><br><span class="line"></span><br><span class="line">New in version 2.0.</span><br></pre></td></tr></table></figure>
+<p>样例，设置 python 解释器编码方式为 utf-8</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">reload(sys)</span><br><span class="line">sys.setdefaultencoding(<span class="string">'utf-8'</span>)</span><br><span class="line"><span class="keyword">print</span> sys.getdefaultencoding()</span><br></pre></td></tr></table></figure>
-<p>python2.x转码是用unicode做为中间编码，我们通常在定义一个python字符串的时候，如:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line">a = <span class="string">"123"</span></span><br><span class="line">b = a.decode(<span class="string">"utf-8"</span>)</span><br><span class="line"><span class="keyword">print</span> b, type(b)</span><br></pre></td></tr></table></figure>
-<p>输出结果如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">123 &lt;type &apos;unicode&apos;&gt;</span><br><span class="line">[Finished in 0.2s]</span><br></pre></td></tr></table></figure>
-<p>说明decode实际上是把utf-8编码的字符串，解码，然后转换为unicdoe编码</p>
-<p>关于python的指定编码，我们可以给特定的字符串指定编码，如果你不指定，他会用python2.x环境的默认编码 <code>ascii</code></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="string">u"haha"</span></span><br></pre></td></tr></table></figure>
-<p>实际上是在指定该字节的编码方式为unicode编码，如果不这样处理，那么python的解码器遇到的时候会用ascii编码来处理该字符串</p>
-<p>为了在python源文件中添加汉字（如汉字注释，汉字字符串变量），我们需要在文件头引入 <code># coding=utf-8</code>，他会把ascii不支持的字符串保存为 <code>utf-8</code> 编码的字符串，如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> chardet</span><br><span class="line">a = <span class="string">"123"</span></span><br><span class="line"></span><br><span class="line">b = <span class="string">"水电费"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> chardet.detect(a)</span><br><span class="line"><span class="keyword">print</span> chardet.detect(b)</span><br></pre></td></tr></table></figure>
-<p>输出结果如下，加入头部引入之后，a依然是 <code>ascii</code> 编码，而b却是 <code>utf-8</code> 编码，是不是很奇怪？自己查一查 <code>123</code> 的 ascii 编码和 <code>123</code> 的 utf-8 编码有啥区别？</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&apos;confidence&apos;: 1.0, &apos;encoding&apos;: &apos;ascii&apos;&#125;</span><br><span class="line">&#123;&apos;confidence&apos;: 0.87625, &apos;encoding&apos;: &apos;utf-8&apos;&#125;</span><br><span class="line">[Finished in 0.8s]</span><br></pre></td></tr></table></figure>
 <h1 id="文件编码"><a href="#文件编码" class="headerlink" title="文件编码"></a>文件编码</h1><p>文件编码是文件的编码保存方式，在 python 中也可以获得操作系统的文件编码，其中 mac 环境是 <code>utf-8</code> 而 windows环境是 <code>gbk</code></p>
 <p>如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">sys.getfilesystemencoding()</span><br></pre></td></tr></table></figure>
 <p>输出结果如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">utf-8</span><br><span class="line">[Finished in 0.0s]</span><br></pre></td></tr></table></figure>
-<h1 id="python内部转码机制"><a href="#python内部转码机制" class="headerlink" title="python内部转码机制"></a>python内部转码机制</h1><p>1.python 内部的转码解码实际上是用 unicode 来当作中间编码方式</p>
+<h1 id="python-内部转码机制"><a href="#python-内部转码机制" class="headerlink" title="python 内部转码机制"></a>python 内部转码机制</h1><p>python 内部的转码解码实际上是用 unicode 来当作中间编码方式</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line">a = <span class="string">"测试编码"</span></span><br><span class="line"><span class="keyword">print</span> a</span><br><span class="line"><span class="keyword">print</span> type(a)</span><br><span class="line"></span><br><span class="line">b = a.decode(<span class="string">"utf-8"</span>)</span><br><span class="line"><span class="keyword">print</span> b</span><br><span class="line"><span class="keyword">print</span> type(b)</span><br><span class="line"></span><br><span class="line">c = b.encode(<span class="string">"gbk"</span>)</span><br><span class="line"><span class="keyword">print</span> c</span><br><span class="line"><span class="keyword">print</span> type(c)</span><br></pre></td></tr></table></figure>
 <p>输出结果如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">测试编码</span><br><span class="line">&lt;type &apos;str&apos;&gt;</span><br><span class="line">测试编码</span><br><span class="line">&lt;type &apos;unicode&apos;&gt;</span><br><span class="line">���Ա���</span><br><span class="line">&lt;type &apos;str&apos;&gt;</span><br></pre></td></tr></table></figure>
-<p>因为我的ide（这里为什么说的是ide编码呢，说起来就又加了一个概念，你可以理解为用你linux系统的终端控制台来运行这个程序，效果是一样的）默认编码用的是utf-8，所以gbk编码的显示出来就是乱码</p>
-<p>2.python里面还有一个自动解码的功能，如果字符串的编码方式为unicode，当print到控制台（终端）的时候，他会自动编码为操作系统对对应的系统编码，如 <code>windows</code> 里面是 <code>gbk</code> ，而linux里面是 <code>utf-8</code>，如上的测试例子里面，b就是unicode编码的字符串，他输出到控制台的时候实际上是被python先做编码检测，如果为unicode就会encode为操作系统对应的编码然后输出（我这里是macos，所以他会被转码为utf-8）</p>
-<h1 id="python的编码检测方法"><a href="#python的编码检测方法" class="headerlink" title="python的编码检测方法"></a>python的编码检测方法</h1><p>这里列出了我经常用来检测python编码的几种办法</p>
-<h2 id="利用控制台输出"><a href="#利用控制台输出" class="headerlink" title="利用控制台输出"></a>利用控制台输出</h2><p>如果你不确定你的字符串是用什么来编码的，你可以用ide来调试，常用函数，type，instances，encode，decode，方便你定为他是什么编码</p>
-<h2 id="使用python编码检测工具"><a href="#使用python编码检测工具" class="headerlink" title="使用python编码检测工具"></a>使用python编码检测工具</h2><p>如果你觉得上面测试办法很麻烦，你可以用 <code>chardet</code> python的编码检测包来做编码检测，非常好用，栗子如下:</p>
+<p>因为我的 ide（这里为什么说的是ide编码呢，说起来就又加了一个概念，你可以理解为用你linux 系统的终端控制台来运行这个程序，效果是一样的）默认控制台输出编码用的是utf-8，所以 gbk 编码的显示出来就是乱码</p>
+<p>2.python里面还有一个自动解码的功能，如果字符串的编码方式为 unicode，当print到控制台（终端）的时候，他会自动编码为操作系统对对应的系统编码，如 <code>windows</code> 里面是 <code>gbk</code> ，而linux里面是 <code>utf-8</code>，如上的测试例子里面，b 就是unicode编码的字符串，他输出到控制台的时候实际上是被 python 先做编码检测，如果为 unicode 就会 encode 为操作系统控制台对应的输出编码然后输出（我这里是 macos，所以他会被转码为 utf-8）</p>
+<h2 id="python2-x-中间编码和转码"><a href="#python2-x-中间编码和转码" class="headerlink" title="python2.x 中间编码和转码"></a>python2.x 中间编码和转码</h2><p>python2.x 转码是用 unicode 做为中间编码，我们通常在定义一个 python 字符串的时候，如:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line">a = <span class="string">"123"</span></span><br><span class="line">b = a.decode(<span class="string">"utf-8"</span>)</span><br><span class="line"><span class="keyword">print</span> b, type(b)</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">123 &lt;type &apos;unicode&apos;&gt;</span><br><span class="line">[Finished in 0.2s]</span><br></pre></td></tr></table></figure>
+<p>说明 decode 实际上是把 utf-8 编码的字符串，解码，然后转换为 unicode 编码</p>
+<p>关于 python 文件的指定编码，我们可以给特定的字符串指定编码，如果你不指定，他会用python2.x 解释器的默认编码 <code>ascii</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="string">u"haha"</span></span><br></pre></td></tr></table></figure>
+<p>实际上是在指定该字符串的编码方式为 unicode 编码，如果不这样处理，那么python的解码器遇到的时候会用 ascii 编码来处理该字符串</p>
+<p>为了在 python 源文件中添加汉字（如汉字注释，汉字字符串变量），我们需要在文件头引入 <code># coding=utf-8</code> 来指定 python 解释器读取代码时候的编码方式，他会把 ascii 不支持的字符串保存为 <code>utf-8</code> 编码的字符串，如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> chardet</span><br><span class="line">a = <span class="string">"123"</span></span><br><span class="line"></span><br><span class="line">b = <span class="string">"水电费"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> chardet.detect(a)</span><br><span class="line"><span class="keyword">print</span> chardet.detect(b)</span><br></pre></td></tr></table></figure>
+<p>输出结果如下，加入头部引入之后，a依然是 <code>ascii</code> 编码，而b却是 <code>utf-8</code> 编码，是不是很奇怪？自己查一查 <code>123</code> 的 ascii 编码和 <code>123</code> 的 utf-8 编码有啥区别？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&apos;confidence&apos;: 1.0, &apos;encoding&apos;: &apos;ascii&apos;&#125;</span><br><span class="line">&#123;&apos;confidence&apos;: 0.87625, &apos;encoding&apos;: &apos;utf-8&apos;&#125;</span><br><span class="line">[Finished in 0.8s]</span><br></pre></td></tr></table></figure>
+<h1 id="python-编码的检测方法"><a href="#python-编码的检测方法" class="headerlink" title="python 编码的检测方法"></a>python 编码的检测方法</h1><p>这里列出了我经常用来检测 python 编码的几种办法</p>
+<h2 id="利用控制台输出"><a href="#利用控制台输出" class="headerlink" title="利用控制台输出"></a>利用控制台输出</h2><p>如果你不确定你的字符串是用什么来编码的，你可以用 ide 来调试，常用函数，type，instances，encode，decode，方便你定为他是什么编码</p>
+<h2 id="使用-python-编码检测工具"><a href="#使用-python-编码检测工具" class="headerlink" title="使用 python 编码检测工具"></a>使用 python 编码检测工具</h2><p>如果你觉得上面测试办法很麻烦，你可以用 <code>chardet</code> python的编码检测包来做编码检测，非常好用，栗子如下:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> chardet</span><br><span class="line"></span><br><span class="line">my_str_test = <span class="string">"编码测试"</span></span><br><span class="line">fencoding = chardet.detect(my_str_test)</span><br><span class="line"><span class="keyword">print</span> my_str_test</span><br><span class="line"><span class="keyword">print</span> fencoding</span><br></pre></td></tr></table></figure>
 <p>输出结果如下:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">编码测试</span><br><span class="line">&#123;&apos;confidence&apos;: 0.938125, &apos;encoding&apos;: &apos;utf-8&apos;&#125;</span><br></pre></td></tr></table></figure>
@@ -543,11 +546,11 @@
           
             <a href="/tags/python/" rel="tag"># python</a>
           
-            <a href="/tags/代码之美/" rel="tag"># 代码之美</a>
-          
             <a href="/tags/编码/" rel="tag"># 编码</a>
           
             <a href="/tags/解码/" rel="tag"># 解码</a>
+          
+            <a href="/tags/代码之美/" rel="tag"># 代码之美</a>
           
         </div>
       
@@ -649,7 +652,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">167</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -657,7 +660,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -666,7 +669,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">266</span>
+                <span class="site-state-item-count">275</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -756,7 +759,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是编码"><span class="nav-number">3.</span> <span class="nav-text">什么是编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#系统编码"><span class="nav-number">4.</span> <span class="nav-text">系统编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python解释器编码"><span class="nav-number">5.</span> <span class="nav-text">python解释器编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件编码"><span class="nav-number">6.</span> <span class="nav-text">文件编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python内部转码机制"><span class="nav-number">7.</span> <span class="nav-text">python内部转码机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python的编码检测方法"><span class="nav-number">8.</span> <span class="nav-text">python的编码检测方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#利用控制台输出"><span class="nav-number">8.1.</span> <span class="nav-text">利用控制台输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用python编码检测工具"><span class="nav-number">8.2.</span> <span class="nav-text">使用python编码检测工具</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是编码"><span class="nav-number">3.</span> <span class="nav-text">什么是编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#系统编码"><span class="nav-number">4.</span> <span class="nav-text">系统编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python-解释器编码"><span class="nav-number">5.</span> <span class="nav-text">python 解释器编码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解释器默认编码"><span class="nav-number">5.1.</span> <span class="nav-text">解释器默认编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改-python-解释器默认编码方式"><span class="nav-number">5.2.</span> <span class="nav-text">修改 python 解释器默认编码方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件编码"><span class="nav-number">6.</span> <span class="nav-text">文件编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python-内部转码机制"><span class="nav-number">7.</span> <span class="nav-text">python 内部转码机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#python2-x-中间编码和转码"><span class="nav-number">7.1.</span> <span class="nav-text">python2.x 中间编码和转码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#python-编码的检测方法"><span class="nav-number">8.</span> <span class="nav-text">python 编码的检测方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#利用控制台输出"><span class="nav-number">8.1.</span> <span class="nav-text">利用控制台输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-python-编码检测工具"><span class="nav-number">8.2.</span> <span class="nav-text">使用 python 编码检测工具</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>

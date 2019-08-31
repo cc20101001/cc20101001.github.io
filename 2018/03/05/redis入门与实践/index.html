@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="Bill Hu&#39;s Note Book">
 <meta property="og:description" content="前言这里主要介绍学习 redis 的一些基本知识 redis 基础运维这里主要介绍了 redis 运维过程中可能会碰到的一些问题  redis服务端工具redis-server 端口 6379 redis客户端工具redis-cli 端口 6380 redis当前版本状态信息获取 redis 状态报告： redis-cli info 12345678910111213141516171819202">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-07-17T23:55:05.000Z">
+<meta property="og:updated_time" content="2019-05-31T02:57:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="redis入门与实践">
 <meta name="twitter:description" content="前言这里主要介绍学习 redis 的一些基本知识 redis 基础运维这里主要介绍了 redis 运维过程中可能会碰到的一些问题  redis服务端工具redis-server 端口 6379 redis客户端工具redis-cli 端口 6380 redis当前版本状态信息获取 redis 状态报告： redis-cli info 12345678910111213141516171819202">
@@ -450,6 +450,10 @@
 1) “maxclients”
 2) “10000”</p>
 <p>获取当前 redis 最大连接数，为 10000</p>
+<h2 id="控制数据库总数"><a href="#控制数据库总数" class="headerlink" title="控制数据库总数"></a>控制数据库总数</h2><p>127.0.0.1:6379&gt; databases 16 # 设置数据总数为 16</p>
+<h2 id="选择某个-redis-实例"><a href="#选择某个-redis-实例" class="headerlink" title="选择某个 redis 实例"></a>选择某个 redis 实例</h2><p>127.0.0.1:6379&gt; select 2 # 选择 redis 第二个实例</p>
+<h1 id="redis-设置密码"><a href="#redis-设置密码" class="headerlink" title="redis 设置密码"></a>redis 设置密码</h1><p>127.0.0.1:6379&gt; config set requirepass test123</p>
+<h2 id="redis-密码登录"><a href="#redis-密码登录" class="headerlink" title="redis 密码登录"></a>redis 密码登录</h2><p>127.0.0.1:6379&gt; auth password</p>
 <h1 id="常见问题排查"><a href="#常见问题排查" class="headerlink" title="常见问题排查"></a>常见问题排查</h1><h2 id="rdb文件故障"><a href="#rdb文件故障" class="headerlink" title="rdb文件故障"></a>rdb文件故障</h2><p>k8s 环境重新安装，但是发现 redis 起不起来，报错日志如下:</p>
 <p>[42] 27 Jul 07:03:30.511 # Wrong signature trying to load DB from file
 [42] 27 Jul 07:03:30.511 # Fatal error loading the DB: Invalid argument. Exiting.</p>
@@ -618,7 +622,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">167</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -626,7 +630,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -635,7 +639,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">266</span>
+                <span class="site-state-item-count">275</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -725,7 +729,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#redis-基础运维"><span class="nav-number">2.</span> <span class="nav-text">redis 基础运维</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#redis服务端工具"><span class="nav-number">2.1.</span> <span class="nav-text">redis服务端工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis客户端工具"><span class="nav-number">2.2.</span> <span class="nav-text">redis客户端工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis当前版本状态信息"><span class="nav-number">2.3.</span> <span class="nav-text">redis当前版本状态信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看所有客户端连接"><span class="nav-number">2.4.</span> <span class="nav-text">查看所有客户端连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#性能测试工具"><span class="nav-number">2.5.</span> <span class="nav-text">性能测试工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看-redis-最大连接数"><span class="nav-number">2.6.</span> <span class="nav-text">查看 redis 最大连接数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见问题排查"><span class="nav-number">3.</span> <span class="nav-text">常见问题排查</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rdb文件故障"><span class="nav-number">3.1.</span> <span class="nav-text">rdb文件故障</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#redis-基础运维"><span class="nav-number">2.</span> <span class="nav-text">redis 基础运维</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#redis服务端工具"><span class="nav-number">2.1.</span> <span class="nav-text">redis服务端工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis客户端工具"><span class="nav-number">2.2.</span> <span class="nav-text">redis客户端工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis当前版本状态信息"><span class="nav-number">2.3.</span> <span class="nav-text">redis当前版本状态信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看所有客户端连接"><span class="nav-number">2.4.</span> <span class="nav-text">查看所有客户端连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#性能测试工具"><span class="nav-number">2.5.</span> <span class="nav-text">性能测试工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看-redis-最大连接数"><span class="nav-number">2.6.</span> <span class="nav-text">查看 redis 最大连接数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#控制数据库总数"><span class="nav-number">2.7.</span> <span class="nav-text">控制数据库总数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择某个-redis-实例"><span class="nav-number">2.8.</span> <span class="nav-text">选择某个 redis 实例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#redis-设置密码"><span class="nav-number">3.</span> <span class="nav-text">redis 设置密码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#redis-密码登录"><span class="nav-number">3.1.</span> <span class="nav-text">redis 密码登录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常见问题排查"><span class="nav-number">4.</span> <span class="nav-text">常见问题排查</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rdb文件故障"><span class="nav-number">4.1.</span> <span class="nav-text">rdb文件故障</span></a></li></ol></li></ol></div>
             
           </div>
         </section>

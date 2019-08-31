@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="Bill Hu&#39;s Note Book">
 <meta property="og:description" content="前言通常我们启动 docker 非常麻烦，需要敲很多命令，docker 官方提供了一个便携化的编排工具 docker-compose，能够把 docker run 启动容器的那些指令保存在 compose 文件中，方便快速启动容器 docker-compose 和 Dockerfile 的区别docker-compose 是一种容器编排技术， Dockerfile 只是一个容器配置文件，两者的区别">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-06T10:42:20.000Z">
+<meta property="og:updated_time" content="2019-07-24T01:20:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="docker-compose初探">
 <meta name="twitter:description" content="前言通常我们启动 docker 非常麻烦，需要敲很多命令，docker 官方提供了一个便携化的编排工具 docker-compose，能够把 docker run 启动容器的那些指令保存在 compose 文件中，方便快速启动容器 docker-compose 和 Dockerfile 的区别docker-compose 是一种容器编排技术， Dockerfile 只是一个容器配置文件，两者的区别">
@@ -444,6 +444,9 @@
 <h1 id="常规配置"><a href="#常规配置" class="headerlink" title="常规配置"></a>常规配置</h1><h2 id="配置样例"><a href="#配置样例" class="headerlink" title="配置样例"></a>配置样例</h2><pre><code class="docker-compose">
 </code></pre>
 <h2 id="docker-compose-和-docker-run-命令的相互转换"><a href="#docker-compose-和-docker-run-命令的相互转换" class="headerlink" title="docker-compose 和 docker run 命令的相互转换"></a>docker-compose 和 docker run 命令的相互转换</h2><p>todo</p>
+<h1 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h1><h2 id="列出所有运行容器"><a href="#列出所有运行容器" class="headerlink" title="列出所有运行容器"></a>列出所有运行容器</h2><p>docker-compose ps</p>
+<h2 id="查看服务日志输出"><a href="#查看服务日志输出" class="headerlink" title="查看服务日志输出"></a>查看服务日志输出</h2><p>docker-compose logs</p>
+<h1 id="删除所有开发环境相关容器"><a href="#删除所有开发环境相关容器" class="headerlink" title="删除所有开发环境相关容器"></a>删除所有开发环境相关容器</h1><p>docker ps | grep dev_env| awk ‘{print $1}’ | xargs -n1 -I {} docker stop {} &amp;&amp; docker rm {}</p>
 
       
     </div>
@@ -609,7 +612,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">167</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -617,7 +620,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -626,7 +629,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">266</span>
+                <span class="site-state-item-count">275</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -716,7 +719,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-compose-和-Dockerfile-的区别"><span class="nav-number">2.</span> <span class="nav-text">docker-compose 和 Dockerfile 的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-compose简介"><span class="nav-number">3.</span> <span class="nav-text">docker-compose简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常规配置"><span class="nav-number">4.</span> <span class="nav-text">常规配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置样例"><span class="nav-number">4.1.</span> <span class="nav-text">配置样例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-compose-和-docker-run-命令的相互转换"><span class="nav-number">4.2.</span> <span class="nav-text">docker-compose 和 docker run 命令的相互转换</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-compose-和-Dockerfile-的区别"><span class="nav-number">2.</span> <span class="nav-text">docker-compose 和 Dockerfile 的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-compose简介"><span class="nav-number">3.</span> <span class="nav-text">docker-compose简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常规配置"><span class="nav-number">4.</span> <span class="nav-text">常规配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置样例"><span class="nav-number">4.1.</span> <span class="nav-text">配置样例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker-compose-和-docker-run-命令的相互转换"><span class="nav-number">4.2.</span> <span class="nav-text">docker-compose 和 docker run 命令的相互转换</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用命令"><span class="nav-number">5.</span> <span class="nav-text">常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#列出所有运行容器"><span class="nav-number">5.1.</span> <span class="nav-text">列出所有运行容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看服务日志输出"><span class="nav-number">5.2.</span> <span class="nav-text">查看服务日志输出</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#删除所有开发环境相关容器"><span class="nav-number">6.</span> <span class="nav-text">删除所有开发环境相关容器</span></a></li></ol></div>
             
           </div>
         </section>

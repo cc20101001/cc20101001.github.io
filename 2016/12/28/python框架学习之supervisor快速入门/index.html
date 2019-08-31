@@ -87,18 +87,18 @@
 
 
 
-<meta name="description" content="前言 我们在日常做Linux环境部署的时候经常需要守护进程或者做进程统一管理，如果觉得自己写脚本太麻，或者不知道如何来管理，那很可能supervisor正好是你所需要的  supervisor 简介supervisor 是用Python开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常退出时能自动重启。 supervisor 主要由 superviso">
+<meta name="description" content="前言 我们在日常做Linux环境部署的时候经常需要守护进程或者做进程统一管理，如果觉得自己写脚本太麻，或者不知道如何来管理，那很可能 supervisor 正好是你所需要的  supervisor 简介supervisor 是用Python开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常退出时能自动重启。 supervisor 主要由 supervi">
 <meta name="keywords" content="操作系统,python,python框架学习,supervisor,自动化部署,守护进程,进程管理,云部署">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python框架学习之supervisor快速入门">
 <meta property="og:url" content="https://hubinwei.me/2016/12/28/python框架学习之supervisor快速入门/index.html">
 <meta property="og:site_name" content="Bill Hu&#39;s Note Book">
-<meta property="og:description" content="前言 我们在日常做Linux环境部署的时候经常需要守护进程或者做进程统一管理，如果觉得自己写脚本太麻，或者不知道如何来管理，那很可能supervisor正好是你所需要的  supervisor 简介supervisor 是用Python开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常退出时能自动重启。 supervisor 主要由 superviso">
+<meta property="og:description" content="前言 我们在日常做Linux环境部署的时候经常需要守护进程或者做进程统一管理，如果觉得自己写脚本太麻，或者不知道如何来管理，那很可能 supervisor 正好是你所需要的  supervisor 简介supervisor 是用Python开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常退出时能自动重启。 supervisor 主要由 supervi">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-07-17T12:50:04.000Z">
+<meta property="og:updated_time" content="2019-03-13T09:04:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python框架学习之supervisor快速入门">
-<meta name="twitter:description" content="前言 我们在日常做Linux环境部署的时候经常需要守护进程或者做进程统一管理，如果觉得自己写脚本太麻，或者不知道如何来管理，那很可能supervisor正好是你所需要的  supervisor 简介supervisor 是用Python开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常退出时能自动重启。 supervisor 主要由 superviso">
+<meta name="twitter:description" content="前言 我们在日常做Linux环境部署的时候经常需要守护进程或者做进程统一管理，如果觉得自己写脚本太麻，或者不知道如何来管理，那很可能 supervisor 正好是你所需要的  supervisor 简介supervisor 是用Python开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常退出时能自动重启。 supervisor 主要由 supervi">
 
 
 
@@ -435,7 +435,7 @@
 
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
-<p>我们在日常做Linux环境部署的时候经常需要守护进程或者做进程统一管理，如果觉得自己写脚本太麻，或者不知道如何来管理，那很可能supervisor正好是你所需要的</p>
+<p>我们在日常做Linux环境部署的时候经常需要守护进程或者做进程统一管理，如果觉得自己写脚本太麻，或者不知道如何来管理，那很可能 supervisor 正好是你所需要的</p>
 </blockquote>
 <h1 id="supervisor-简介"><a href="#supervisor-简介" class="headerlink" title="supervisor 简介"></a>supervisor 简介</h1><p>supervisor 是用Python开发的一套通用的进程管理程序，能将一个普通的命令行进程变为后台daemon，并监控进程状态，异常退出时能自动重启。
 supervisor 主要由 supervisorctl, supervisord, echo_supervisord_conf 三部分组成:</p>
@@ -445,7 +445,7 @@ supervisor 主要由 supervisorctl, supervisord, echo_supervisord_conf 三部分
 <li>supervisorctl: 是客户端工具，用它可以和supervisord进行通信，方便客户端管理员手工对进程进行操作</li>
 <li>web service: 提供web端管理界面方便查看（暂不介绍）</li>
 </ul>
-<h1 id="Mac-环境下-supervisor-安装"><a href="#Mac-环境下-supervisor-安装" class="headerlink" title="Mac 环境下 supervisor 安装"></a>Mac 环境下 supervisor 安装</h1><p><code>easy_install supervisor</code>ysq 或者 <code>pip install supervisor</code></p>
+<h1 id="Mac-环境下-supervisor-安装"><a href="#Mac-环境下-supervisor-安装" class="headerlink" title="Mac 环境下 supervisor 安装"></a>Mac 环境下 supervisor 安装</h1><p><code>easy_install supervisor</code> 或者 <code>pip install supervisor</code></p>
 <h1 id="supervisor-配置文件"><a href="#supervisor-配置文件" class="headerlink" title="supervisor 配置文件"></a>supervisor 配置文件</h1><h2 id="配置文件生成"><a href="#配置文件生成" class="headerlink" title="配置文件生成"></a>配置文件生成</h2><p>安装好supervisor后默认是没有配置文件的，需要我们手工生成，命令如下：</p>
 <p><code>echo_supervisord_conf &gt; /etc/supervisord.conf</code></p>
 <p>生成的配置文件主要用于supervisord程序运行时加载配置项</p>
@@ -653,7 +653,7 @@ supervisor 主要由 supervisorctl, supervisord, echo_supervisord_conf 三部分
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">167</span>
+              <span class="site-state-item-count">171</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -661,7 +661,7 @@ supervisor 主要由 supervisorctl, supervisord, echo_supervisord_conf 三部分
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-count">63</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -670,7 +670,7 @@ supervisor 主要由 supervisorctl, supervisord, echo_supervisord_conf 三部分
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">266</span>
+                <span class="site-state-item-count">275</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
